@@ -27,6 +27,7 @@ class DailyGenerate extends Command
      */
     public function handle()
     {
+        Cache::delete("todays_splash");
         //PERKS
         $perks = Information::getPerks();
         Cache::delete("todays_perk");
@@ -39,7 +40,7 @@ class DailyGenerate extends Command
         shuffle($perks);
         if(!Cache::get('todays_quote')){
             $perk=$perks[rand(0, count($perks) - 1)];
-            while (!array_key_exists("character",$perk)){
+            while (!array_key_exists("character",$perk) || !array_key_exists("quote",$perk)){
                 $perk=$perks[rand(0, count($perks) - 1)];
             }
             Cache::forever('todays_quote',$perk );
@@ -60,6 +61,13 @@ class DailyGenerate extends Command
             $datas=Information::fetchKiller($killer_name);
             $killer=array_merge(["name"=>$killer_name],$datas);
             Cache::forever('todays_killer',$killer );
+        }
+        //SPLASH
+        Cache::delete("todays_splash");
+        shuffle($chars);
+        if(!Cache::get('todays_splash')){
+            $chars=$chars[rand(0, count($chars) - 1)];
+        Cache::forever('todays_splash',["character"=>$chars,"path"=>"","pos_x"=>"","pos_y"=>""]);
         }
     }
 

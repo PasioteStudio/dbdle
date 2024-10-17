@@ -40,6 +40,7 @@
                 </div>
                 <div class="grid gap-3 w-50 text-white center mx-auto">
                     <input type="text" oninput="search(this.value)" name="guess" id="guessInput" class="bg-black rounded  p-1">
+                    <p id="description"></p>
                     <div class="bg-black rounded d-grid overflow-y-scroll overflow-x-hidden" id="foundPerks" style="max-height: calc(43.05px * 6)">
                     </div>
                     <div class="bg-black rounded d-grid gap-3" id="alreadyGuessedPerks">

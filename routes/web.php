@@ -13,3 +13,5 @@ Route::get("/perk/image_src",[Guessing::class,'image_src'])->name("perk.image_sr
 Route::get("/perk/{selected}",[Guessing::class,'findPerk']);
 Route::get("/quote/{selected}",[Guessing::class,'findQuote']);
 Route::get("/killer/{selected}",[Guessing::class,'findKiller']);
+Route::get("/splash/{selected}",[Guessing::class,'findSplash']);
+Route::get("/splash/splash_src/{tries}",[Guessing::class,'splash_src'])->name("splash.splash_src");
