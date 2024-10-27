@@ -158,8 +158,8 @@ class Guessing extends Controller
                 }
             }
         }
-        $manager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class,blendingColor: '21252900');
-        $max_tries=19;
+        $manager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class,blendingColor: '00000000');
+        $max_tries=14;
         if($tries>$max_tries){
             $tries=$max_tries;
         }
@@ -187,11 +187,10 @@ class Guessing extends Controller
                     }
                 }
                 $all=0;
-
                 foreach (array_count_values($colors) as $i=>$color) {
-                    if(str_contains(strval($i),"212529")){
+                    if(str_contains(strval($i),"00000000")){
                         $all+= $color;
-                    }else if(abs(intval($i)-21252900) < 10000){
+                    }else if(abs(intval($i)) < 1000){
                         $all+=$color;
                     }
                 }
@@ -202,7 +201,7 @@ class Guessing extends Controller
                 if($pos["y"]+$scale > $image->height()){
                     $pos["y"] -= $pos["y"]+$scale-$image->height();
                 }
-                if($image->crop($scale, $scale,$pos["x"],$pos["y"],'000000')->toJpeg()->size()>704){
+                if($manager->read($return_file)->crop($scale, $scale,$pos["x"],$pos["y"],'000000')->toPng()->size() > 159){
                     $isTooMuchBg=false;
                 }else{
                     $width=$image->width()-$scale;

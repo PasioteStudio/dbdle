@@ -33,49 +33,69 @@ export function search(searchItem){
         foundPerksEl.innerHTML+="<button onclick='isCharacter(`"+contains[i] + "`)'  class='foundPerk '>"+contains[i]+"</button>"
     }
 }
+function getElement(classes, name){
+    return `<div  class="foundPerk ${classes} rounded h-100 flex-basis">${name}</div>`
+}
 export async function isCharacter(selected){
     inputEl.value=""
     foundPerksEl.innerHTML=""
     await fetch(window.location+"/"+selected).then(response=>response.json()).then(result=>{
         let beforeChildren = alreadyGuessedPerksEl.innerHTML
         let building=`<div  class="foundPerk bg-black rounded d-flex gap-4 " >`
+        let classes=""
 
-        building+=`<div  class="foundPerk foundPerk bg-black rounded flex-basis">${selected}</div>`
+        building+=getElement("bg-black",selected)
+
         if(result['gender']==="YES"){
-            building+=`<div  class="foundPerk foundPerk bg-green rounded flex-basis">${result["selected_killer"]["gender"]}</div>`
+            classes="bg-green"
         }else if(result['gender']==="MAYBE"){
-            building+=`<div  class="foundPerk foundPerk bg-yellow rounded flex-basis">${result["selected_killer"]["gender"]}</div>`
+            classes="bg-yellow"
         }
         else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["gender"]}</div>`
-        }if(result['origin']==="YES"){
-            building+=`<div  class="foundPerk foundPerk rounded  bg-green flex-basis">${result["selected_killer"]["origin"]}</div>`
+            classes="alreadyGuessed"
+        }
+        building+=getElement(classes,result["selected_killer"]["gender"])
+        if(result['origin']==="YES"){
+            classes="bg-green"
         }else if(result['origin']==="MAYBE"){
-            building+=`<div  class="foundPerk foundPerk rounded  bg-yellow flex-basis">${result["selected_killer"]["origin"]}</div>`
+            classes="bg-yellow"
         }
         else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["origin"]}</div>`
-        }if(result['height']==="YES"){
-            building+=`<div  class="foundPerk foundPerk rounded bg-green flex-basis">${result["selected_killer"]["height"]}</div>`
-        }else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["height"]}</div>`
-        }if(result['movement_speed']==="YES"){
-            building+=`<div  class="foundPerk foundPerk rounded bg-green flex-basis">${result["selected_killer"]["movement_speed"]}</div>`
-        }else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["movement_speed"]}</div>`
-        }if(result['power_attack_type']==="YES"){
-            building+=`<div  class="foundPerk foundPerk rounded bg-green flex-basis">${result["selected_killer"]["power_attack_type"]}</div>`
-        }else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["power_attack_type"]}</div>`
-        }if(result['year']==="YES"){
-            building+=`<div  class="foundPerk foundPerk rounded bg-green flex-basis">${result["selected_killer"]["year"]}</div>`
-        }else if(result['year']==="HIGHER"){
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["year"]} ⬆️</div>`
-        }else if(result['year']==="LOWER"){
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis">${result["selected_killer"]["year"]} ⬇️</div>`
-        }else{
-            building+=`<div  class="foundPerk alreadyGuessed rounded flex-basis ">${result["selected_killer"]["year"]}</div>`
+            classes="alreadyGuessed"
         }
+        building+=getElement(classes,result["selected_killer"]["origin"])
+        if(result['height']==="YES"){
+            classes="bg-green"
+
+        }else{
+            classes="alreadyGuessed"
+        }
+        building+=getElement(classes,result["selected_killer"]["height"])
+        if(result['movement_speed']==="YES"){
+            classes="bg-green"
+        }else{
+            classes="alreadyGuessed"
+        }
+        building+=getElement(classes,result["selected_killer"]["movement_speed"])
+        if(result['power_attack_type']==="YES"){
+            classes="bg-green"
+        }else{
+            classes="alreadyGuessed"
+        }
+        building+=getElement(classes,result["selected_killer"]["power_attack_type"])
+        let year = ""
+        if(result['year']==="YES"){
+            classes="bg-green"
+        }else if(result['year']==="HIGHER"){
+            classes="alreadyGuessed"
+            year=" ⬆️"
+        }else if(result['year']==="LOWER"){
+            classes="alreadyGuessed"
+            year=" ⬇️"
+        }else{
+            classes="alreadyGuessed"
+        }
+        building+=getElement(classes,result["selected_killer"]["year"] + year)
         building+=`</div>`
         alreadyGuessedPerksEl.innerHTML=building
         if(result['name']==="NO"){

@@ -1,0 +1,9 @@
+@media (max-width: 568px) {
+    #attributes{
+        max-width: 90%;
+        overflow-x: scroll;
+    }
+    #foundPerks{
+        width: 50% !important;
+    }
+}

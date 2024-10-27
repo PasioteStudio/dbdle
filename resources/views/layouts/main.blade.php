@@ -20,12 +20,12 @@
 </head>
 <body class="font-sans antialiased dark:bg-black dark:text-white/50 bg-black" >
 
-<div class="text-black/50  mp-lg-5 min-h-screen d-grid align-content-between" style="background: url('/dbd_bg.jpg') no-repeat center; background-size: cover">
+<div class="text-black/50  mp-lg-5 min-h-screen d-grid align-content-between" style="background: url('/dbd_bg.jpg') no-repeat center; background-size: cover;    background-attachment: fixed;">
     <div class="relative flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
         <div class="relative w-full mt-5 max-w-2xl px-6 lg:max-w-7xl">
             <header class="grid items-center gap-2 py-10 lg:grid-cols-3 mx-auto">
                 <div class="flex lg:justify-center lg:col-start-2 justify-center">
-                    <img src="{{asset("/Deadbydaylight_logo.webp")}} " alt="Dead by Daylight logo">
+                    <a href="/"><img src="{{asset("/Deadbydaylight_logo.webp")}} " class="z-3" alt="Dead by Daylight logo"></a>
                 </div>
                 @if (Route::has('login'))
                     <nav class="-mx-3 flex flex-1 justify-end">
@@ -57,15 +57,20 @@
                 @endif
             </header>
             <main class="">
-                @yield("content")
+                <div class="row">
+                    <div class="grid gap-6 lg:grid-cols-1 lg:gap-8 col-lg-4 mx-auto col-md-12 justify-center">
+                    @yield("content")
+                    </div>
+                </div>
             </main>
 
 
         </div>
 
     </div>
-    <footer class="text-center text-sm text-white dark:text-white/70 position-relative bottom-0" >
-        {{config("app.name")}}
+    <footer class="text-center text-sm text-white dark:text-white/70 position-relative mb-5" >
+        <p>{{config("app.name")}} -- 2024</p>
+        <p><a class="text-decoration-none text-white" href="{{route("privacy_policy")}}">Privacy Policy</a></p>
     </footer>
 </div>
 </body>

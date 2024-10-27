@@ -12,21 +12,53 @@
         ]
 //TODO: configba
 @endphp
+    <style>
+        .vh-10{
+            height: 16vh!important;
+        }
+        .w-110{
+            width: 120% !important;
+            margin-left: -20% !important;
+        }
+        .img-container{
+            position:relative;
+            width: 100%;
+            overflow:hidden;
+            padding-bottom: 100%;
+            display: grid;
+            align-items: center;
+
+        }
+        @media screen and (max-width: 576px) {
+            .w-sm-1{
+                width: 20%;
+                height: 100%;
+            }
+        }
+    </style>
 @foreach($fields as $index=>$field)
     <a
         href="{{route("view",$field[1])}}"
-        class="text-decoration-none flex items-start gap-4 rounded-lg bg-white p-1 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+        class="text-decoration-none d-grid items-start
+        @if(array_key_last($fields)!=$index)
+         vh-10
+       @endif
+          w-110 gap-4 rounded-lg p-1  transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
     >
-        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-danger sm:size-16">
-            <img class="size-1 sm:size-16" src="{{$field[2]}}" alt="">
-        </div>
+        <img src="/ui_cloud.png" alt="" class="h-50 w-100" style="grid-column: 1;grid-row: 1;">
+        <div style="grid-column: 1;grid-row: 1;" class=" d-flex p-5 gap-4 items-start">
+            <div class="flex size-1 shrink-0 items-center justify-center rounded-full bg-danger  position-relative z-2 w-sm-1 w-25">
+                <div class="img-container">
+                    <img class="size-1 ratio ratio-1x1 position-absolute" src="{{$field[2]}}" alt="">
+                </div>
+            </div>
+            <div class="pt-3 sm:pt-5">
+                <h2 class="fs-3 font-semibold text-white dark:text-white">{{$index}}</h2>
 
-        <div class="pt-3 sm:pt-5">
-            <h2 class="fs-3 font-semibold text-black dark:text-white">{{$index}}</h2>
-
-            <p class="fs-6 text-black">
-                {{$field[0]}}
-            </p>
+                <p class="fs-6 text-white-50">
+                    {{$field[0]}}
+                </p>
+            </div>
         </div>
     </a>
 @endforeach

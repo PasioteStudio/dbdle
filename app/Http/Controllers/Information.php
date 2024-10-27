@@ -279,4 +279,9 @@ class Information extends Controller
         }
         return $infos;
     }
+
+    public function privacyView()
+    {
+        return view('misc.privacy_policy');
+    }
 }
