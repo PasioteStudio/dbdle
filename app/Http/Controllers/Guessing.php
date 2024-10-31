@@ -20,9 +20,8 @@ class Guessing extends Controller
     public function index(){
 
     }
+    //TODO: hintek (perknél, quote-nál) + howto + bevezetni a db-t, hogy mindegyik karakter/perk szerepeljen egyszer + valahogy bevezetni a skineket?
     public function view(String $page){
-        $handle = new DailyGenerate();
-        $handle->handle();
         $veryrare_perk_bg=Information::$veryrare_perk_bg;
         $perks=[];
         $chars=[];
@@ -64,7 +63,7 @@ class Guessing extends Controller
             "gender"=>"NO"
         ];
         if($selected_killer["year"] == Cache::get('todays_killer')["year"]){
-            $response["year"]="YES";//TODO Le fel
+            $response["year"]="YES";
         }else if(intval($selected_killer["year"]) < intval(Cache::get('todays_killer')["year"])){
             $response["year"]="HIGHER";
         }else if(intval($selected_killer["year"]) > intval(Cache::get('todays_killer')["year"])){
@@ -78,6 +77,7 @@ class Guessing extends Controller
         if($selected_killer["origin"] == Cache::get('todays_killer')["origin"]){
             $response["origin"]="YES";
         }
+
 
         if($selected_killer["movement_speed"] == Cache::get('todays_killer')["movement_speed"]){
             $response["movement_speed"]="YES";
@@ -131,6 +131,13 @@ class Guessing extends Controller
         $response->header('Content-Type', 'image/png');
         return $response;
     }
+    public $start=50;#in px
+    public $step=5;#in px
+    #height = 512px
+    public function max_tries(){
+        return intval((512-$this->start)/$this->step)+1;
+    } //93
+
     public function splash_src($tries)
     {
         $return_file="";
@@ -159,15 +166,11 @@ class Guessing extends Controller
             }
         }
         $manager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class,blendingColor: '00000000');
-        $max_tries=14;
-        if($tries>$max_tries){
-            $tries=$max_tries;
-        }
         $image=$manager->read($return_file);
-        if(abs($tries-$max_tries) == 0){
+        if(($tries*$this->step)+$this->start >= $image->height()){
             $scale=$image->height();
         }else{
-            $scale=intval($image->height()/abs($tries-$max_tries));
+            $scale=intval(($tries*$this->step)+$this->start);
         }
 
         if(!Cache::get('todays_splash')["pos_x"]){
@@ -215,6 +218,17 @@ class Guessing extends Controller
             Cache::set('todays_splash',$cache);
         }
         $pos=["x"=>Cache::get('todays_splash')["pos_x"],"y"=>Cache::get('todays_splash')["pos_y"]];
+        $minus_steps=intval($this->step /2)*$tries;
+        $pos["x"]=$pos["x"]-$minus_steps;
+        $pos["y"]=$pos["y"]-$minus_steps;
+
+        if($pos["x"]<0){
+            $pos["x"]=0;
+        }
+        if($pos["y"]<0){
+            $pos["y"]=0;
+        }
+
         if($pos["x"]+$scale > $image->width()){
             $pos["x"] -= $pos["x"]+$scale-$image->width();
         }

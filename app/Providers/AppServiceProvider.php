@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $factors = \Carbon\CarbonInterval::getCascadeFactors();
+        $factors['years'] = [365, 'dayz'];
+        \Carbon\CarbonInterval::setCascadeFactors($factors);
         Vite::useScriptTagAttributes([
             'defer' => false, // Specify an attribute without a value...,
 

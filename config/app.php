@@ -14,6 +14,18 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    /*
+    |--------------------------------------------------------------------------
+    | Author's Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of the application's author, which will be used when the
+    | framework needs to place the application's author's name in a notification or
+    | other UI elements where an application's author's name needs to be displayed.
+    |
+    */
+
+    'author' => env('APP_AUTHOR', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------

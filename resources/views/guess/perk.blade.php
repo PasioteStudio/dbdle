@@ -1,12 +1,13 @@
-@extends("layouts.trivia",['question'=>"Guess the random perk!"])
+@extends("layouts.trivia",['question'=>"Guess the random perk!","description"=>config("dbd.fields.Perk")[0],"title"=>"DBDLE - Perk guessing","page"=>"perk"])
 @section("content2")
     <div class="d-none" id="Allperks">
         @foreach($perks as $perk)
         <p>{{$perk["name"]}}</p>
         @endforeach
     </div>
+    <p class="text-decoration-none text-white m-0">Which perk has this icon?</p>
     <div class="pt-3 sm:pt-5 w-100 h-100 d-grid" style="justify-items: center; background: url('{{$veryrare_perk_bg}}') no-repeat center;background-size: contain;">
-        <img class="w-50 " src="{{route("perk.image_src")}}" alt="">
+        <img class="w-50" src="{{route("perk.image_src")}}" alt="">
     </div>
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
         <input type="text" oninput="search(this.value)" autocomplete="off" name="guess" id="guessInput" class="bg-dark rounded  p-1">

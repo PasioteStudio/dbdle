@@ -20,6 +20,40 @@
             <a href="https://www.fandom.com/">Fandom</a> and is licensed under the
             <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-NC-SA (Attribution-NonCommercial-ShareAlike) License</a>.
         </p>
+        <h2>Bug and Security Reports</h2>
+        <p>
+            If you find any security vulnerabilities or bugs please contact us at <a href="mailto:{{ config("mail.from.address") }}">{{ config("mail.from.address") }}</a>
+        </p>
+        <h1>Cookie Policy</h1>
+
+        <h2>How do we use cookies?</h2>
+
+        @foreach(Cookies::getCategories() as $category)
+            <table>
+                <thead>
+                <tr>{{ $category->title }}</tr>
+                <tr>
+                    <th>Cookie</th>
+                    <th>Description</th>
+                    <th>Duration</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($category->getCookies() as $cookie)
+                    <tr>
+                        <td>{{ $cookie->name }}</td>
+                        <td>{{ $cookie->description }}</td>
+                        <td>{{ \Carbon\CarbonInterval::minutes($cookie->duration)->cascade() }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @endforeach
+        <div class="d-flex">
+        <p>Users can opt out of cookies by clicking here -></p>
+            @cookieconsentbutton('reset')
+        </div>
+
         <!--<h2>Common ID Cookie</h2>
         <p>This site uses cookies and similar tracking technologies such as the Common ID cookie to provide its services.
             Cookies are important devices for measuring advertising effectiveness and ensuring a robust online advertising industry.

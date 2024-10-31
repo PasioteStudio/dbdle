@@ -3,8 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ $description }}">
+    <meta name="keywords" content="Dead by Daylight, DBD, daily, DBD daily, DBDle, guessing">
+    <meta name="author" content="{{ config("app.author") }}">
 
-    <title>Laravel</title>
+    <title>{{ $title }}</title>
+    <link rel="shortcut icon" href="/small_logo.ico" type="image/x-icon">
+    <link rel="author" href="/humans.txt" />
+    <meta id="page" content="{{ $page }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -16,10 +22,9 @@
     </style>
 
     @vite(["resources/css/app.css","resources/sass/app.scss","resources/js/app.js"])
-
+    @cookieconsentscripts
 </head>
 <body class="font-sans antialiased dark:bg-black dark:text-white/50 bg-black" >
-
 <div class="text-black/50  mp-lg-5 min-h-screen d-grid align-content-between" style="background: url('/dbd_bg.jpg') no-repeat center; background-size: cover;    background-attachment: fixed;">
     <div class="relative flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
         <div class="relative w-full mt-5 max-w-2xl px-6 lg:max-w-7xl">
@@ -73,5 +78,6 @@
         <p><a class="text-decoration-none text-white" href="{{route("privacy_policy")}}">Privacy Policy</a></p>
     </footer>
 </div>
+@cookieconsentview
 </body>
 </html>

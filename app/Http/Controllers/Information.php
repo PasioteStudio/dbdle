@@ -220,13 +220,14 @@ class Information extends Controller
 
         $table_start = strpos($content, '<tbody>');
         $table_end = strpos($content, '</tbody>');
-
         $table = substr($content,$table_start,$table_end-$table_start);
-        if(str_contains($table,"small")){
-            $table_start = strpos($content, '<tbody>',$table_start+10);
-            $table_end = strpos($content, '</tbody>',$table_end+10);
+        $plus=10;
+        while(str_contains($table,"small")){
+            $table_start = strpos($content, '<tbody>',$table_start+$plus);
+            $table_end = strpos($content, '</tbody>',$table_end+$plus);
 
             $table = substr($content,$table_start,$table_end-$table_start);
+            $plus+=10;
         }
         $my = explode('</tr>',$table);
         $infos=[

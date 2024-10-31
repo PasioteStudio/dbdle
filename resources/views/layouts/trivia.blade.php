@@ -69,16 +69,6 @@
         </div>
         <div class="flex size-1 shrink-0 items-center justify-center rounded-full bg-danger  position-relative z-2 w-sm-1 w-10 h-10">
             <div class="img-container p-0">
-                <a href="{{route("view",["survivor"])}}"><img class="size-1 ratio ratio-1x1 fullos" src="https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/b/b3/IconHelpLoading_survivor.png" alt=""></a>
-            </div>
-        </div>
-        <div class="flex size-1 shrink-0 items-center justify-center rounded-full bg-danger  position-relative z-2 w-sm-1 w-10 h-10">
-            <div class="img-container p-0">
-                <a href="{{route("view",["terror_radius"])}}"><img class="size-1 ratio ratio-1x1 fullos" src="https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/5/5b/IconHelp_skills.png" alt=""></a>
-            </div>
-        </div>
-        <div class="flex size-1 shrink-0 items-center justify-center rounded-full bg-danger  position-relative z-2 w-sm-1 w-10 h-10">
-            <div class="img-container p-0">
                 <a href="{{route("view",["splash"])}}"><img class="size-1 ratio ratio-1x1 fullos" src="https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/6/69/OutfitIcon.png" alt=""></a>
             </div>
         </div>
