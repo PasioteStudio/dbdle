@@ -1,5 +1,9 @@
 import './bootstrap';
+import {min} from "@popperjs/core/lib/utils/math.js";
 
+const howto= document.getElementById("howto")
+const howtobg= document.getElementById("howtobg")
+const timer= document.getElementById("timer")
 let items = [];
 const AllperksEl = document.getElementById("Allperks");
 const foundPerksEl = document.getElementById("foundPerks");
@@ -32,7 +36,25 @@ function addGuess(selected,result){
     }
     alreadyGuessedPerksEl.innerHTML+=beforeChildren
 }
+function updateTimer(){
+    let now = new Date()
+    let all = (24*60*60)-(now.getHours()*60*60 + now.getMinutes()*60 + now.getSeconds())
+    let hours_left = Math.floor(all/60/60)
+    all = all-(hours_left*60*60)
+    let minutes_left = Math.floor(all/60)
+    all = all-(minutes_left*60)
+    let seconds_left = Math.floor(all)
+    timer.innerText=`${hours_left.toString().padStart(2,"0")}:${minutes_left.toString().padStart(2,"0")}:${seconds_left.toString().padStart(2,"0")}`
+
+}
+
 document.addEventListener("DOMContentLoaded",()=>{
+    //timer
+    setInterval(()=>{
+        updateTimer()
+    },1000)
+
+
     if(AllperksEl==null){
         return
     }
@@ -109,6 +131,19 @@ export async function isPerk(selected){
     window.afterSelected(tries)
 
 }
+
+export function showHowto(){
+    console.log(howto.style.visibility.indexOf("hidden"))
+    if(howto.classList.contains("visually-hidden")){
+        howto.classList.remove("visually-hidden")
+        howtobg.classList.remove("visually-hidden")
+    }else{
+        howto.classList.add("visually-hidden")
+        howtobg.classList.add("visually-hidden")
+    }
+
+}
+window.showHowto = showHowto;
 window.search=search;
 window.isPerk=isPerk;
 window.afterSelected=afterSelected;

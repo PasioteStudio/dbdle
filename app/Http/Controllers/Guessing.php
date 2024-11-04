@@ -20,8 +20,11 @@ class Guessing extends Controller
     public function index(){
 
     }
-    //TODO: hintek (perknél, quote-nál) + howto + bevezetni a db-t, hogy mindegyik karakter/perk szerepeljen egyszer + valahogy bevezetni a skineket?
+    //TODO: hintek (perknél, quote-nál) + howto + environment = production
+    //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
+        $new = new DailyGenerate();
+        $new->handle();
         $veryrare_perk_bg=Information::$veryrare_perk_bg;
         $perks=[];
         $chars=[];
