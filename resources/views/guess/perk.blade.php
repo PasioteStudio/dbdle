@@ -6,12 +6,16 @@
         @endforeach
     </div>
     <p class="text-decoration-none text-white m-0">Which perk has this icon?</p>
-    <div class="pt-3 sm:pt-5 w-100 h-100 d-grid" style="justify-items: center; background: url('{{$veryrare_perk_bg}}') no-repeat center;background-size: contain;">
+    <div class="p-3 sm:pt-5 w-100 h-100 d-grid" style="justify-items: center; background: url('{{$veryrare_perk_bg}}') no-repeat center;background-size: contain;">
         <img class="w-50" src="{{route("perk.image_src")}}" alt="">
     </div>
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
         <input type="text" oninput="search(this.value)" autocomplete="off" name="guess" id="guessInput" class="bg-dark rounded  p-1">
-        <p id="description">
+        <p id="description" class="pt-0 pb-0 position-relative" style="width: 200%;
+    left: -50%;
+    background: url(/ui_cloud.png) no-repeat center;
+    background-size: 100% 100%;
+    padding: 100PX;">
         </p>
 
     </div>

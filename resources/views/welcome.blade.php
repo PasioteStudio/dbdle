@@ -25,6 +25,7 @@
             }
         }
     </style>
+    <h1>Guess dbd things daily</h1>
 @foreach(config("dbd.fields") as $index=>$field)
     @if($index == "Terror Radius" || $index == "Survivor")
         @continue

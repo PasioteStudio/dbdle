@@ -7,3 +7,6 @@
         width: 50% !important;
     }
 }
+html,body{
+    overflow: hidden;
+}

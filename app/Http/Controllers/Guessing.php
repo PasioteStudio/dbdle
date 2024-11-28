@@ -23,8 +23,6 @@ class Guessing extends Controller
     //TODO: hintek (perknél, quote-nál) + howto + environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
-        $new = new DailyGenerate();
-        $new->handle();
         $veryrare_perk_bg=Information::$veryrare_perk_bg;
         $perks=[];
         $chars=[];

@@ -86,7 +86,7 @@
     >
 
         <div class="pt-3 sm:pt-5 w-100">
-            <h2 class="fs-3 font-semibold text-white dark:text-white  ">Guess today's Dead by Daylight killer!</h2>
+            <h1 class="fs-3 font-semibold text-white dark:text-white  ">Guess today's Dead by Daylight killer!</h1>
             <p class="text-decoration-none text-white">Type any killer to begin.</p>
         </div>
     </a>
