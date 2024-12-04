@@ -20,12 +20,11 @@ class Guessing extends Controller
     public function index(){
 
     }
-    //TODO: hintek (perknél, quote-nál) + howto + environment = production
+    //TODO: hintek (perknél, quote-nál) + environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
-        $gen=new DailyGenerate();
-        $gen->handle();
-        $veryrare_perk_bg=Information::$veryrare_perk_bg;
+        //$gen=new DailyGenerate();
+        //$gen->handle();
         $perks=[];
         $chars=[];
         $killers=[];
@@ -45,7 +44,7 @@ class Guessing extends Controller
                 }
                 break;
         }
-        return view("guess.".$page,compact('chars',"killers","veryrare_perk_bg",'perks'));
+        return view("guess.".$page,compact('chars',"killers",'perks'));
     }
     public function findPerk(String $selected){
         if($selected == Cache::get('todays_perk')["name"]){

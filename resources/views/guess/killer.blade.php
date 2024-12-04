@@ -81,12 +81,12 @@
             <div id="attributes">
                 <div  class="foundPerk bg-dark rounded d-flex gap-4 align-items-end" >
                     <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Character<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">gender<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">origin<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">height<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">movement speed<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">power attack type<hr></div>
-                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">release date<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Gender<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Origin<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Height<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Movement speed<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Power attack type<hr></div>
+                    <div  class="foundPerk alreadyGuessed bg-transparent flex-basis">Release date<hr></div>
                 </div>
                 <div class="bg-black rounded d-grid gap-3" id="alreadyGuessedPerks">
 

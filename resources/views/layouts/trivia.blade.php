@@ -3,6 +3,32 @@
 <x-slot name="description">{{ $description }}</x-slot>
 <x-slot name="title">{{ $title }}</x-slot>
 <x-slot name="page">{{ $page }}</x-slot>
+<x-slot name="howto">
+<div id="howtobg" class="position-fixed bg-black w-100 h-100 z-1 opacity-50 visually-hidden" style="left: 0; top: 0;">
+</div>
+<div id="howto" class="position-absolute w-100 z-3 row opacity-100 visually-hidden" style="left: 0; top: 0;">
+    <div class="text-white col-lg-4 mx-auto col-md-12 justify-center border-2 bg-dark border-black h-100 mt-sm-2 mt-lg-5 ">
+        <button class="position-relative float-end bg-danger px-2 border-2 border-black exit" onclick="showHowto()">X</button>
+        <h1 class="mt-2">How to play?</h1>
+        <div class="w-100 bg-white fs-7 mb-3">.</div>
+        <p>{{$description}} from Bhvr's game "Dead by Daylight". It changes every 24h.</p>
+        <div class="w-100 justify-center text-center">
+            <p>Next {{ $page }} in</p>
+            <h1 id="timer">
+                00:00:00
+            </h1>
+            <p class="text-white-50"><i>Time zone: Europe (Midnight at UTC{{str_replace(["0",":"],"",date('P'))}})</i></p>
+        </div>
+        <h1>{{strtoupper($page->toHtml()[0]).substr($page,1)}} mode</h1>
+        <div class="w-100 bg-white fs-7 mb-3">.</div>
+        <p>
+            @php
+                echo config("dbd.fields.".strtoupper($page->toHtml()[0]).substr($page,1))[3];
+            @endphp
+        </p>
+    </div>
+</div>
+</x-slot>
 <x-slot name="content">
 <style>
     .foundPerk:hover{
@@ -58,31 +84,7 @@
         top: -15px;
     }
 </style>
-<div id="howtobg" class="position-fixed bg-black w-100 h-100 z-1 opacity-50 visually-hidden" style="left: 0; top: 0;">
-</div>
-<div id="howto" class="position-fixed w-100 z-3 row opacity-100 visually-hidden" style="left: 0; top: 0;">
-    <div class="text-white col-lg-4 mx-auto col-md-12 justify-center border-2 bg-dark border-black h-100 mt-sm-2 mt-lg-5 ">
-        <button class="position-relative float-end bg-danger px-2 border-2 border-black exit" onclick="showHowto()">X</button>
-        <h1 class="mt-2">How to play?</h1>
-        <div class="w-100 bg-white fs-7 mb-3">.</div>
-        <p>{{$description}} from Bhvr's game "Dead by Daylight". It changes every 24h.</p>
-        <div class="w-100 justify-center text-center">
-            <p>Next {{ $page }} in</p>
-            <h1 id="timer">
-                00:00:00
-            </h1>
-            <p class="text-white-50"><i>Time zone: Europe (Midnight at UTC{{str_replace(["0",":"],"",date('P'))}})</i></p>
-        </div>
-        <h1>{{$page}} mode</h1>
-        <div class="w-100 bg-white fs-7 mb-3">.</div>
-        <p>In {{$page}} mode, try to guess which character has the whole splash art as a skin image in the least number of tries.</p>
-        <p>It can be cut from the original one <!-- or any random skin-->. It can't be a splash art that contains multiple characters.</p>
-        <br>
-        <p>You can see it full once you guessed it correctly!</p>
-        <br>
-        <p>GL. HF</p>
-    </div>
-</div>
+
 <div
     class="text-decoration-none position-relative text-center m-auto mt--2 d-grid items-start gap-4 rounded-lg p-3 transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
     style="background: url('/ui_cloud.png') no-repeat center;background-size: 100% 100%;"

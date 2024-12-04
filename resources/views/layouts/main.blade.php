@@ -28,6 +28,10 @@
     @cookieconsentscripts
 </head>
 <body class="font-sans antialiased dark:bg-black dark:text-white/50 bg-black" >
+@if(isset($howto))
+    {{$howto}}
+@endif
+
 <div class="text-black/50  mp-lg-5 min-h-screen d-grid align-content-between" style="background: url('/dbd_bg.jpg') no-repeat center; background-size: cover;    background-attachment: fixed;">
     <div class="relative flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
         <div class="relative w-full mt-5 max-w-2xl px-6 lg:max-w-7xl">
@@ -35,34 +39,6 @@
                 <div class="flex lg:justify-center lg:col-start-2 justify-center">
                     <a href="/"><img src="{{asset("/Deadbydaylight_logo.webp")}} " class="z-3" alt="Dead by Daylight logo"></a>
                 </div>
-                @if (Route::has('login'))
-                    <nav class="-mx-3 flex flex-1 justify-end">
-                        @auth
-                            <a
-                                href="{{ url('/dashboard') }}"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Dashboard
-                            </a>
-                        @else
-                            <a
-                                href="{{ route('login') }}"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a
-                                    href="{{ route('register') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                >
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    </nav>
-                @endif
             </header>
             <main class="">
                 <div class="row">

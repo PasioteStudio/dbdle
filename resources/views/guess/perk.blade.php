@@ -10,7 +10,7 @@
         @endforeach
     </div>
     <p class="text-decoration-none text-white m-0">Which perk has this icon?</p>
-    <div class="p-3 sm:pt-5 w-100 h-100 d-grid" style="justify-items: center; background: url('{{$veryrare_perk_bg}}') no-repeat center;background-size: contain;">
+    <div class="p-3 sm:pt-5 w-100 h-100 d-grid" style="justify-items: center; background: url('{{\App\Http\Controllers\Information::$veryrare_perk_bg}}') no-repeat center;background-size: contain;">
         <img class="w-50" src="{{route("perk.image_src")}}" alt="">
     </div>
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
