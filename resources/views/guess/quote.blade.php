@@ -1,5 +1,9 @@
-@extends("layouts.trivia",["question"=>"Guess the random quote!","description"=>config("dbd.fields.Quote")[0],"title"=>"DBDLE - Quote guessing","page"=>"quote"])
-@section("content2")
+<x-trivia-layout>
+    <x-slot name="question">Guess the random quote!</x-slot>
+    <x-slot name="description">{{config("dbd.fields.Quote")[0]}}</x-slot>
+    <x-slot name="title">DBDLE - Quote guessing</x-slot>
+    <x-slot name="page">quote</x-slot>
+    <x-slot name="content2">
     <div class="d-none" id="Allperks">
         @foreach($chars as $char)
             <p>{{$char}}</p>
@@ -15,12 +19,13 @@
 
 
     </div>
-@endsection
-@section("already")
+    </x-slot>
+    <x-slot name="already">
     <div class="grid gap-3 w-50 text-white center mx-auto">
-        <div class="bg-black rounded d-grid overflow-y-scroll overflow-x-hidden" id="foundPerks" style="max-height: calc(43.05px * 6)">
+        <div class="bg-black rounded d-grid overflow-y-scroll overflow-x-hidden" id="foundPerks" style="max-height: calc(43.05px * 6);width: 200px;margin:auto">
         </div>
     <div class="bg-black rounded d-grid gap-3" id="alreadyGuessedPerks">
     </div>
     </div>
-@endsection
+    </x-slot>
+</x-trivia-layout>

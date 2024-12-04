@@ -1,5 +1,9 @@
-@extends("layouts.trivia",['question'=>"Guess the random perk!","description"=>config("dbd.fields.Perk")[0],"title"=>"DBDLE - Perk guessing","page"=>"perk"])
-@section("content2")
+<x-trivia-layout>
+<x-slot name="question">Guess the random perk!</x-slot>
+<x-slot name="description">{{config("dbd.fields.Perk")[0]}}</x-slot>
+<x-slot name="title">DBDLE - Perk guessing</x-slot>
+<x-slot name="page">perk</x-slot>
+<x-slot name="content2">
     <div class="d-none" id="Allperks">
         @foreach($perks as $perk)
         <p>{{$perk["name"]}}</p>
@@ -15,16 +19,18 @@
     left: -50%;
     background: url(/ui_cloud.png) no-repeat center;
     background-size: 100% 100%;
-    padding: 100PX;">
+    padding: 100PX;
+    padding-bottom: 100px !important;">
         </p>
 
     </div>
-@endsection
-@section("already")
+</x-slot>
+<x-slot name="already">
     <div class="grid gap-3 w-50 text-white center mx-auto">
-        <div class="bg-black rounded d-grid overflow-y-scroll overflow-x-hidden" id="foundPerks" style="max-height: calc(43.05px * 6)">
+        <div class="bg-black rounded d-grid overflow-y-scroll overflow-x-hidden" id="foundPerks" style="max-height: calc(43.05px * 6);width: 200px;margin:auto">
         </div>
         <div class="bg-black rounded d-grid gap-3" id="alreadyGuessedPerks">
         </div>
     </div>
-@endsection
+</x-slot>
+</x-trivia-layout>

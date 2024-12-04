@@ -26,12 +26,12 @@ class CookiesServiceProvider extends ServiceProvider
         //    );
 
         // Register custom cookies under the pre-existing "optional" category:
-         Cookies::analytics()
-             ->name('fullres_analytics')
-             ->description('This cookie helps to give us a feedback about the website usage.')
-             ->duration(365*24*60)
-             ->accepted(function(Consent $consent) {
-                 $consent->script(view('layouts.fullres')->render());
-             });
+        Cookies::analytics()
+            ->name('fullres_analytics')
+            ->description('This cookie helps to give us a feedback about the website usage.')
+            ->duration(365*24*60)
+            ->accepted(function(Consent $consent) {
+                $consent->script(view('layouts.fullres')->render());
+            });
     }
 }

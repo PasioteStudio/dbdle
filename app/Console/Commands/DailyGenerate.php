@@ -28,6 +28,7 @@ class DailyGenerate extends Command
      */
     public function handle()
     {
+        //Cache::delete("perks");
         //INIT
         $perks = Information::getPerks();
         $chars=Information::fetchCharacters();

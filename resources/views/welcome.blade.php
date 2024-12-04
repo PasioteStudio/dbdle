@@ -1,5 +1,8 @@
-@extends("layouts.main",["title"=>"Dead By Daylight Daily","description"=>"Guess in multiple categories of the Dead by Daylight game","page"=>"welcome"])
-@section("content")
+<x-main-layout>
+<x-slot name="description">Guess in multiple categories of the Dead by Daylight game</x-slot>
+<x-slot name="title">Dead By Daylight Daily</x-slot>
+<x-slot name="page">welcome</x-slot>
+<x-slot name="content">
 <div class="grid gap-6 lg:grid-cols-1 lg:gap-8">
     <style>
         .vh-10{
@@ -59,4 +62,5 @@
 
 
 </div>
-@endsection
+</x-slot>
+</x-main-layout>

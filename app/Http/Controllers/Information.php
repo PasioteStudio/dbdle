@@ -17,7 +17,6 @@ class Information extends Controller
         }
         return Cache::get("perks");
     }
-
     public static function getCharacters(){
         return self::fetchCharacters();
     }
@@ -277,6 +276,9 @@ class Information extends Controller
                 $infos = array_merge($infos,["height"=>htmlspecialchars_decode($height)]);
             }
 
+        }
+        if(!str_contains($table, 'Attack</a> Type')){
+            $infos = array_merge($infos,["power_attack_type"=>"None"]);
         }
         return $infos;
     }

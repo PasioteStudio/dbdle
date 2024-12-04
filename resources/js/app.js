@@ -1,5 +1,4 @@
 import './bootstrap';
-import {min} from "@popperjs/core/lib/utils/math.js";
 
 const howto= document.getElementById("howto")
 const howtobg= document.getElementById("howtobg")
@@ -14,10 +13,8 @@ const page = document.getElementById("page").content
 let tries=0;//max:19
 let page_id=-1
 function isSameDay(date1,date2){
-    if(date1.getFullYear() == date2.getFullYear() && date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth()){
-        return true
-    }
-    return false
+    return date1.getFullYear() === date2.getFullYear() && date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
+
 }
 function addGuess(selected,result){
     let beforeChildren = alreadyGuessedPerksEl.innerHTML

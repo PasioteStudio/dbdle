@@ -23,6 +23,8 @@ class Guessing extends Controller
     //TODO: hintek (perknél, quote-nál) + howto + environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
+        $gen=new DailyGenerate();
+        $gen->handle();
         $veryrare_perk_bg=Information::$veryrare_perk_bg;
         $perks=[];
         $chars=[];
@@ -132,7 +134,7 @@ class Guessing extends Controller
         $response->header('Content-Type', 'image/png');
         return $response;
     }
-    public $start=50;#in px
+    public $start=100;#in px
     public $step=5;#in px
     #height = 512px
     public function max_tries(){
@@ -166,7 +168,7 @@ class Guessing extends Controller
                 }
             }
         }
-        $manager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class,blendingColor: '00000000');
+        $manager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class,blendingColor: '000000');
         $image=$manager->read($return_file);
         if(($tries*$this->step)+$this->start >= $image->height()){
             $scale=$image->height();
@@ -205,7 +207,7 @@ class Guessing extends Controller
                 if($pos["y"]+$scale > $image->height()){
                     $pos["y"] -= $pos["y"]+$scale-$image->height();
                 }
-                if($manager->read($return_file)->crop($scale, $scale,$pos["x"],$pos["y"],'000000')->toPng()->size() > 159){
+                if($manager->read($return_file)->crop($scale, $scale,$pos["x"],$pos["y"],'000000')->toPng()->size() > 600){
                     $isTooMuchBg=false;
                 }else{
                     $width=$image->width()-$scale;
