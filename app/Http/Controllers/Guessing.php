@@ -20,7 +20,7 @@ class Guessing extends Controller
     public function index(){
 
     }
-    //TODO: hintek (perknél, quote-nál) + environment = production
+    //TODO: hintek (perknél, quote-nál) + iridescent mode + environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
         //$gen=new DailyGenerate();
@@ -113,6 +113,10 @@ class Guessing extends Controller
         }
         $response=array_merge($response,["selected_killer"=>$selected_killer]);
         return json_encode($response);
+    }
+    public function hintQuote(){
+        return json_encode("Perk that contains it: ".Cache::get('todays_quote')["name"]);
+
     }
     public function findQuote(String $selected){
         if($selected == Cache::get('todays_quote')["character"]){

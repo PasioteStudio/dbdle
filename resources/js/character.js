@@ -8,10 +8,8 @@ const alreadyGuessedPerksEl = document.getElementById("alreadyGuessedPerks");
 const page = document.getElementById("page").content
 let page_id=-1
 function isSameDay(date1,date2){
-    if(date1.getFullYear() == date2.getFullYear() && date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth()){
-        return true
-    }
-    return false
+    return date1.getFullYear() === date2.getFullYear() && date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
+
 }
 function addGuess(selected,result){
     let beforeChildren = alreadyGuessedPerksEl.innerHTML
@@ -133,6 +131,10 @@ export async function isCharacter(selected){
     inputEl.value=""
     foundPerksEl.innerHTML=""
     await fetch(window.location+"/"+selected).then(response=>response.json()).then(result=>{
+        if(typeof(result) != "object"){
+            //error
+            return
+        }
         addGuess(selected,result)
 
         let array= JSON.parse(localStorage.getItem("killer"))

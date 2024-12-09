@@ -19,8 +19,7 @@
     left: -50%;
     background: url(/ui_cloud.png) no-repeat center;
     background-size: 100% 100%;
-    padding: 100PX;
-    padding-bottom: 100px !important;">
+    padding: 100px;">
         </p>
 
     </div>

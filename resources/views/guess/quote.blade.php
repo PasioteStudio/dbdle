@@ -14,6 +14,10 @@
         <h1 class="text-decoration-none text-white">❝{{\Illuminate\Support\Facades\Cache::get("todays_quote")["quote"]}}❞</h1>
     </div>
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
+        <div id="hint" onclick="hint()" class="d-none cursor-pointer">
+            <img src="/random_perk.png" alt="" class="w-25 mx-auto">
+            <p>Perk Clue after <span id="hintTries">5</span> tries</p>
+        </div>
         <input type="text" oninput="search(this.value)" name="guess" autocomplete="off"  id="guessInput" class="bg-dark rounded  p-1">
         <p id="description"></p>
 

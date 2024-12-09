@@ -9,14 +9,17 @@ const foundPerksEl = document.getElementById("foundPerks");
 const inputEl = document.getElementById("guessInput")
 const alreadyGuessedPerksEl = document.getElementById("alreadyGuessedPerks");
 const description = document.getElementById("description")
+const hintEl = document.getElementById("hint")
+const numTries = document.getElementById("hintTries")
 const page = document.getElementById("page").content
 let tries=0;//max:19
 let page_id=-1
+let hintRes = ""
 function isSameDay(date1,date2){
     return date1.getFullYear() === date2.getFullYear() && date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
 
 }
-function addGuess(selected,result){
+async function addGuess(selected,result){
     let beforeChildren = alreadyGuessedPerksEl.innerHTML
     if(result === "NO"){
         alreadyGuessedPerksEl.innerHTML=`<button  class="foundPerk alreadyGuessed rounded">${selected}</button>`
@@ -27,11 +30,27 @@ function addGuess(selected,result){
         alreadyGuessedPerksEl.innerHTML=`<button  class="foundPerk goodGuess rounded">${selected}</button>`
         let foundPerkName = document.createElement('h1');
         foundPerkName.innerHTML=selected
-        inputEl.parentNode.replaceChild(foundPerkName, inputEl);
-        description.innerText=result
-        tries=93;
+
+        if(document.getElementById("guessInput")) {
+            inputEl.parentElement.replaceChild(foundPerkName, inputEl);
+
+        }else{
+            return
+        }
+
+
+        description.innerText = result
+        tries = 93;
+        if (await isPerk(selected) === "NO") {
+            localStorage.clear()
+            location.reload()
+        }
+
     }
     alreadyGuessedPerksEl.innerHTML+=beforeChildren
+    hintEl.classList.remove("d-none")
+    numTries.innerText=6-tries
+
 }
 function updateTimer(){
     let now = new Date()
@@ -113,12 +132,32 @@ export function search(searchItem){
 export function afterSelected(tries){
 
 }
+export async function hint(){
+    if(hintRes === ""){
+        await fetch(window.location+"/hint").then(response=>response.json()).then(result=>{
+            hintRes = result
+
+        })
+    }
+    if(description.innerText!==hintRes){
+        description.innerText=hintRes
+    }else{
+        description.innerText=""
+    }
+
+
+}
 export async function isPerk(selected){
+    let returning = null
     await fetch(window.location+"/"+selected).then(response=>response.json()).then(result=>{
+        if(!["NO","YES"].includes(result) && !result.includes("Perk that contains") ){
+            //error
+            return
+        }
         addGuess(selected,result)
         let array= JSON.parse(localStorage.getItem("selecteds"))
         array["value"][page_id]["value2"].push({"result":result,"name":selected})
-
+        returning = result
         localStorage.setItem("selecteds", JSON.stringify(array));
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guessing' ,guessing:page});
@@ -128,7 +167,7 @@ export async function isPerk(selected){
 
 
     window.afterSelected(tries)
-
+    return returning
 }
 
 export function showHowto(){
@@ -146,3 +185,4 @@ window.showHowto = showHowto;
 window.search=search;
 window.isPerk=isPerk;
 window.afterSelected=afterSelected;
+window.hint=hint;
