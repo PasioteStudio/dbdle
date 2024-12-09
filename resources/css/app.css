@@ -77,3 +77,6 @@ ul[x-ref="listing"]{
 html,body{
     overflow-x: hidden;
 }
+thead, tbody, tfoot, tr, td, th {
+    border-width: 1px !important;
+}

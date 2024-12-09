@@ -1,5 +1,5 @@
 @foreach($cookies->getCategories() as $category)
-<h3>{{ $category->title }}</h3>
+<h3 class="fw-bold">{{ $category->title }}</h3>
 <table>
     <thead>
         <th>@lang('cookieConsent::cookies.cookie')</th>

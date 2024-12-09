@@ -29,13 +29,13 @@
         <h2>How do we use cookies?</h2>
 
         @foreach(Cookies::getCategories() as $category)
+            <h3 class="fw-bold">{{ $category->title }}</h3>
             <table>
                 <thead>
-                <tr>{{ $category->title }}</tr>
                 <tr>
-                    <th>Cookie</th>
-                    <th>Description</th>
-                    <th>Duration</th>
+                    <th>@lang('cookieConsent::cookies.cookie')</th>
+                    <th>@lang('cookieConsent::cookies.purpose')</th>
+                    <th>@lang('cookieConsent::cookies.duration')</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,7 +50,7 @@
             </table>
         @endforeach
         <div class="d-flex">
-        <p>Users can opt out of cookies by clicking here -></p>
+        <p class="my-auto">Users can opt out of cookies by clicking here -></p>
             @cookieconsentbutton('reset')
         </div>
 

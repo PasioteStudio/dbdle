@@ -120,6 +120,8 @@ export async function isPerk(selected){
         array["value"][page_id]["value2"].push({"result":result,"name":selected})
 
         localStorage.setItem("selecteds", JSON.stringify(array));
+        window.fullres ||= {events: []};
+        window.fullres.events.push({ key: 'guessing' ,guessing:page});
     })
     foundPerksEl.innerHTML=""
     inputEl.value=""
