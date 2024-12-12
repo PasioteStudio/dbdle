@@ -20,7 +20,7 @@ class Guessing extends Controller
     public function index(){
 
     }
-    //TODO: hintek (perknél, quote-nál) + iridescent mode + environment = production
+    //TODO: environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
         //$gen=new DailyGenerate();
@@ -48,7 +48,7 @@ class Guessing extends Controller
     }
     public function findPerk(String $selected){
         if($selected == Cache::get('todays_perk')["name"]){
-            return json_encode(Cache::get('todays_perk')["description"]);
+            return json_encode('Perk description: '.Cache::get('todays_perk')["description"]);
         }
         return json_encode("NO");
     }
@@ -118,6 +118,10 @@ class Guessing extends Controller
         return json_encode("Perk that contains it: ".Cache::get('todays_quote')["name"]);
 
     }
+    public function hintPerk()
+    {
+        return json_encode('Perk description: '.Cache::get('todays_perk')["description"]);
+    }
     public function findQuote(String $selected){
         if($selected == Cache::get('todays_quote')["character"]){
             return json_encode("Perk that contains it: ".Cache::get('todays_quote')["name"]);
@@ -126,7 +130,7 @@ class Guessing extends Controller
     }
     public function findSplash(String $selected){
         if($selected == Cache::get('todays_splash')["character"]){
-            return json_encode(Cache::get('todays_splash')["character"]);
+            return json_encode("Character: ".Cache::get('todays_splash')["character"]);
         }
         return json_encode("NO");
     }
@@ -136,6 +140,9 @@ class Guessing extends Controller
         $response = Response::make($file, 200);
         $response->header('Content-Type', 'image/png');
         return $response;
+    }
+    public function hintSplash(){
+        return json_encode('Perk description: '.Cache::get('todays_perk')["description"]);
     }
     public $start=100;#in px
     public $step=5;#in px

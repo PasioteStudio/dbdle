@@ -16,7 +16,7 @@
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
         <div id="hint" onclick="hint()" class="d-none cursor-pointer">
             <img src="/random_perk.png" alt="" class="w-25 mx-auto">
-            <p>Perk Clue after <span id="hintTries">5</span> tries</p>
+            <p>Perk Clue <span id="hintTries">after 5 tries</span></p>
         </div>
         <input type="text" oninput="search(this.value)" name="guess" autocomplete="off"  id="guessInput" class="bg-dark rounded  p-1">
         <p id="description"></p>

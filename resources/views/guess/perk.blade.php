@@ -14,6 +14,10 @@
         <img class="w-50" src="{{route("perk.image_src")}}" alt="">
     </div>
     <div class="grid gap-3 w-50 text-white center mx-auto justify-content-center">
+        <div id="hint" onclick="hint()" class="d-none cursor-pointer">
+            <img src="/random_perk.png" alt="" class="w-25 mx-auto">
+            <p>Perk Description Clue <span id="hintTries">after 5 tries</span></p>
+        </div>
         <input type="text" oninput="search(this.value)" autocomplete="off" name="guess" id="guessInput" class="bg-dark rounded  p-1">
         <p id="description" class="pt-0 pb-0 position-relative" style="width: 200%;
     left: -50%;

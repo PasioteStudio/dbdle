@@ -41,6 +41,9 @@ async function addGuess(selected,result){
 
         description.innerText = result
         tries = 93;
+        if(hintEl){
+            hintEl.remove()
+        }
         if (await isPerk(selected) === "NO") {
             localStorage.clear()
             location.reload()
@@ -48,8 +51,15 @@ async function addGuess(selected,result){
 
     }
     alreadyGuessedPerksEl.innerHTML+=beforeChildren
-    hintEl.classList.remove("d-none")
-    numTries.innerText=6-tries
+    if (hintEl){
+        hintEl.classList.remove("d-none")
+        if(6-tries > 0){
+            numTries.innerText=`after ${6-tries} tries`
+        }else{
+            numTries.remove()
+        }
+    }
+
 
 }
 function updateTimer(){
@@ -75,7 +85,8 @@ document.addEventListener("DOMContentLoaded",()=>{
         return
     }
     if(!isSameDay(new Date(localStorage.getItem("time")),new Date())){
-        localStorage.setItem("time",new Date())
+        localStorage.clear()
+        localStorage.setItem("time",new Date().toString())
         localStorage.setItem("selecteds",JSON.stringify({"value":[]}))
     }
     if(items.length===0){
@@ -133,6 +144,9 @@ export function afterSelected(tries){
 
 }
 export async function hint(){
+    if(6-tries > 0){
+        return
+    }
     if(hintRes === ""){
         await fetch(window.location+"/hint").then(response=>response.json()).then(result=>{
             hintRes = result
@@ -150,7 +164,12 @@ export async function hint(){
 export async function isPerk(selected){
     let returning = null
     await fetch(window.location+"/"+selected).then(response=>response.json()).then(result=>{
-        if(!["NO","YES"].includes(result) && !result.includes("Perk that contains") ){
+        if(!["NO","YES"].includes(result) &&
+            !result.includes("YES") &&
+            !result.includes("NO") &&
+            !result.includes("Perk that contains it: ") &&
+            !result.includes("Character: ") &&
+            !result.includes("Perk description: ") ){
             //error
             return
         }
@@ -171,7 +190,6 @@ export async function isPerk(selected){
 }
 
 export function showHowto(){
-    console.log(howto.style.visibility.indexOf("hidden"))
     if(howto.classList.contains("visually-hidden")){
         howto.classList.remove("visually-hidden")
         howtobg.classList.remove("visually-hidden")

@@ -4,14 +4,14 @@
 <x-slot name="title">{{ $title }}</x-slot>
 <x-slot name="page">{{ $page }}</x-slot>
 <x-slot name="howto">
-<div id="howtobg" class="position-fixed bg-black w-100 h-100 z-1 opacity-50 visually-hidden" style="left: 0; top: 0;">
+<div id="howtobg" class="position-fixed bg-black w-100 h-100 z-1 opacity-50 visually-hidden left-0 top-0">
 </div>
-<div id="howto" class="position-absolute w-100 z-3 row opacity-100 visually-hidden" style="left: 0; top: 0;">
+<div id="howto" class="position-absolute w-100 z-3 row opacity-100 visually-hidden pe-3 pt-3 ps-3 left-0 top-0">
     <div class="text-white col-lg-4 mx-auto col-md-12 justify-center border-2 bg-dark border-black h-100 mt-sm-2 mt-lg-5 ">
         <button class="position-relative float-end bg-danger px-2 border-2 border-black exit" onclick="showHowto()">X</button>
         <h1 class="mt-2">How to play?</h1>
         <div class="w-100 bg-white fs-7 mb-3">.</div>
-        <p>{{$description}} from Bhvr's game "Dead by Daylight". It changes every 24h.</p>
+        <p>{{$description}} from Behavior's game "Dead by Daylight". It changes every 24h.</p>
         <div class="w-100 justify-center text-center">
             <p>Next {{ $page }} in</p>
             <h1 id="timer">
@@ -110,7 +110,7 @@
                 <a href="{{route("view",["splash"])}}"><img class=" ratio ratio-1x1 fullos" src="https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/6/69/OutfitIcon.png" alt=""></a>
             </div>
         </div>
-        <div class="position-absolute fs-3 border-3 rounded border-warning" style="right: 0">
+        <div class="position-absolute fs-3 border-3 rounded border-warning right-8">
             <button onclick="showHowto()">📄</button>
         </div>
     </div>

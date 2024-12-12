@@ -70,9 +70,6 @@ ul[x-ref="listing"]{
         max-width: 90%;
         overflow-x: scroll;
     }
-    #foundPerks{
-        width: 50% !important;
-    }
 }
 html,body{
     overflow-x: hidden;

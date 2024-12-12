@@ -34,7 +34,7 @@
 
 <div class="text-black/50  mp-lg-5 min-h-screen d-grid align-content-between" style="background: url('/dbd_bg.jpg') no-repeat center; background-size: cover;    background-attachment: fixed;">
     <div class="relative flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-        <div class="relative w-full mt-5 max-w-2xl px-6 lg:max-w-7xl">
+        <div class="relative w-full mt-5 max-w-2xl lg:max-w-7xl">
             <header class="grid items-center gap-2 py-10 lg:grid-cols-3 mx-auto">
                 <div class="flex lg:justify-center lg:col-start-2 justify-center">
                     <a href="/"><img src="{{asset("/Deadbydaylight_logo.webp")}} " class="z-3" alt="Dead by Daylight logo"></a>

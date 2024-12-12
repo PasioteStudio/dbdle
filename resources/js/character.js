@@ -82,7 +82,8 @@ function addGuess(selected,result){
 }
 document.addEventListener("DOMContentLoaded",()=>{
     if(!isSameDay(new Date(localStorage.getItem("time")),new Date())){
-        localStorage.setItem("time",new Date())
+        localStorage.clear()
+        localStorage.setItem("time",new Date().toString())
         localStorage.setItem("killer",JSON.stringify({"value":[]}))
     }
     if(items.length===0){

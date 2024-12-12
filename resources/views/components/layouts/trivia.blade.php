@@ -61,7 +61,7 @@
                 <button class="position-relative float-end bg-danger px-2 border-2 border-black exit" onclick="showHowto()">X</button>
                 <h1 class="mt-2">How to play?</h1>
                 <div class="w-100 bg-white fs-7 mb-3">.</div>
-                <p>{{$description}} from Bhvr's game "Dead by Daylight". It changes every 24h.</p>
+                <p>{{$description}} from Behavior's game "Dead by Daylight". It changes every 24h.</p>
                 <div class="w-100 justify-center text-center">
                     <p>Next {{ $page }} in</p>
                     <h1 id="timer">
