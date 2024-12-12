@@ -20,7 +20,7 @@ class Guessing extends Controller
     public function index(){
 
     }
-    //TODO: environment = production
+    //TODO: perkeknél a quote nem mindig a perk tulajdonosáé + environment = production
     //TODO: KIADÁS UTÁN új guess, a map guess (először intro hang, majd hint-be tulajdonságok) + valahogy bevezetni a skineket?
     public function view(String $page){
         //$gen=new DailyGenerate();

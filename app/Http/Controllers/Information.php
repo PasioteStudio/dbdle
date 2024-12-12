@@ -216,7 +216,17 @@ class Information extends Controller
     public static function fetchKiller(String $killer):array{
         $content = file_get_contents('https://deadbydaylight.fandom.com/wiki/'.rawurlencode($killer));
         $year_start=strpos($content, ' 20');
-        $year=substr($content,$year_start+1,4);
+        $dot = $content[$year_start+5];
+        $alreadyYearStarted=$year_start;
+        if($dot != "."){
+            $alreadyYearStarted+=5;
+        }
+        while($dot != "."){
+            $year_start=strpos(substr($content,$year_start+5), ' 20');
+            $alreadyYearStarted+=$year_start;
+            $dot = $content[$alreadyYearStarted+5];
+        }
+        $year=substr($content,$alreadyYearStarted+1,4);
 
         $table_start = strpos($content, '<tbody>');
         $table_end = strpos($content, '</tbody>');
