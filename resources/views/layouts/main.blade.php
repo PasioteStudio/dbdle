@@ -53,7 +53,7 @@
 
     </div>
     <footer class="text-center text-sm text-white dark:text-white/70 position-relative mb-5" >
-        <p>{{config("app.name")}} -- 2024</p>
+        <p>{{config("app.name")}} -- <span id="year">2025</span></p>
         <p><a class="text-decoration-none text-white" href="{{route("privacy_policy")}}">Privacy Policy</a></p>
     </footer>
 </div>

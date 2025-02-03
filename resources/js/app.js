@@ -1,5 +1,8 @@
 import './bootstrap';
 
+const yearEl = document.getElementById("year")
+yearEl.innerText = new Date().getFullYear()
+
 const howto= document.getElementById("howto")
 const howtobg= document.getElementById("howtobg")
 const timer= document.getElementById("timer")
