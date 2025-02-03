@@ -1,7 +1,7 @@
 
 <x-trivia-layout>
     <x-slot name="description">{{config("dbd.fields.Killer")[0]}}</x-slot>
-    <x-slot name="title">DBDLE - Killer guessing</x-slot>
+    <x-slot name="title">DBDLE - Daily Killer guessing</x-slot>
     <x-slot name="question">Guess today's Dead by Daylight killer!</x-slot>
     <x-slot name="page">killer</x-slot>
     <x-slot name="noBgForCard"></x-slot>

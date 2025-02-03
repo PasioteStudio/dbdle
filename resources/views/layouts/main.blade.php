@@ -5,7 +5,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ $description }}">
-    <meta name="keywords" content="Dead by Daylight, DBD, daily, DBDle, guessing, {{$page}}">
+    <meta name="keywords" content="Dead by Daylight, dbd, daily, dbdle, guessing, dbdle net,{{$page}}">
     <meta name="author" content="{{ config("app.author") }}">
 
     <title>{{ $title }}</title>

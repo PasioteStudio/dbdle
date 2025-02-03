@@ -1,6 +1,6 @@
 <x-main-layout>
 <x-slot name="description">Guess in multiple categories of the Dead by Daylight game</x-slot>
-<x-slot name="title">Dead By Daylight Daily</x-slot>
+<x-slot name="title">Dead By Daylight Daily Guessing</x-slot>
 <x-slot name="page">welcome</x-slot>
 <x-slot name="content">
 <div class="grid  lg:grid-cols-1">

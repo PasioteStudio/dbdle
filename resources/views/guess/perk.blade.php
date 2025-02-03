@@ -1,7 +1,7 @@
 <x-trivia-layout>
 <x-slot name="question">Guess the random perk!</x-slot>
 <x-slot name="description">{{config("dbd.fields.Perk")[0]}}</x-slot>
-<x-slot name="title">DBDLE - Perk guessing</x-slot>
+<x-slot name="title">DBDLE - Daily Perk guessing</x-slot>
 <x-slot name="page">perk</x-slot>
 <x-slot name="content2">
     <div class="d-none" id="Allperks">

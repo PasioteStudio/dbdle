@@ -1,7 +1,7 @@
 <x-trivia-layout>
     <x-slot name="question">Guess the random character by a splash art!</x-slot>
     <x-slot name="description">{{config("dbd.fields.Splash")[0]}}</x-slot>
-    <x-slot name="title">DBDLE - Splash guessing</x-slot>
+    <x-slot name="title">DBDLE - Daily Splash guessing</x-slot>
     <x-slot name="page">splash</x-slot>
     <x-slot name="content2">
     @vite(["resources/js/splash.js"])

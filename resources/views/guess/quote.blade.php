@@ -1,7 +1,7 @@
 <x-trivia-layout>
     <x-slot name="question">Guess the random quote!</x-slot>
     <x-slot name="description">{{config("dbd.fields.Quote")[0]}}</x-slot>
-    <x-slot name="title">DBDLE - Quote guessing</x-slot>
+    <x-slot name="title">DBDLE - Daily Quote guessing</x-slot>
     <x-slot name="page">quote</x-slot>
     <x-slot name="content2">
     <div class="d-none" id="Allperks">
