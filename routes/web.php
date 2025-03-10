@@ -12,7 +12,7 @@ Route::get('/', function () {
 Route::get('/privacy_policy',[Information::class,'privacyView'])->middleware(CacheResponse::class)->name("privacy_policy");
 
 
-Route::get("/{guess}",[Guessing::class,'view'])->whereIn('guess', ['perk', 'quote', 'killer','splash'])->middleware(CacheResponse::class)->name("view");
+Route::get("/{guess}",[Guessing::class,'view'])->whereIn('guess', ['perk', 'quote', 'killer','splash'])->name("view");
 Route::get("/perk/image_src",[Guessing::class,'image_src'])->name("perk.image_src");
 Route::get("/perk/hint",[Guessing::class,'hintPerk']);
 Route::get("/perk/{selected}",[Guessing::class,'findPerk']);
