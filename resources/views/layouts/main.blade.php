@@ -7,7 +7,8 @@
     <meta name="description" content="{{ $description }}">
     <meta name="keywords" content="dead, daylight, daily, guessing,Dead by Daylight, dbd, daily, dbdle, guessing, dbdle net,{{$page}}">
     <meta name="author" content="{{ config("app.author") }}">
-
+    <meta name="google-site-verification" content="D4rC7c65x6yDWW7tAXoNoxIZqS-45__WNo838cMQGMk" />
+    
     <title>{{ $title }}</title>
     <link rel="shortcut icon" href="/small_logo.ico" type="image/x-icon">
     <link rel="author" href="/humans.txt" />
