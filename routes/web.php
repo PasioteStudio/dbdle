@@ -7,7 +7,7 @@ use \Silber\PageCache\Middleware\CacheResponse;
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware(CacheResponse::class);
+});
 
 Route::get('/privacy_policy',[Information::class,'privacyView'])->middleware(CacheResponse::class)->name("privacy_policy");
 
