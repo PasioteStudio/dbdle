@@ -8,7 +8,17 @@
     <meta name="keywords" content="dead, daylight, daily, guessing,Dead by Daylight, dbd, daily, dbdle, guessing, dbdle net,{{$page}}">
     <meta name="author" content="{{ config("app.author") }}">
     <meta name="google-site-verification" content="D4rC7c65x6yDWW7tAXoNoxIZqS-45__WNo838cMQGMk" />
-    
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:url" content="https://dbdle.pasiotestudio.hu/{{$page}}">
+    <meta property="og:site_name" content="DBDle">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://dbdle.pasiotestudio.hu/og_image.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $title }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $title }}">
+    <meta name="twitter:description" content="{{ $description }}">
+    <meta name="twitter:image" content="https://dbdle.pasiotestudio.hu/og_image.png">
     <title>{{ $title }}</title>
     <link rel="shortcut icon" href="/small_logo.ico" type="image/x-icon">
     <link rel="author" href="/humans.txt" />
