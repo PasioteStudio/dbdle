@@ -2,12 +2,12 @@ const express = require('express');
 const myCache = require("../cache")
 const [getPerks,getCharacters,getCharacter] = require("../util/scrapping")
 const {Jimp} = require("jimp");
-
+const [nameVariations,invalidNames,splash] = require("../util/constants")
 const router = express.Router();
 module.exports = router
-const number_of_tries = 12
-const step = 35
-const minSize = 512 - (step * number_of_tries)
+const number_of_tries = splash.number_of_tries
+const step = splash.step
+const max_width = splash.width
 
 router.get("/",async(req, res)=>{
     const characters = await getCharacters();
@@ -21,17 +21,20 @@ router.get("/image_src/:size",async(req, res)=>{
     let size = Number.parseInt(req.params.size)
     if(size > number_of_tries){
         size = number_of_tries
+    }else if(size < 0){
+        size = 0
     }
-    const icon = (await getCharacter(myCache.get("daily").splash.character)).icon
-    const image = await Jimp.read(icon);
-    const toSize = 512 - (step * (number_of_tries - size))
+    const image = await Jimp.read("splash/splash.png");
+    const toSize = max_width - (step * (number_of_tries - size))
     let x = myCache.get("daily").splash.x
-    if(x + toSize > 512){
-        x = 512 - toSize
+    x = x - (step * size) / 2
+    if(x + toSize > max_width){
+        x = max_width - toSize
     }
     let y = myCache.get("daily").splash.y
-    if(y + toSize > 512){
-        y = 512 - toSize
+    y = y - (step * size) / 2
+    if(y + toSize > max_width){
+        y = max_width - toSize
     }
     const newImage = image.crop({x:x,y:y,w:toSize,h:toSize})
 

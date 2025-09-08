@@ -21,7 +21,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     const [visibleOptions,setVisibleOptions] = useState<string[]>([])
     const [usedOptions,setUsedOptions] = useState<{
         name:string;
-        gender:{value:string;bool:boolean};
+        gender:{value:string;bool:string};
         origin:{value:string;bool:boolean};
         power_attack_type:{value:string;bool:boolean};
         release_date:{value:string;bool:string};
@@ -70,7 +70,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         setOptions(options.filter(option => option != selected))
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202,
-                gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : true},
+                gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : "true"},
                 origin:{value:res.data.selected.origin,bool:res.data.difference ? res.data.difference.origin : true},
                 power_attack_type:{value:res.data.selected.power_attack_type,bool:res.data.difference ? res.data.difference.power_attack_type : true},
                 release_date:{value:res.data.selected.release_date,bool:res.data.difference ? res.data.difference.release_date : "true"},
@@ -112,7 +112,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
             {usedOptions.toReversed().map(option => (
                 <div className={`h-10 grid col-span-7 grid-min-100 w-full gap-4 items-center`} key={option.name} >
                     <div className={`h-full rounded content-center ${option.found ? 'bg-green-500' : 'bg-red-500'}`}>{option.name}</div>
-                    <div className={`h-full rounded content-center ${option.gender.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.gender.value}</div>
+                    <div className={`h-full rounded content-center ${option.gender.bool != "true" ? (option.gender.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.gender.value}</div>
                     <div className={`h-full rounded content-center ${option.height.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.height.value}</div>
                     <div className={`h-full rounded content-center ${option.movement_speed.bool != "true" ? (option.movement_speed.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.movement_speed.value}</div>
                     <div className={`h-full rounded content-center ${option.origin.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.origin.value}</div>

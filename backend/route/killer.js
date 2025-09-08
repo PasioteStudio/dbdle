@@ -34,7 +34,7 @@ router.get("/:name",async(req, res)=>{
             power_attack_type:killer.power_attack_type,
             release_date:killer.release_date 
         },difference:{
-            gender:dailyKiller.gender == killer.gender,
+            gender:dailyKiller.gender == killer.gender ? "true" : (dailyKiller.gender.includes(killer.gender) ? "inc" : "false"),
             origin:dailyKiller.origin == killer.origin,
             height:dailyKiller.height == killer.height,
             movement_speed:dailyKiller.movement_speed == killer.movement_speed ? "true" : (dailyKiller.movement_speed.includes(killer.movement_speed) ? "inc" : "false"),

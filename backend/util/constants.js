@@ -1,3 +1,9 @@
+const splash = {
+  step:10,
+  number_of_tries:51,
+  width:512
+}
+
 const nameVariations = [
   {from:"The Nemesis T-Type",to:"The Nemesis"},
   {from:"The Frank, Julie, Susie, Joey",to:"The Legion"},
@@ -69,4 +75,4 @@ const invalidNames = [
     "Vigo",
     "Ash"
 ]
-module.exports = [nameVariations,invalidNames]
+module.exports = [nameVariations,invalidNames,splash]

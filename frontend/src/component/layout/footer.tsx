@@ -9,7 +9,7 @@ const Footer: React.FC<Footer> = ({}) => {
     return (
     <footer className='text-center flex flex-col gap-4'>
         <p>DBDLE -- {new Date().getFullYear()}</p>
-        <Link href={""}>Privacy Policy</Link>
+        <Link href={"/privacy_policy"}>Privacy Policy</Link>
     </footer>
     );
 };

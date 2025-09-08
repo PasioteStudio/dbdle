@@ -29,17 +29,17 @@ export default function Home() {
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full h-40 overflow-visible -z-10 " />
         <h1 className="text-4xl grid-column-1 content-center">Guess today's Dead by Daylight killer!</h1>
       </div>
-      <div className="text-center mt-5 bg-gray-500 rounded-xl">
-          <p>Type any killer to begin.</p>
+      <div className="text-center mt-5 pt-3 bg-gray-500 rounded-xl">
+          <p className="mb-3">Type any killer to begin.</p>
           <div className="mx-auto">
             <KillerSearchInput onFound={handleFound} onMissed={handleMissed} from="/killer" >
             </KillerSearchInput>
           </div>
       </div>
       {isFound ? 
-      <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/quote")}}>
+      <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/splash")}}>
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full h-20 overflow-visible -z-10" />
-        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Quote</h1>
+        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Splash</h1>
       </div> : null}
     </div>
   );

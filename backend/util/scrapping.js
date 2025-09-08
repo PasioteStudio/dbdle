@@ -146,12 +146,19 @@ async function getCharacter(character){
             }else{
                 icon = killerTable.split("<img")[1].split('src="')[1].split('"')[0]
             }
-            gender = killerTable.split('<td class="titleColumn">Gender</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0]
-            origin = killerTable.split('<td class="titleColumn">Origin</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].split(" of")[0]
+            gender = killerTable.split('<td class="titleColumn">Gender</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].trim()
+            if(character == "The Legion" || character == "The Twins"){
+                gender = "Woman, Man"
+            }
+            origin = killerTable.split('<td class="titleColumn">Origin</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].split(" of")[0].trim()
             if(character.includes("The")){
                 height = killerTable.split('<td class="titleColumn">Height')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0]
                 movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('</b> ')[1].split('\n</td>')[0].split(" (")[0]
-                power_attack_type = killerTable.split('<td class="titleColumn">Power <a href="/wiki/Attack"')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0].split("\n<p>")[0]
+                if(killerTable.includes('<td class="titleColumn">Power <a href="/wiki/Attack"')){
+                    power_attack_type = killerTable.split('<td class="titleColumn">Power <a href="/wiki/Attack"')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0].split("\n<p>")[0]
+                }else{
+                    power_attack_type = "Basic Attack"
+                }
             }
             // You can use a library like cheerio to parse HTML if needed
             const temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[1].split("<p>")[2].split("</p>")[0].split(".")

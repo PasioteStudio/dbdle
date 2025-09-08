@@ -1,5 +1,6 @@
 
 const [getPerks,getCharacters,getCharacter] = require("./scrapping")
+const [nameVariations,invalidNames,splashC] = require("./constants")
 const myCache = require("../cache")
 const {Jimp} = require("jimp");
 
@@ -22,28 +23,30 @@ async function doDaily(){
   }
   //Killer
   const killers = characters.filter(character=>character.includes("The"))
-  const killer = killers.random()
+  const killer = /*killers.random()*/ "The Twins"
   //Splash
   const character = characters.random()
   let x = 0
   let y = 0
   const icon = (await getCharacter(character)).icon
   const image = await Jimp.read(icon);
+  image.write("splash/splash.png")
   let notOkay = true
+  const min_pixel = splashC.width - (splashC.number_of_tries * splashC.step)
   while(notOkay){
-    x=Math.floor(Math.random()*(512-92))
-    y=Math.floor(Math.random()*(512-92))
+    x=Math.floor(Math.random()*(splashC.width-min_pixel))
+    y=Math.floor(Math.random()*(splashC.width-min_pixel))
     const newImage = await Jimp.read(await image.getBuffer("image/png"))
-    newImage.crop({x:x,y:y,w:92,h:92})
+    newImage.crop({x:x,y:y,w:min_pixel,h:min_pixel})
     let nullPixel = 0
-    for(let i = 0; i<92;i++){
-      for(let j = 0; j<92;j++){
+    for(let i = 0; i<min_pixel;i++){
+      for(let j = 0; j<min_pixel;j++){
         if(newImage.getPixelColor(i,j) == 4294967040){
           nullPixel++
         }
       }
     }
-    if(nullPixel < (92*92) / 4){
+    if(nullPixel < (min_pixel*min_pixel) / 4){
       notOkay = false
     }
   }

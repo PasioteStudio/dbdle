@@ -75,7 +75,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     }
     return (
     <div className='relative'>
-        <h1 className={`w-[40%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
+        <h1 className={`w-[70%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
         <input type="text" ref={input} onInput={handleInput} className='w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
