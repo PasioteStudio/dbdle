@@ -3,6 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 
+declare global {
+  interface Window {
+    fullres?: { events: any[] };
+  }
+}
+
 interface SearchInput {
     from:string,
     onFound:Function,
@@ -72,6 +78,8 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
         setVisibleOptions([])
         input.current!.value = ""
         setOptions(options.filter(option => option != selected))
+        window.fullres ||= {events: []};
+        window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202})
             localStorage.setItem(from,JSON.stringify({date:new Date(),streak:0,hint:"",used:usedOptions,options:options}))

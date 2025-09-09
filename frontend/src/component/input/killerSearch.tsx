@@ -83,6 +83,8 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         setVisibleOptions([])
         input.current!.value = ""
         setOptions(options.filter(option => option != selected))
+        window.fullres ||= {events: []};
+        window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202,
                 gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : "true"},
