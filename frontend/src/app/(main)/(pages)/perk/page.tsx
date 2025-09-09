@@ -43,7 +43,7 @@ export default function Home() {
         <div className="grid-column-1 mt-25">
           <p>Which perk has this icon?</p>
           <div className="p-5 w-[50%] mx-auto aspect-square justify-items-center items-center grid bg-no-repeat bg-contain bg-center" style={{backgroundImage:`url('${perkBg}')`}}>
-            <Image src={process.env.NEXT_PUBLIC_HOST + "/perk/image"} className="w-full" alt="unknown perk" width={500} height={500} />
+            <Image src={process.env.NEXT_PUBLIC_HOST + "/perk/image"} unoptimized className="w-full" alt="unknown perk" width={500} height={500} />
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full'>

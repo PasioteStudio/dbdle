@@ -18,7 +18,7 @@ router.get("/image_src/:size",async(req, res)=>{
     if(Number.isNaN(req.params.size)){
         return
     }
-    let size = Number.parseInt(req.params.size)
+    let size = Number.parseInt(req.params.size);
     if(size > number_of_tries){
         size = number_of_tries
     }else if(size < 0){
@@ -30,11 +30,15 @@ router.get("/image_src/:size",async(req, res)=>{
     x = x - (step * size) / 2
     if(x + toSize > max_width){
         x = max_width - toSize
+    }else if(x < 0){
+        x = 0
     }
     let y = myCache.get("daily").splash.y
     y = y - (step * size) / 2
     if(y + toSize > max_width){
         y = max_width - toSize
+    }else if(y < 0){
+        y = 0
     }
     const newImage = image.crop({x:x,y:y,w:toSize,h:toSize})
 

@@ -21,23 +21,35 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     const [visibleOptions,setVisibleOptions] = useState<string[]>([])
     const [usedOptions,setUsedOptions] = useState<{name:string;found:boolean}[]>([])
     useEffect(()=>{
-        if(localStorage.getItem(from) && sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
-            setUsedOptions(JSON.parse(localStorage.getItem(from)!).used)
-            setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:any) => !JSON.parse(localStorage.getItem(from)!).used.map((used:any)=>used.name).includes(option)))
-            for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
-                if(JSON.parse(localStorage.getItem(from)!).used[i].found){
-                    setFound(JSON.parse(localStorage.getItem(from)!).used[i].name)
-                    onFound()
-                    input.current?.classList.add("hidden")
-                }else{
-                    onMissed()
-                }
-            }
+        if(!localStorage.getItem(from) || !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
+            axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
+                setOptions(res.data)
+            })
             return
         }
-        axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
-            setOptions(res.data)
-        })
+        setUsedOptions(JSON.parse(localStorage.getItem(from)!).used)
+        setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:any) => !JSON.parse(localStorage.getItem(from)!).used.map((used:any)=>used.name).includes(option)))
+        for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
+            if(JSON.parse(localStorage.getItem(from)!).used[i].found){
+                axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name).then(res=>{
+                    if(res.status != 202){
+                        localStorage.removeItem(from)
+                        setUsedOptions([])
+                        axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
+                            setOptions(res.data)
+                        })
+                    }else{
+                        setFound(JSON.parse(localStorage.getItem(from)!).used[i].name)
+                        onFound()
+                        input.current?.classList.add("hidden")
+                    }
+                })
+                
+            }else{
+                onMissed()
+            }
+        }
+        
     },[])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
         if(e.currentTarget.value == ""){

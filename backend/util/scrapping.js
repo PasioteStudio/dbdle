@@ -161,7 +161,12 @@ async function getCharacter(character){
                 }
             }
             // You can use a library like cheerio to parse HTML if needed
-            const temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[1].split("<p>")[2].split("</p>")[0].split(".")
+            let temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[1]
+            if(temp.includes("<p>")){
+                temp = temp.split("<p>")[2].split("</p>")[0].split(".")
+            }else{
+                temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[2].split("<p>")[2].split("</p>")[0].split(".")
+            }
             if(temp[temp.length - 2].includes("retired")){
                 release_date = temp[temp.length - 2].split(" and retired")[0].slice(-4)
             }else{

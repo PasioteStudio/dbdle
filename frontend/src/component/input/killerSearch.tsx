@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface KillerSearchInput {
     from:string,
@@ -15,6 +16,7 @@ function sameDay(d1:Date, d2:Date) {
     d1.getDate() === d2.getDate();
 }
 const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,children}) => {
+    const router = useRouter();
     const input = useRef<HTMLInputElement>(null)
     const [found,setFound] = useState<string>()
     const [options,setOptions] = useState<string[]>([])
@@ -29,23 +31,36 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         movement_speed:{value:string;bool:string};
         found:boolean}[]>([])
     useEffect(()=>{
+        if(!localStorage.getItem(from) || !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
+            axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
+                setOptions(res.data)
+            })
+            return
+        }
         if(localStorage.getItem(from) && sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
             setUsedOptions(JSON.parse(localStorage.getItem(from)!).used)
             setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:any) => !JSON.parse(localStorage.getItem(from)!).used.map((used:any)=>used.name).includes(option)))
             for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
                 if(JSON.parse(localStorage.getItem(from)!).used[i].found){
-                    setFound(JSON.parse(localStorage.getItem(from)!).used[i].name)
-                    onFound()
-                    input.current?.classList.add("hidden")
+                    axios.get(process.env.NEXT_PUBLIC_HOST + from +"/" + JSON.parse(localStorage.getItem(from)!).used[i].name).then(res=>{
+                        if(res.status != 202){
+                            localStorage.removeItem(from)
+                            setUsedOptions([])
+                            axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
+                                setOptions(res.data)
+                            })
+                        }else{
+                            setFound(JSON.parse(localStorage.getItem(from)!).used[i].name)
+                            onFound()
+                            input.current?.classList.add("hidden")
+                        }
+                    })
                 }else{
                     onMissed()
                 }
             }
             return
         }
-        axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
-            setOptions(res.data)
-        })
     },[])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
         if(e.currentTarget.value == ""){

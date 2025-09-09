@@ -48,8 +48,8 @@ export default function Home() {
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 " />
         <div className="grid-column-1 mt-25">
           <p>Which character says</p>
-          <div className="p-5 w-[80%] h-[40%] mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <h1 className="text-3xl mt-10 ">{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
+          <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
+            <h1 className={`${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""} mt-10`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full'>

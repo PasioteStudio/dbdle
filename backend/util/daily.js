@@ -23,7 +23,7 @@ async function doDaily(){
   }
   //Killer
   const killers = characters.filter(character=>character.includes("The"))
-  const killer = /*killers.random()*/ "The Twins"
+  const killer = killers.random()
   //Splash
   const character = characters.random()
   let x = 0
