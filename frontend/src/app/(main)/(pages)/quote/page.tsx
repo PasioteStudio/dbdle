@@ -52,7 +52,7 @@ export default function Home() {
             <h1 className={`${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""} mt-10`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
           </div>
           {missCount < 6 || isFound ? 
-          <div className='grid h-28 w-full'>
+          <div className='grid h-28 w-full mt-10'>
             <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-64" />
             <div className={`grid-column-1 h-20 w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
               <Image src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto" alt="hint icon" width={160} height={160} />

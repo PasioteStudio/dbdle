@@ -36,7 +36,7 @@ export default function Home() {
         <h1 className="text-4xl grid-column-1 content-center">Guess the random character by a splash art!</h1>
       </div>
       <div className="grid text-center -mt-20">
-        <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 " />
+        <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 s:mt-15 sm:mt-10 md:mt-0" />
         <div className="grid-column-1 mt-25">
           <p>Which character has the whole splash art?</p>
             <div className="p-5 w-[50%] mx-auto">

@@ -25,6 +25,14 @@ router.get("/:name",async(req, res)=>{
         }})
     }
     else{
+        let isMS = dailyKiller.movement_speed == killer.movement_speed ? "true" : "false"
+        if(isMS == "false"){
+            for(let i = 0; i<killer.movement_speed.replace(" (alt)","").split(" ").length;i++){
+                if(dailyKiller.movement_speed.includes(killer.movement_speed.replace(" (alt)","").split(" ")[i])){
+                    isMS = "inc"
+                }
+            }
+        }
         res.status(200).json({
             selected:{
             gender:killer.gender,
@@ -37,7 +45,7 @@ router.get("/:name",async(req, res)=>{
             gender:dailyKiller.gender == killer.gender ? "true" : (dailyKiller.gender.includes(killer.gender) ? "inc" : "false"),
             origin:dailyKiller.origin == killer.origin,
             height:dailyKiller.height == killer.height,
-            movement_speed:dailyKiller.movement_speed == killer.movement_speed ? "true" : (dailyKiller.movement_speed.includes(killer.movement_speed) ? "inc" : "false"),
+            movement_speed:isMS,
             power_attack_type:dailyKiller.power_attack_type == killer.power_attack_type,
             release_date:dailyKiller.release_date == killer.release_date ? "true" : (dailyKiller.release_date > killer.release_date ? "UP" : "DOWN")
         }

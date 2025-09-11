@@ -38,14 +38,14 @@ const HowTo: React.FC<howTo> = ({}) => {
         );
     }
     return (
-    <li onClick={()=>{setHowTo(!howTo)}} className="border-yellow-400 cursor-pointer absolute py-1 right-0 -mr-30 border-2 rounded-lg flex items-center">
+    <li onClick={()=>{setHowTo(!howTo)}} className="border-yellow-400 cursor-pointer absolute py-1 right-0 s:-mr-12 sm:-mr-30 border-2 rounded-lg flex items-center">
         <p className="text-3xl">📄</p>
         {howTo ? 
         [<div key={1} className='fixed left-0 z-20 top-0 w-full flex h-full items-center justify-center'>
             <div className='bg-gray-700 flex flex-col gap-2 text-white w-[50%] border border-black rounded p-4'>
                 <h1 className='text-4xl'>How to play?</h1>
                 <div className='w-full h-2 bg-white'></div>
-                <p>Guess the random perk by icon from Behavior's game "Dead by Daylight". It changes every 24h.</p>
+                <p>Guess in four modes by aspects from Behavior's game "Dead by Daylight". It changes every 24h.</p>
                 <p className='text-center'>Next perk in</p>
                 <h1 className='text-6xl text-center' key={time}>{calc()}</h1>
                 <p className='text-center text-gray-400'><i>Time zone: Europe (Midnight at UTC+{process.env.NEXT_PUBLIC_TIMEZONE})</i></p>
@@ -67,14 +67,51 @@ const HowTo: React.FC<howTo> = ({}) => {
                     )
                 }
                 {
-                    page === "killer" && <div>
-
+                    page === "killer" && <div className='flex flex-col gap-2'>
+                        <p>In killer mode, try to guess which character is it in the least number of tries and it will reveal its properties...</p>
+                        <p>The color of the tiles will change to show how close your guess was to the champion to find.</p>
+                        <p><span className='text-green-700'>Green</span> indicates the property is an exact match.</p>
+                        <p><span className='text-orange-500'>Orange</span> indicates partial match.</p> 
+                        <p><span className='text-red-700'>Red</span> indicates there is no overlap between your guess and the property.</p>
+                        <p>⬇️ ⬆️ With arrows, it also indicates if the answer property is above or below your guess.</p>
+                        <h2 className='text-3xl'>Properties</h2>
+                        <p>Here is the details of each of the properties columns:</p>
+                        <div className='grid grid-cols-2 gap-2'>
+                            <div>
+                                <h3 className='text-2xl'>Gender:</h3>
+                                <p>Possible values: Woman, Man, None, Not applicable</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Origin:</h3>
+                                <p>Possible values: any nationality (like Brazilian, American)</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Gender:</h3>
+                                <p>Possible values: Woman, Man, None, Not applicable</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Height:</h3>
+                                <p>Possible values: Tall, Avarage, Short</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Movement Speed:</h3>
+                                <p>Possible values: 4.6m/s, 4 m/s, 3.85m/s, 4.4m/s</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Power attack type:</h3>
+                                <p>Possible values: Special Attack, None or Basic Attack</p>
+                            </div>
+                            <div>
+                                <h3 className='text-2xl'>Release date:</h3>
+                                <p>Possible values: Any year between 2016 and today</p>
+                            </div>
+                        </div>
                     </div>
                 }
                 <p>GL. HF</p>
             </div>
         </div>,
-        <div key={2} className='fixed left-0 z-10 top-0 w-full h-full blur-2xl bg-[#00000033]'></div>
+        <div key={2} className='fixed left-0 z-10 top-0 w-full h-full blur-2xl bg-[#00000099]'></div>
         ] : null}
     </li>
     );

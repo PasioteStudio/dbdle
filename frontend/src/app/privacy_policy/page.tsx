@@ -28,7 +28,7 @@ export default function Home() {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="selection:bg-red-700 p-4 bg-white text-black font-sans items-center justify-items-center min-h-screen pb-20 gap-16">
-          <div className="w-[50%] flex flex-col gap-4">
+          <div className="s:w-[75%] sm:w-[60%] md:w-[50%] flex flex-col gap-4">
             <h1 className="text-4xl">DBDle -- Privacy Policy</h1>
             <h2 className="text-3xl">Content Used From</h2>
             <p>

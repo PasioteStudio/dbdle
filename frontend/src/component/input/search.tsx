@@ -96,17 +96,18 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     return (
     <div className='relative'>
         <h1 className={`w-[70%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
-        <input type="text" ref={input} onInput={handleInput} className='w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
+        <input type="text" ref={input} onInput={handleInput} className='s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
-        <ul className='rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
+        <ul className='rounded-lg bg-gray-600 s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
             {visibleOptions.map((option,id) => [
-                <li className='min-h-12 max-h-12 content-center hover:bg-blue-500 cursor-pointer' key={`${id}a`} onClick={()=>{handleClick(option)}}>
+                <li className={`min-h-12 max-h-12 flex ${from != "/perk" ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
+                    {from != "/perk" && <Image src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />}
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,
                 id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null
             ])}
         </ul>
-        <ul className='bg-black w-[40%] mx-auto flex flex-col gap-2 mt-4 overflow-x-hidden'>
+        <ul className='bg-black s:w-[60%] sm:w-[50%] md:w-[40%] mx-auto flex flex-col gap-2 mt-4 overflow-x-hidden'>
             {usedOptions.toReversed().map(option => (
                 <li className={`h-12 hover:bg-blue-500 cursor-pointer rounded-lg ${option.found ? "bg-green-700" : "bg-red-700"}`} key={option.name} >
                     <h2 className='h-full content-center'>{option.name}</h2>

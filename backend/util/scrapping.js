@@ -133,6 +133,7 @@ async function getCharacter(character){
     let origin = null
     let height = null
     let movement_speed = null
+    let alt_movement_speed = null
     let power_attack_type = null
     let release_date = null
     let icon = null
@@ -153,7 +154,11 @@ async function getCharacter(character){
             origin = killerTable.split('<td class="titleColumn">Origin</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].split(" of")[0].trim()
             if(character.includes("The")){
                 height = killerTable.split('<td class="titleColumn">Height')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0]
-                movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('</b> ')[1].split('\n</td>')[0].split(" (")[0]
+                movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('</b> ')[1].split('\n</td>')[0].split(" (")[0].replace(" ","")
+                
+                if(killerTable.includes('Alternate Movement speed')){
+                    alt_movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('<td class="titleColumn">Alternate Movement speed</td>')[1].split(" m/s")[0].split("</b>")[1].replaceAll(" ","") + "m/s (power)"
+                }
                 if(killerTable.includes('<td class="titleColumn">Power <a href="/wiki/Attack"')){
                     power_attack_type = killerTable.split('<td class="titleColumn">Power <a href="/wiki/Attack"')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0].split("\n<p>")[0]
                 }else{
@@ -181,7 +186,7 @@ async function getCharacter(character){
         gender,
         origin,
         height,
-        movement_speed,
+        movement_speed: alt_movement_speed != null ? movement_speed + " "+ alt_movement_speed : movement_speed,
         power_attack_type,
         release_date:Number.parseInt(release_date),
         icon

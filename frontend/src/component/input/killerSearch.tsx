@@ -112,7 +112,8 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         {children}
         <ul className='rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
             {visibleOptions.map((option,id) => [
-                <li className='min-h-12 max-h-12 content-center hover:bg-blue-500 cursor-pointer' key={`${id}a`} onClick={()=>{handleClick(option)}}>
+                <li className='min-h-12 max-h-12 overflow-hidden items-center content-center flex hover:bg-blue-500 cursor-pointer' key={`${id}a`} onClick={()=>{handleClick(option)}}>
+                    <Image src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,
                 id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null
@@ -127,7 +128,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
             <h1>Power Attack Type<hr className='mt-4' /></h1>
             <h1>Release Date<hr className='mt-4' /></h1>
             {usedOptions.toReversed().map(option => (
-                <div className={`h-10 grid col-span-7 grid-min-100 w-full gap-4 items-center`} key={option.name} >
+                <div className={` grid col-span-7 grid-min-100 w-full gap-4 items-center`} key={option.name} >
                     <div className={`h-full rounded content-center ${option.found ? 'bg-green-500' : 'bg-red-500'}`}>{option.name}</div>
                     <div className={`h-full rounded content-center ${option.gender.bool != "true" ? (option.gender.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.gender.value}</div>
                     <div className={`h-full rounded content-center ${option.height.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.height.value}</div>
