@@ -21,12 +21,12 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-/*app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
   if (err) {
     return res.sendStatus(500);
-  } //TODO: add this in production
+  }
   next();
-});*/
+});
 app.use(cors({
   origin: ["http://localhost:3000"],
   credentials: true,

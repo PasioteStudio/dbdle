@@ -47,8 +47,8 @@ export default function Home() {
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full'>
-            <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-64" />
-            <div className={`grid-column-1 h-20 w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
+            <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-20 md:-mt-64" />
+            <div className={`grid-column-1 h-20 md:w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
               <Image src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto" alt="hint icon" width={160} height={160} />
               <p>Perk Description Clue {missCount > 0 && !isFound ? `after ${missCount} tries` : ""}</p>
             </div>

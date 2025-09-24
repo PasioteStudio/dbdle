@@ -26,7 +26,16 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     const [options,setOptions] = useState<string[]>([])
     const [visibleOptions,setVisibleOptions] = useState<string[]>([])
     const [usedOptions,setUsedOptions] = useState<{name:string;found:boolean}[]>([])
+    const [missedOptions,setMissedOptions] = useState<string[]>([])
     useEffect(()=>{
+        setTimeout(()=>{
+            localStorage.removeItem("splashFirst")
+        },50)
+        if(localStorage.getItem("splashFirst") && from == "/splash")return
+        localStorage.setItem("splashFirst","a")
+        setTimeout(()=>{
+            localStorage.removeItem("splashFirst")
+        },50)
         if(!localStorage.getItem(from) || !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
             axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
                 setOptions(res.data)
@@ -35,6 +44,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
         }
         setUsedOptions(JSON.parse(localStorage.getItem(from)!).used)
         setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:any) => !JSON.parse(localStorage.getItem(from)!).used.map((used:any)=>used.name).includes(option)))
+        console.log("-------------------------")
         for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
             if(JSON.parse(localStorage.getItem(from)!).used[i].found){
                 axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name).then(res=>{
@@ -55,7 +65,6 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
                 onMissed()
             }
         }
-        
     },[])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
         if(e.currentTarget.value == ""){

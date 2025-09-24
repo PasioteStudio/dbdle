@@ -45,7 +45,7 @@ export default function Home() {
         <h1 className="text-4xl grid-column-1 content-center">Guess the random quote!</h1>
       </div>
       <div className="grid text-center -mt-20">
-        <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 " />
+        <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible max-md:mt-20 -z-10 " />
         <div className="grid-column-1 mt-25">
           <p>Which character says</p>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
@@ -53,8 +53,8 @@ export default function Home() {
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10'>
-            <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-64" />
-            <div className={`grid-column-1 h-20 w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
+            <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-20 md:-mt-64" />
+            <div className={`grid-column-1 h-20 md:w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
               <Image src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto" alt="hint icon" width={160} height={160} />
               <p>Perk Clue {missCount > 0 && !isFound ? `after ${missCount} tries` : ""}</p>
             </div>

@@ -87,7 +87,7 @@ export default function Home() {
                   <td>182 days</td>
                 </tr>
                 <tr>
-                  <td>guesses (/perk /quote /killer and /splash)</td>
+                  <td>guesses (/perk /quote /killer /splash and splashFirst)</td>
                   <td>Used to store the user's guesses across the modes.</td>
                   <td>182 days</td>
                 </tr>
