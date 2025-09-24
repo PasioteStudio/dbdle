@@ -5,14 +5,14 @@ import Image from 'next/image';
 
 declare global {
   interface Window {
-    fullres?: { events: any[] };
+    fullres?: { events: {key:string,mode:string}[] };
   }
 }
 
 interface SearchInput {
     from:string,
-    onFound:Function,
-    onMissed:Function,
+    onFound:()=>void,
+    onMissed:()=>void,
     children?:React.ReactNode,
 }
 function sameDay(d1:Date, d2:Date) {
@@ -26,7 +26,6 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     const [options,setOptions] = useState<string[]>([])
     const [visibleOptions,setVisibleOptions] = useState<string[]>([])
     const [usedOptions,setUsedOptions] = useState<{name:string;found:boolean}[]>([])
-    const [missedOptions,setMissedOptions] = useState<string[]>([])
     useEffect(()=>{
         setTimeout(()=>{
             localStorage.removeItem("splashFirst")
@@ -43,8 +42,8 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
             return
         }
         setUsedOptions(JSON.parse(localStorage.getItem(from)!).used)
-        setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:any) => !JSON.parse(localStorage.getItem(from)!).used.map((used:any)=>used.name).includes(option)))
-        console.log("-------------------------")
+        setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:string) => !JSON.parse(localStorage.getItem(from)!).used.map((used:{name:string})=>used.name).includes(option)))
+
         for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
             if(JSON.parse(localStorage.getItem(from)!).used[i].found){
                 axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name).then(res=>{
@@ -65,14 +64,14 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
                 onMissed()
             }
         }
-    },[])
+    },[from,onFound,onMissed])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
         if(e.currentTarget.value == ""){
             setVisibleOptions([])
             return
         }
-        let newVisibleOptionsFirst = []
-        let newVisibleOptions = []
+        const newVisibleOptionsFirst = []
+        const newVisibleOptions = []
         for(let i = 0; i < options.length;i++){
             if(options[i].toLowerCase().includes(e.currentTarget.value) && options[i].toLowerCase().startsWith(e.currentTarget.value)){
                 newVisibleOptionsFirst.push(options[i])

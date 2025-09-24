@@ -1,9 +1,7 @@
 "use client"
 import Image from "next/image";
-import { perkBg } from "@/util/constants";
 import SearchInput from "@/component/input/search";
 import { useRef, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Home() {

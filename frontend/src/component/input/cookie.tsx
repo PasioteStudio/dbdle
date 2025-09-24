@@ -1,12 +1,9 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 import * as CookieConsentT from "vanilla-cookieconsent";
-interface CookieConsent {
 
-}
-
-const CookieConsent: React.FC<CookieConsent> = ({}) => {
+const CookieConsent = () => {
     useEffect(() => {
         CookieConsentT.run({
             categories: {
@@ -34,7 +31,7 @@ const CookieConsent: React.FC<CookieConsent> = ({}) => {
                 fullres: {
                     label: 'Fullres Analytics',
                     onAccept: () => {
-                        var fullres = document.createElement('script');
+                        const fullres = document.createElement('script');
                         fullres.async = true;
                         fullres.src = 'https://t.fullres.net/dbdlepasiotestudio.js?' + (Date.now() - (Date.now() % 43200000));
                         document.head.appendChild(fullres);

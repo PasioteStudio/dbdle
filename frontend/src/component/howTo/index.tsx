@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation'
 
-interface howTo {
-
-}
-
-const HowTo: React.FC<howTo> = ({}) => {
+const HowTo = () => {
     const [howTo,setHowTo] = useState(false)
     const [time,setTime] = useState<number>(0)
     const [page,setPage] = useState<string>("")
@@ -45,7 +41,7 @@ const HowTo: React.FC<howTo> = ({}) => {
             <div className='bg-gray-700 flex flex-col gap-2 text-white w-[50%] border border-black rounded p-4'>
                 <h1 className='text-4xl'>How to play?</h1>
                 <div className='w-full h-2 bg-white'></div>
-                <p>Guess in four modes by aspects from Behavior's game "Dead by Daylight". It changes every 24h.</p>
+                <p>Guess in four modes by aspects from Behavior&apos;s game &quot;Dead by Daylight&quot;. It changes every 24h.</p>
                 <p className='text-center'>Next perk in</p>
                 <h1 className='text-6xl text-center' key={time}>{calc()}</h1>
                 <p className='text-center text-gray-400'><i>Time zone: Europe (Midnight at UTC+{process.env.NEXT_PUBLIC_TIMEZONE})</i></p>

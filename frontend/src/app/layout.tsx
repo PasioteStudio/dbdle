@@ -1,6 +1,10 @@
 import { Metadata } from "next"
 
 export const metadata:Metadata = {
+  icons: {
+    icon: '/imgs/logos/favicon.ico',
+    shortcut: '/imgs/logos/favicon.png',
+  },
   title: {
     template: '%s | DBDle',
     default: 'Welcome',

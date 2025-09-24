@@ -1,9 +1,6 @@
 "use client"
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
-import Image from "next/image";
-import Footer from "@/component/layout/footer";
 import * as CookieConsentT from "vanilla-cookieconsent";
 import Link from "next/link";
 
@@ -83,12 +80,12 @@ export default function Home() {
               <tbody>
                 <tr>
                   <td>cc_cookie</td>
-                  <td>Used to store the user's cookie consent preferences.</td>
+                  <td>Used to store the user&apos;s cookie consent preferences.</td>
                   <td>182 days</td>
                 </tr>
                 <tr>
                   <td>guesses (/perk /quote /killer /splash and splashFirst)</td>
-                  <td>Used to store the user's guesses across the modes.</td>
+                  <td>Used to store the user&apos;s guesses across the modes.</td>
                   <td>182 days</td>
                 </tr>
               </tbody>

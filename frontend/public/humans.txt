@@ -1,0 +1,14 @@
+/* TEAM */
+Your title: Pasiote Studio
+Site: support@dbdle.pasiotestudio.hu
+Twitter:
+Location:
+
+/* THANKS */
+Name: Attila Pápa
+
+/* SITE */
+Last update: 2025/09/24
+Standards: HTML5, CSS3, JS
+Components:
+Software: Visual Studio Code
