@@ -91,12 +91,6 @@ export default function Home() {
                   <td>Used to store the user's guesses across the modes.</td>
                   <td>182 days</td>
                 </tr>
-                <tr>
-                  <td>XSRF-TOKEN	Used to secure both the user and our website against cross-site request forgery attacks.	2 hours
-</td>
-                  <td>Used to store the user's cookie consent preferences.</td>
-                  <td>1 year 1 month 1 day</td>
-                </tr>
               </tbody>
             </table>
             <h2 className="text-3xl font-bold">Analytics cookies</h2>

@@ -3,29 +3,54 @@ const [getPerks,getCharacters,getCharacter] = require("./scrapping")
 const [nameVariations,invalidNames,splashC] = require("./constants")
 const myCache = require("../cache")
 const {Jimp} = require("jimp");
+const { PrismaClient } = require('../prisma/generated/prisma')
 
+const prisma = new PrismaClient()
 module.exports = [doDaily]
 
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
+const types = ["KILLER","SPLASH","QUOTE","PERK"]
 async function doDaily(){
-  //flush mem
-  //myCache.flushAll()
+  //flush mem and db if needed
+  myCache.flushAll()
   const characters = await getCharacters()
-  //Perk
+  const killers = characters.filter(character=>character.includes("The"))
   const perks = await getPerks()
-  const dailyPerk = perks.random().name
+
+  for(let i =0; i<types.length;i++){
+    const count = await prisma.daily.count({where:{type:{equals:types[i]}}})
+    if(types[i] == "PERK" && count == perks.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"PERK"}}})
+    }else if(types[i] == "KILLER" && count == killers.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"KILLER"}}})
+    }else if(types[i] == "QUOTE" && count == perks.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"QUOTE"}}})
+    }else if(types[i] == "SPLASH" && count == characters.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"SPLASH"}}})
+    }
+  }
+  //Perk
+  let dailyPerk = perks.random().name
+  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"PERK"}},{value:{equals:dailyPerk}}]}})) != null){
+    dailyPerk = perks.random().name
+  }
   //Quote
   let dailyQuote = perks.random()
-  while(dailyQuote.quote == null){
+  while(dailyQuote.quote == null || (await prisma.daily.findFirst({where:{AND:[{type:{equals:"QUOTE"}},{value:{equals:dailyQuote.name}}]}})) != null){
       dailyQuote = perks.random()
   }
   //Killer
-  const killers = characters.filter(character=>character.includes("The"))
-  const killer = killers.random()
+  let killer = killers.random()
+  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"KILLER"}},{value:{equals:killer}}]}})) != null){
+    killer = killers.random()
+  }
   //Splash
-  const character = characters.random()
+  let character = characters.random()
+  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"SPLASH"}},{value:{equals:character}}]}})) != null){
+    character = characters.random()
+  }
   let x = 0
   let y = 0
   const icon = (await getCharacter(character)).icon
@@ -56,5 +81,11 @@ async function doDaily(){
     x,
     y
   }
+  await prisma.daily.createMany({data:[
+    {type:"KILLER",value:killer},
+    {type:"PERK",value:dailyPerk},
+    {type:"SPLASH",value:character},
+    {type:"QUOTE",value:dailyQuote.name},
+  ]})
   myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,splash},60*60*24)
 }

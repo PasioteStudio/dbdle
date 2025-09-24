@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     
     domains:["dbdle.pasiotestudio.hu","localhost"]
   },
+  htmlLimitedBots: /.*/,
   
 };
 
