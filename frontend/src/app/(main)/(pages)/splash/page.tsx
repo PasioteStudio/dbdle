@@ -31,12 +31,12 @@ export default function Home() {
     <div>
       <div className="grid w-full text-center">
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full h-40 overflow-visible -z-10 " />
-        <h1 className="text-4xl grid-column-1 content-center">Guess the random character by a splash art!</h1>
+        <h1 className="text-4xl grid-column-1 content-center my-outline">Guess the random character by a splash art!</h1>
       </div>
       <div className="grid text-center -mt-20">
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 s:mt-15 sm:mt-10 md:mt-0" />
         <div className="grid-column-1 mt-25">
-          <p>Which character has the whole splash art?</p>
+          <p className="my-outline">Which character has the whole splash art?</p>
             <div className="p-5 w-[50%] mx-auto">
             <Image
               key={`${missCount}-${isHintShown}`} // force re-render on change
@@ -52,7 +52,7 @@ export default function Home() {
             <div className="bg-yellow-500 rounded-full aspect-square w-[10%] mx-auto cursor-pointer" onClick={handleHintClick}>
               <Image src={"/imgs/logos/zoom.webp"} width={128} height={128} alt="hint"></Image>
             </div>
-            <p>Each try zooms out a bit.</p>
+            <p className="my-outline">Each try zooms out a bit.</p>
           </div>
           <div className="mx-auto">
             <SearchInput onFound={handleFound} onMissed={handleMissed} from="/splash" >

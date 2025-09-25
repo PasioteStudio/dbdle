@@ -25,7 +25,12 @@ router.get("/hint",async(req, res)=>{
     res.status(200).json(selectedOne.description)
 })
 
-router.get("/:name",(req, res)=>{
+router.get("/:name",async(req, res)=>{
+    req.params.name = req.params.name.replaceAll("_"," ")
+    if(!(await getPerks()).map(perk=>perk.name).includes(req.params.name)){
+        res.status(404).json("Perk not found")
+        return
+    }
     if(req.params.name == myCache.get("daily").perk){
         res.sendStatus(202)
     }

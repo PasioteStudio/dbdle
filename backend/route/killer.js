@@ -12,6 +12,11 @@ router.get("/",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
+    req.params.name = req.params.name.replaceAll("_"," ")
+    if(!(await getCharacters()).filter(character=>character.includes("The")).includes(req.params.name)){
+        res.status(404).json("Killer not found")
+        return
+    }
     const killer = await getCharacter(req.params.name)
     const dailyKiller = await getCharacter(myCache.get("daily").killer)
     if(req.params.name == myCache.get("daily").killer){

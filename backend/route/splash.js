@@ -47,6 +47,11 @@ router.get("/image_src/:size",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
+    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie")
+    if(!(await getCharacters()).includes(req.params.name)){
+        res.status(404).json("Character not found")
+        return
+    }
     if(req.params.name == myCache.get("daily").splash.character){
         res.sendStatus(202)
     }

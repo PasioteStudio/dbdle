@@ -25,7 +25,7 @@ export default function Home() {
     <div className="w-[90%] md:w-[110%]">
       <div className="grid w-full text-center">
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full h-40 overflow-visible -z-10 " />
-        <h1 className="text-4xl grid-column-1 content-center">Guess today&apos;s Dead by Daylight killer!</h1>
+        <h1 className="text-4xl grid-column-1 content-center my-outline">Guess today&apos;s Dead by Daylight killer!</h1>
       </div>
       <div className="text-center mt-5 pt-3 bg-gray-500 rounded-xl">
           <p className="mb-3">Type any killer to begin.</p>

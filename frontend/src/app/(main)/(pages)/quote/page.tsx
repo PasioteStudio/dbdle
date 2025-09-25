@@ -41,17 +41,17 @@ export default function Home() {
     <div>
       <div className="grid w-full text-center">
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full h-40 overflow-visible -z-10 " />
-        <h1 className="text-4xl grid-column-1 content-center">Guess the random quote!</h1>
+        <h1 className="text-4xl grid-column-1 content-center my-outline">Guess the random quote!</h1>
       </div>
       <div className="grid text-center -mt-20">
         <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible max-md:mt-20 -z-10 " />
         <div className="grid-column-1 mt-25">
-          <p>Which character says</p>
+          <p className="my-outline">Which character says</p>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <h1 className={`${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""} mt-10`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
+            <h1 className={`${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
           </div>
           {missCount < 6 || isFound ? 
-          <div className='grid h-28 w-full mt-10'>
+          <div className='grid h-28 w-full mt-10 my-outline'>
             <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 w-full overflow-visible -z-10 -mt-20 md:-mt-64" />
             <div className={`grid-column-1 h-20 md:w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
               <Image src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto" alt="hint icon" width={160} height={160} />
@@ -61,7 +61,7 @@ export default function Home() {
           <div className={`mx-auto mt-4`}>
             <SearchInput onFound={handleFound} onMissed={handleMissed} from="/quote" >
             {isHintShown ? <div className="grid -mb-8 bg-no-repeat bg-cover bg-center bg-size-100 p-10" style={{backgroundImage:`url('/imgs/effects/ui_cloud.png')`}}>
-              <p className="grid-column-1 text-sm">
+              <p className="grid-column-1 text-sm my-outline">
                 Perk that contains it: {hint}
               </p>
             </div> : null}

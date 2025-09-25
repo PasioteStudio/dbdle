@@ -24,6 +24,11 @@ router.get("/hint",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
+    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie")
+    if(!(await getCharacters()).includes(req.params.name)){
+        res.status(404).json("Character not found")
+        return
+    }
     const perks = await getPerks();
     if(req.params.name == perks.filter(perk=>perk.name == myCache.get("daily").quote)[0].quote.from){
         res.sendStatus(202)

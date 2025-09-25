@@ -4,6 +4,8 @@
   --background: #171717;
   --foreground: #eeeeee;
   --purple: #482154;
+  --outline: 1px;
+  --outline2: 0.1px;
 }
 
 @theme inline {
@@ -39,4 +41,17 @@ body {
 }
 .grid-min-100{
   grid-template-columns: repeat(7, minmax(75px, 1fr));
+}
+.my-outline {
+  -webkit-text-stroke: var(--outline2) black; /* Chrome, Safari, Edge */
+  text-stroke: var(--outline2) black; /* future standard */
+  text-shadow:
+    calc(var(--outline) * -1) 0 0 #000,
+    var(--outline) 0 0 #000,
+    0 calc(var(--outline) * -1) 0 #000,
+    0 var(--outline) 0 #000,
+    calc(var(--outline) * -1) calc(var(--outline) * -1) 0 #000,
+    var(--outline) calc(var(--outline) * -1) 0 #000,
+    calc(var(--outline) * -1) var(--outline) 0 #000,
+    var(--outline) var(--outline) 0 #000;
 }

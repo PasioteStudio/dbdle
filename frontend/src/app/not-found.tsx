@@ -1,3 +1,4 @@
+"use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import Image from "next/image";
@@ -40,7 +41,7 @@ export default function NotFound() {
             <Image src={"/imgs/logos/notFound.gif"} alt="Confused Quentin" height={220} width={270} className=""/>
             <div className="w-full grid">
               <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 h-40 w-full overflow-visible -z-10 -mt-10 " />
-              <h1 className="text-3xl text-center grid-column-1">Are you lost? Back to the campfire right <Link className="text-blue-500 underline" href={"/"}>here</Link></h1>
+              <h1 className="text-3xl text-center grid-column-1 my-outline">Are you lost? Back to the campfire right <Link className="text-blue-500 underline" href={"/"}>here</Link></h1>
             </div>
           </main>
           <Footer/>
