@@ -31,6 +31,7 @@ const CookieConsent = () => {
                 fullres: {
                     label: 'Fullres Analytics',
                     onAccept: () => {
+                        if(process.env.NEXT_PUBLIC_ENV !== "production")return;
                         const fullres = document.createElement('script');
                         fullres.async = true;
                         fullres.src = 'https://t.fullres.net/dbdlepasiotestudio.js?' + (Date.now() - (Date.now() % 43200000));

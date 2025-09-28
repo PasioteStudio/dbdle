@@ -13,6 +13,9 @@ const splashRouter = require("./route/splash")
 
 dotenv.config({ path: path.join(__dirname, './.env') });
 const app = express();
+//express trust proxy if behind one (eg. when using vercel)
+app.set('trust proxy', 1);
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -32,6 +35,10 @@ app.use(cors({
   credentials: true,
   exposedHeaders: ['Set-Cookie']
 }));
+app.use(function (req, res, next) {
+  res.set('Cache-Control', 'public, max-age=600, immutable');
+  next();
+});
 app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

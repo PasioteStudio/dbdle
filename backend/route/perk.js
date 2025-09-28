@@ -1,22 +1,21 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const myCache = require("../cache")
 const [getPerks] = require("../util/scrapping")
 
 const router = express.Router();
 module.exports = router
-
 router.get("/",async(req, res)=>{
     const perks = await getPerks();
     res.status(200).json(perks.map(perk => perk.name));
 })
-
-router.get("/image",async(req, res)=>{
-    const perks = await getPerks();
-    const selectedOne = perks.filter(perk=>perk.name == myCache.get("daily").perk)[0]
-    const response = await fetch(selectedOne.icon);
-    const buffer = await response.arrayBuffer();
-    res.set('Content-Type', response.headers.get('content-type') || 'image/png');
-    res.status(200).send(Buffer.from(buffer));
+const outputDir = './perk';
+router.get("/image",(req, res)=>{
+    const fileName = fs.readdirSync(path.join(outputDir)).filter(file => file.startsWith("image"))[0];
+    const fileBuffer = fs.readFileSync(path.join(outputDir, fileName ));
+    res.appendHeader('Content-Type','image/'+fileName.split(".")[fileName.split(".").length-1]);
+    res.status(200).send(fileBuffer);
 })
 
 router.get("/hint",async(req, res)=>{

@@ -50,6 +50,7 @@ async function getPerks(){
                 if(nameVariations.map(name=>name.from).includes(character)){
                     character = nameVariations.filter(name=>name.from == character)[0].to
                 }
+                if(desc.includes("Jouki"))continue
                 let perk = {
                     name:name,
                     character:character,
@@ -97,6 +98,7 @@ async function getPerks(){
                 if(nameVariations.map(name=>name.from).includes(character)){
                     character = nameVariations.filter(name=>name.from == character)[0].to
                 }
+                if(desc.includes("Jouki"))continue
                 let perk = {
                     name:name,
                     character:character,

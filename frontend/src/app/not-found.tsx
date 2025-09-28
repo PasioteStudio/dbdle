@@ -1,7 +1,7 @@
 "use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
 import Footer from "@/component/layout/footer";
 import Link from "next/link";
 import CookieConsent from "@/component/input/cookie";
@@ -11,11 +11,13 @@ import { categories } from "@/util/constants";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  display: "swap",
   subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  display: "swap",
   subsets: ["latin"],
 });
 
@@ -26,10 +28,10 @@ export default function NotFound() {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="selection:bg-red-700 font-sans items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 s:p-2">
-          <Image src={"/imgs/logos/dbd_bg.jpg"} alt="dead by daylight background" height={1733} width={2560} className="h-[115%] fixed top-0 -z-20 object-cover"/>
+          <ExportedImage  src={"/imgs/logos/dbd_bg.jpg"} alt="dead by daylight background" height={1733} width={2560} className="h-[115%] fixed top-0 -z-20 object-cover"/>
           <CookieConsent />
           <main className="flex flex-col mb-20 gap-[32px] items-center s:w-[100%] sm:w-[75%] lg:w-[40%] mx-auto">
-            <Link href={"/"}><Image src={"/imgs/logos/Deadbydaylight_logo.webp"} alt="dead by daylight logo" height={238} width={736} className="w-full"/></Link>
+            <Link href={"/"}><ExportedImage  src={"/imgs/logos/Deadbydaylight_logo.webp"} alt="dead by daylight logo" height={238} width={736} className="w-full"/></Link>
             <div className="flex gap-4">
               <ul className="flex gap-2 relative">
                   {categories.map(category => (
@@ -38,9 +40,9 @@ export default function NotFound() {
                   <HowTo></HowTo>
               </ul>
             </div>
-            <Image src={"/imgs/logos/notFound.gif"} alt="Confused Quentin" height={220} width={270} className=""/>
+            <ExportedImage  src={"/imgs/logos/notFound.gif"} alt="Confused Quentin" height={220} width={270} className=""/>
             <div className="w-full grid">
-              <Image src={"/imgs/effects/ui_cloud.png"} alt="" width={500} height={500} className="grid-column-1 h-40 w-full overflow-visible -z-10 -mt-10 " />
+              <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized  alt="" width={500} height={500} className="grid-column-1 h-40 w-full -z-10 -mt-10 " />
               <h1 className="text-3xl text-center grid-column-1 my-outline">Are you lost? Back to the campfire right <Link className="text-blue-500 underline" href={"/"}>here</Link></h1>
             </div>
           </main>

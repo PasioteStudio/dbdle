@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import Image from 'next/image';
+import ExportedImage from "next-image-export-optimizer";
 
 declare global {
   interface Window {
@@ -111,12 +111,12 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     return (
     <div className='relative'>
         <h1 className={`w-[70%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
-        <input type="text" ref={input} onInput={handleInput} className='s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
+        <input id='input' type="text" ref={input} onInput={handleInput} className='s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='rounded-lg bg-gray-600 s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
             {visibleOptions.map((option,id) => [
                 <li className={`min-h-12 max-h-12 flex ${from != "/perk" ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
-                    {from != "/perk" && <Image src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />}
+                    {from != "/perk" && <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />}
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,
                 id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null

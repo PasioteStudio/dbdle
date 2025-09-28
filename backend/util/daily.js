@@ -2,11 +2,14 @@
 const [getPerks,getCharacters,getCharacter] = require("./scrapping")
 const [nameVariations,invalidNames,splashC] = require("./constants")
 const myCache = require("../cache")
+const path = require('path');
+const fs = require('fs');
 const {Jimp} = require("jimp");
 const { PrismaClient } = require('../prisma/generated/prisma')
 
 const prisma = new PrismaClient()
 module.exports = [doDaily]
+const outputDir = './perk';
 
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
@@ -32,10 +35,16 @@ async function doDaily(){
     }
   }
   //Perk
-  let dailyPerk = perks.random().name
-  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"PERK"}},{value:{equals:dailyPerk}}]}})) != null){
-    dailyPerk = perks.random().name
+  let dailyPerk = perks.random()
+  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"PERK"}},{value:{equals:dailyPerk.name}}]}})) != null){
+    dailyPerk = perks.random()
   }
+  const response = await fetch(dailyPerk.icon);
+  const buffer = await response.arrayBuffer();
+  const outputFile = path.join(outputDir, "image" + response.headers.get('content-type').replace("image/","."));
+  fs.writeFileSync(outputFile, Buffer.from(buffer));
+  
+  dailyPerk=dailyPerk.name
   //Quote
   let dailyQuote = perks.random()
   while(dailyQuote.quote == null || (await prisma.daily.findFirst({where:{AND:[{type:{equals:"QUOTE"}},{value:{equals:dailyQuote.name}}]}})) != null){

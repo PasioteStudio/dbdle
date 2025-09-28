@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import Image from 'next/image';
+import ExportedImage from "next-image-export-optimizer";
 
 interface KillerSearchInput {
     from:string,
@@ -110,12 +110,12 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     return (
     <div className='relative'>
         <h1 className={`w-full mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
-        <input type="text" ref={input} onInput={handleInput} className='w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
+        <input id='input' type="text" ref={input} onInput={handleInput} className='w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
             {visibleOptions.map((option,id) => [
                 <li className='min-h-12 max-h-12 overflow-hidden items-center content-center flex hover:bg-blue-500 cursor-pointer' key={`${id}a`} onClick={()=>{handleClick(option)}}>
-                    <Image src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />
+                    <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,
                 id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null
