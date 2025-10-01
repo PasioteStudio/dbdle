@@ -47,7 +47,7 @@ router.get("/image_src/:size",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
-    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie")
+    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie").replaceAll("o","ō")
     if(!(await getCharacters()).includes(req.params.name)){
         res.status(404).json("Character not found")
         return

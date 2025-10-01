@@ -83,7 +83,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         setOptions(options.filter(option => option != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
-        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_")).then(res=>{
+        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replaceAll("ō","o")).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202,
                 gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : "true"},
                 origin:{value:res.data.selected.origin,bool:res.data.difference ? res.data.difference.origin : true},

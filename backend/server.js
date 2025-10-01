@@ -2,10 +2,12 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
 
 const path = require('path');
 const schedule = require('node-schedule');
 const [doDaily] = require("./util/daily")
+const [getPerks,getCharacters,getCharacter] = require("./util/scrapping")
 const perkRouter = require("./route/perk")
 const quoteRouter = require("./route/quote")
 const killerRouter = require("./route/killer")
@@ -55,7 +57,18 @@ const job = schedule.scheduleJob('0 0 * * *', function(){
 app.get(/(.*)/,function (req, res, next) {
   res.status(404).json({ error: "not found" });
 })
+
 app.listen(process.env.PORT, async () => {
+  
+  const characters = await Promise.all((await getCharacters()).map(async (character)=>{
+    const char = await getCharacter(character)
+    return char
+  }));
+  //const perks = await getPerks()
+  //write to file
+  fs.writeFileSync("characters.json",JSON.stringify(characters).split("}").join("}\n"))
+  //fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))
+
   await doDaily()
   console.log(`Server is running at http://localhost:${process.env.PORT}`);
 })

@@ -25,7 +25,7 @@ router.get("/hint",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
-    req.params.name = req.params.name.replaceAll("_"," ")
+    req.params.name = req.params.name.replaceAll("_"," ").replaceAll("Deja vu","Déjà Vu").replaceAll("Coup de Grace","Coup de Grâce")
     if(!(await getPerks()).map(perk=>perk.name).includes(req.params.name)){
         res.status(404).json("Perk not found")
         return

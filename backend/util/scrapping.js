@@ -131,6 +131,7 @@ async function getCharacter(character){
     if(myCache.get("character_"+character)){
         return myCache.get("character_"+character)
     }
+    let lore = null
     let gender = null
     let origin = null
     let height = null
@@ -143,6 +144,12 @@ async function getCharacter(character){
         .then(res => res.text())
         .then(html => {
             // Example: log the HTML length
+            lore = html.split('<span class="mw-headline" id="Lore">Lore</span>')[1].split("</h2>")[1].split('<div style="clear:both"></div>')[0].split("<h3>")[0]
+            if(lore.includes("<dl>"))lore = lore.split("</dl>")[1]
+            while(lore.includes("<")){
+                lore = lore.replace("<"+lore.split("<")[1].split(">")[0]+">","")
+            }
+            lore = lore.trim()
             const killerTable = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</tbody>")[0]
             if(killerTable.split("<img")[1].split('" />')[0].includes("data-src")){
                 icon = killerTable.split("<img")[1].split('data-src="')[1].split('"')[0]
@@ -185,6 +192,7 @@ async function getCharacter(character){
         });
     const killer = {
         name:character,
+        lore,
         gender,
         origin,
         height,

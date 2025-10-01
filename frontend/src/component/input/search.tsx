@@ -46,7 +46,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
 
         for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
             if(JSON.parse(localStorage.getItem(from)!).used[i].found){
-                axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_").replace("Élodie","Elodie")).then(res=>{
+                axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_").replace("Élodie","Elodie").replaceAll("ō","o").replaceAll("Déjà vu","Deja Vu").replaceAll("Coup de Grâce","Coup de Grace")).then(res=>{
                     if(res.status != 202){
                         localStorage.removeItem(from)
                         setUsedOptions([])
