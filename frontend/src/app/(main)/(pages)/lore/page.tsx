@@ -40,11 +40,11 @@ export default function Home() {
   return (
     <div>
       <div className="grid w-full text-center">
-        <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full h-40   -z-10 " />
+        <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-40   -z-10 " />
         <h1 className="text-4xl grid-column-1 content-center my-outline">Guess the random lore!</h1>
       </div>
       <div className="grid text-center -mt-20">
-        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full   max-md:mt-20 -z-10 " />
+        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full   max-md:mt-20 -z-10 " />
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which character has this in their lore?</label>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
@@ -52,9 +52,9 @@ export default function Home() {
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10 my-outline'>
-            <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full   -z-10 -mt-20 md:-mt-64" />
+            <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full   -z-10 -mt-20 md:-mt-64" />
             <div className={`grid-column-1 h-20 md:w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
-              <ExportedImage  src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto" alt="hint icon" width={160} height={160} />
+              <ExportedImage  src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto select-none" alt="hint icon" width={160} height={160} />
               <p>Perk Clue {missCount > 0 && !isFound ? `after ${missCount} tries` : ""}</p>
             </div>
           </div> : null}
@@ -71,7 +71,7 @@ export default function Home() {
       </div>
       {isFound ? 
       <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/killer")}}>
-        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full h-20   -z-10" />
+        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-20   -z-10" />
         <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Killer</h1>
       </div> : null}
     </div>

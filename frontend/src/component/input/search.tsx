@@ -14,17 +14,18 @@ interface SearchInput {
     onFound:()=>void,
     onMissed:()=>void,
     children?:React.ReactNode,
+    splashVisible?:boolean
 }
 function sameDay(d1:Date, d2:Date) {
   return d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 }
-const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) => {
+const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,splashVisible=true}) => {
     const input = useRef<HTMLInputElement>(null)
     const [found,setFound] = useState<string>()
     const [options,setOptions] = useState<string[]>([])
-    const [visibleOptions,setVisibleOptions] = useState<string[]>([])
+    const [search,setSearch] = useState<string>("-")
     const [usedOptions,setUsedOptions] = useState<{name:string;found:boolean}[]>([])
     useEffect(()=>{
         setTimeout(()=>{
@@ -46,7 +47,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
 
         for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
             if(JSON.parse(localStorage.getItem(from)!).used[i].found){
-                axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_").replace("Élodie","Elodie").replaceAll("ō","o").replaceAll("Déjà vu","Deja Vu").replaceAll("Coup de Grâce","Coup de Grace")).then(res=>{
+                axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_").replace("Élodie","Elodie").replaceAll("ryō","ryo").replaceAll("Déjà vu","Deja Vu").replaceAll("Coup de Grâce","Coup de Grace")).then(res=>{
                     if(res.status != 202){
                         localStorage.removeItem(from)
                         setUsedOptions([])
@@ -67,31 +68,25 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
         }
     },[from])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-        if(e.currentTarget.value == ""){
-            setVisibleOptions([])
-            return
-        }
-        const newVisibleOptionsFirst = []
-        const newVisibleOptions = []
-        for(let i = 0; i < options.length;i++){
-            if(options[i].toLowerCase().includes(e.currentTarget.value) && options[i].toLowerCase().startsWith(e.currentTarget.value)){
-                newVisibleOptionsFirst.push(options[i])
-                
-            }else if(options[i].toLowerCase().includes(e.currentTarget.value)){
-                newVisibleOptions.push(options[i])
-            }
-        }
-        setVisibleOptions([...newVisibleOptionsFirst,...newVisibleOptions])
+        setSearch(e.currentTarget.value.toLowerCase() == "" ? "-" : e.currentTarget.value.toLowerCase())
     }
     const handleClick = (selected:string) => {
-        setVisibleOptions([])
+        setSearch("-")
         input.current!.value = ""
         setOptions(options.filter(option => option != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
-        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replace("Élodie","Elodie")).then(res=>{
+        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replace("Élodie","Elodie").replaceAll("ryō","ryo").replaceAll("Déjà vu","Deja Vu").replaceAll("Coup de Grâce","Coup de Grace")).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202})
             let streak = localStorage.getItem(from) ? JSON.parse(localStorage.getItem(from)!).streak : 0
+            const yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1);
+            if(localStorage.getItem(from)){
+                if(!sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date()) && !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),yesterday)){
+                    streak=0
+                }
+            }
+            
             if(res.status == 202){
                 streak++
             }
@@ -111,18 +106,17 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children}) =>
     return (
     <div className='relative'>
         <h1 className={`w-[70%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
-        <input id='input' type="text" ref={input} onInput={handleInput} className='s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
+        <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
-        <ul className='rounded-lg bg-gray-600 s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {visibleOptions.map((option,id) => [
-                <li className={`min-h-12 max-h-12 flex ${from != "/perk" ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
-                    {from != "/perk" && <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />}
+        <ul className='rounded-lg bg-black min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col gap-0.5 mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
+            {options.map((option,id) => (
+                <li key={id} className={`${option.toLowerCase().startsWith(search) ? "flex" : "hidden"} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option)}}>
+                    {splashVisible && <ExportedImage src={"/imgs/splashes/" + option.replace('William "Bill" Overbeck',"William Bill Overbeck") + ".png"} className='select-none aspect-square h-full p-2' alt={option} width={64} height={64} />}
                     <h2 className='h-full content-center'>{option}</h2>
-                </li>,
-                id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null
-            ])}
+                </li>
+            ))}
         </ul>
-        <ul className='s:w-[60%] sm:w-[50%] md:w-[40%] mx-auto flex flex-col gap-2 mt-4 overflow-x-hidden'>
+        <ul className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] mx-auto flex flex-col gap-2 mt-4 overflow-x-hidden'>
             {usedOptions.toReversed().map(option => (
                 <li className={`h-12 hover:bg-blue-500 cursor-pointer rounded-lg ${option.found ? "bg-green-700" : "bg-red-700"}`} key={option.name} >
                     <h2 className='h-full content-center'>{option.name}</h2>

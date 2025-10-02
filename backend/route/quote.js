@@ -24,7 +24,7 @@ router.get("/hint",async(req, res)=>{
 })
 
 router.get("/:name",async(req, res)=>{
-    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie").replaceAll("o","ō")
+    req.params.name = req.params.name.replaceAll("_"," ").replace("Elodie","Élodie").replaceAll("ryo","ryō")
     if(!(await getCharacters()).includes(req.params.name)){
         res.status(404).json("Character not found")
         return

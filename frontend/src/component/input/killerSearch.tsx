@@ -18,7 +18,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     const input = useRef<HTMLInputElement>(null)
     const [found,setFound] = useState<string>()
     const [options,setOptions] = useState<string[]>([])
-    const [visibleOptions,setVisibleOptions] = useState<string[]>([])
+    const [search,setSearch] = useState<string>("-")
     const [usedOptions,setUsedOptions] = useState<{
         name:string;
         gender:{value:string;bool:string};
@@ -40,7 +40,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
             setOptions(JSON.parse(localStorage.getItem(from)!).options.filter((option:string) => !JSON.parse(localStorage.getItem(from)!).used.map((used:{name:string})=>used.name).includes(option)))
             for(let i = 0; i<JSON.parse(localStorage.getItem(from)!).used.length; i++){
                 if(JSON.parse(localStorage.getItem(from)!).used[i].found){
-                    axios.get(process.env.NEXT_PUBLIC_HOST + from +"/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_")).then(res=>{
+                    axios.get(process.env.NEXT_PUBLIC_HOST + from +"/" + JSON.parse(localStorage.getItem(from)!).used[i].name.replaceAll(" ","_").replaceAll("ryō","ryo")).then(res=>{
                         if(res.status != 202){
                             localStorage.removeItem(from)
                             setUsedOptions([])
@@ -61,29 +61,15 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         }
     },[from])
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-        if(e.currentTarget.value == ""){
-            setVisibleOptions([])
-            return
-        }
-        const newVisibleOptionsFirst = []
-        const newVisibleOptions = []
-        for(let i = 0; i < options.length;i++){
-            if(options[i].toLowerCase().includes(e.currentTarget.value) && options[i].toLowerCase().startsWith(e.currentTarget.value)){
-                newVisibleOptionsFirst.push(options[i])
-                
-            }else if(options[i].toLowerCase().includes(e.currentTarget.value)){
-                newVisibleOptions.push(options[i])
-            }
-        }
-        setVisibleOptions([...newVisibleOptionsFirst,...newVisibleOptions])
+        setSearch(e.currentTarget.value.toLowerCase() == "" ? "-" : e.currentTarget.value.toLowerCase())
     }
     const handleClick = (selected:string) => {
-        setVisibleOptions([])
+        setSearch("-")
         input.current!.value = ""
         setOptions(options.filter(option => option != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
-        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replaceAll("ō","o")).then(res=>{
+        axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replaceAll("ryō","ryo")).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202,
                 gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : "true"},
                 origin:{value:res.data.selected.origin,bool:res.data.difference ? res.data.difference.origin : true},
@@ -93,6 +79,13 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
                 movement_speed:{value:res.data.selected.movement_speed,bool:res.data.difference ? res.data.difference.movement_speed : "true"},
             })
             let streak = localStorage.getItem(from) ? JSON.parse(localStorage.getItem(from)!).streak : 0
+            const yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1);
+            if(localStorage.getItem(from)){
+                if(!sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date()) && !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),yesterday)){
+                    streak=0
+                }
+            }
             if(res.status == 202){
                 streak++
             }
@@ -110,15 +103,14 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     return (
     <div className='relative'>
         <h1 className={`w-full mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
-        <input id='input' type="text" ref={input} onInput={handleInput} className='w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
+        <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
-        <ul className='rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {visibleOptions.map((option,id) => [
-                <li className='min-h-12 max-h-12 overflow-hidden items-center content-center flex hover:bg-blue-500 cursor-pointer' key={`${id}a`} onClick={()=>{handleClick(option)}}>
-                    <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2' alt={option} width={64} height={64} />
+        <ul className='min-w-[200px] rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 gap-0.5 overflow-x-hidden overflow-y-scroll max-h-64'>
+            {options.map((option,id) => [
+                <li className={`${option.toLowerCase().startsWith(search) ? "flex" : "hidden"} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
+                    <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2 select-none' alt={option} width={64} height={64} />
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,
-                id != visibleOptions.length -1 ? <div className={`bg-black w-full h-0.5`} key={`${id}b`}></div> : null
             ])}
         </ul>
         <div className='grid grid-min-100 w-full overflow-x-auto items-end gap-4 p-4 '>
@@ -130,7 +122,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
             <h1>Power Attack Type<hr className='mt-4' /></h1>
             <h1>Release Date<hr className='mt-4' /></h1>
             {usedOptions.toReversed().map(option => (
-                <div className={` grid col-span-7 grid-min-100 break-words w-full gap-4 items-center`} key={option.name} >
+                <div className={`grid col-span-7 grid-min-100 break-words w-full gap-4 items-center`} key={option.name} >
                     <div className={`h-full rounded content-center ${option.found ? 'bg-green-500' : 'bg-red-500'}`}>{option.name}</div>
                     <div className={`h-full rounded content-center ${option.gender.bool != "true" ? (option.gender.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.gender.value}</div>
                     <div className={`h-full rounded content-center ${option.height.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.height.value}</div>

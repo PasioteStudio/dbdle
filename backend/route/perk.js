@@ -11,12 +11,12 @@ router.get("/",async(req, res)=>{
     res.status(200).json(perks.map(perk => perk.name));
 })
 const outputDir = './perk';
-router.get("/image",(req, res)=>{
+/*router.get("/image",(req, res)=>{
     const fileName = fs.readdirSync(path.join(outputDir)).filter(file => file.startsWith("image"))[0];
     const fileBuffer = fs.readFileSync(path.join(outputDir, fileName ));
     res.appendHeader('Content-Type','image/'+fileName.split(".")[fileName.split(".").length-1]);
     res.status(200).send(fileBuffer);
-})
+})*/
 
 router.get("/hint",async(req, res)=>{
     const perks = await getPerks();

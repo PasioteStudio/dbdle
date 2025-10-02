@@ -28,10 +28,10 @@ export default function NotFound() {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="selection:bg-red-700 font-sans items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 s:p-2">
-          <ExportedImage  src={"/imgs/logos/dbd_bg.jpg"} alt="dead by daylight background" height={1733} width={2560} className="h-[115%] fixed top-0 -z-20 object-cover"/>
+          <ExportedImage src={"/imgs/logos/dbd_bg.jpg"} alt="dead by daylight background" height={1733} width={2560} className="select-none h-[115%] fixed top-0 -z-20 object-cover"/>
           <CookieConsent />
           <main className="flex flex-col mb-20 gap-[32px] items-center s:w-[100%] sm:w-[75%] lg:w-[40%] mx-auto">
-            <Link href={"/"}><ExportedImage  src={"/imgs/logos/Deadbydaylight_logo.webp"} alt="dead by daylight logo" height={238} width={736} className="w-full"/></Link>
+            <Link href={"/"}><ExportedImage src={"/imgs/logos/Deadbydaylight_logo.webp"} alt="dead by daylight logo" height={238} width={736} className="select-none w-full"/></Link>
             <div className="flex gap-4">
               <ul className="flex gap-2 relative">
                   {categories.map(category => (
@@ -40,9 +40,9 @@ export default function NotFound() {
                   <HowTo></HowTo>
               </ul>
             </div>
-            <ExportedImage  src={"/imgs/logos/notFound.gif"} alt="Confused Quentin" height={220} width={270} className=""/>
+            <ExportedImage  src={"/imgs/logos/notFound.gif"} alt="Confused Quentin" height={220} width={270} className="select-none"/>
             <div className="w-full grid">
-              <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized  alt="" width={500} height={500} className="grid-column-1 h-40 w-full -z-10 -mt-10 " />
+              <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized  alt="" width={500} height={500} className="select-none grid-column-1 h-40 w-full -z-10 -mt-10 " />
               <h1 className="text-3xl text-center grid-column-1 my-outline">Are you lost? Back to the campfire right <Link className="text-blue-500 underline" href={"/"}>here</Link></h1>
             </div>
           </main>

@@ -8,10 +8,10 @@ export default function Home() {
           {categories.map(category=>(
             <li key={category.title}>
             <Link href={category.link} className="w-full grid">
-              <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 h-40 w-full   -z-10 " />
+              <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 h-40 w-full   -z-10 " />
               <div className="flex gap-4 grid-column-1 items-center s:px-10 sm:px-20 z-10">
                 <div className="bg-purple rounded-full aspect-square w-20">
-                  <ExportedImage  src={category.icon} alt="perk icon" width={128} height={128} className="m-auto p-1"/>
+                  <ExportedImage  src={category.icon} alt="perk icon" width={128} height={128} className="m-auto p-1 select-none"/>
                 </div>
                 <div className="">
                   <h1 className="text-2xl font-semibold">{category.title}</h1>

@@ -35,11 +35,11 @@ const HowTo = () => {
     }
     return (
     <li onClick={()=>{setHowTo(!howTo)}} className="border-red-700 cursor-pointer absolute py-1 right-0 s:-mr-12 sm:-mr-30 border-2 rounded-lg flex items-center">
-        <p className="text-3xl">📄</p>
+        <p className="text-3xl select-none">📄</p>
         {howTo ? 
         [<div key={1} className='fixed left-0 z-20 top-0 w-full flex h-full items-center justify-center'>
             <div className='bg-gray-700 relative flex flex-col gap-2 text-white w-[80%] md:w-[50%] border border-black rounded p-4'>
-                <h1 className='text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</h1>
+                <h1 className='select-none text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</h1>
                 <h1 className='text-4xl'>How to play?</h1>
                 <div className='w-full h-2 bg-white'></div>
                 <p>Guess in four modes by aspects from Behavior&apos;s game &quot;Dead by Daylight&quot;. It changes every 24h.</p>

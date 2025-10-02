@@ -54,19 +54,22 @@ const job = schedule.scheduleJob('0 0 * * *', function(){
   doDaily()
 });
 
+app.use("/splash_image_src", express.static(__dirname + '/splash/splash.png'));
+app.use("/perk_image", express.static(__dirname + '/perk/image.png'));
+
 app.get(/(.*)/,function (req, res, next) {
   res.status(404).json({ error: "not found" });
 })
 
-app.listen(process.env.PORT, async () => {
-  
-  const characters = await Promise.all((await getCharacters()).map(async (character)=>{
+
+app.listen(process.env.PORT, async () => {  
+  /*const characters = await Promise.all((await getCharacters()).map(async (character)=>{
     const char = await getCharacter(character)
     return char
-  }));
+  }));*/
   //const perks = await getPerks()
   //write to file
-  fs.writeFileSync("characters.json",JSON.stringify(characters).split("}").join("}\n"))
+  //fs.writeFileSync("characters.json",JSON.stringify(characters).split("}").join("}\n"))
   //fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))
 
   await doDaily()

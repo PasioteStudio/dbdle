@@ -27,8 +27,8 @@ const IconButton: React.FC<IconButton> = ({link,icon}) => {
     }, [path,link]);
     return (
     <li className=" rounded-full bg-red-900 cursor-pointer grid" onClick={()=>{router.push(link)}}>
-        <ExportedImage  src={icon} alt="perk guessing icon" width={32} height={32} className='p-1 grid-column-1' />
-        {visible && <ExportedImage  src={"/imgs/logos/check_mark.webp"} alt="check mark" width={30} height={30} className='p-1 ml-auto -mr-3 -mt-3 relative grid-column-1' />}
+        <ExportedImage  src={icon} alt="perk guessing icon" width={32} height={32} className='p-1 grid-column-1 select-none' />
+        {visible && <ExportedImage  src={"/imgs/logos/check_mark.webp"} alt="check mark" width={30} height={30} className='select-none p-1 ml-auto -mr-3 -mt-3 relative grid-column-1' />}
     </li>
     );
 };
