@@ -2,8 +2,8 @@ import { Metadata } from "next"
 
 export const metadata:Metadata = {
   icons: {
-    icon: '/imgs/logos/favicon.ico',
-    shortcut: '/imgs/logos/favicon.png',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.png',
   },
   title: {
     template: '%s | DBDle',
@@ -23,9 +23,9 @@ export const metadata:Metadata = {
         alt: 'Deady by Daylight themed daily guessing game',
       },
       {
-        url: 'https://dbdle.pasiotestudio.hu/imgs/logos/og_image_1800x1200.png',
-        width: 1800,
-        height: 1600,
+        url: 'https://dbdle.pasiotestudio.hu/imgs/logos/og_image_1600x1200.png',
+        width: 1600,
+        height: 1200,
         alt: 'Deady by Daylight themed daily guessing game',
       },
       {
