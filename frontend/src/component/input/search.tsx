@@ -73,6 +73,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
     const handleClick = (selected:string) => {
         setSearch("-")
         input.current!.value = ""
+        input.current!.focus()
         setOptions(options.filter(option => option != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });

@@ -6,7 +6,6 @@ export const categories = [
   {title:"Splash","description":"Guess the character by a splash of their",icon:"/imgs/logos/OutfitIcon.png",link:"/splash"},
 ]
 export const splash = {
-  step:10,
   number_of_tries:49,
   width:1900
 }

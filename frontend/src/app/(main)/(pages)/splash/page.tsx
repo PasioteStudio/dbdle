@@ -8,6 +8,7 @@ import { splash } from "@/util/constants";
 
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(0)
+  const [missCountT,setMissCountT] = useState<number>(0)
   const router = useRouter()
   const nextMode = useRef<HTMLDivElement | null>(null)
   const [defaultValues,setDefaultValues] = useState<{x:number,y:number}>({x:0,y:0})
@@ -20,6 +21,9 @@ export default function Home() {
   },[])
   const handleFound = () => {
     setFound(true)
+    setMissCount(splash.number_of_tries)
+    setMissCountT(0)
+    setIsHintShown(false)
     if(!nextMode.current){
       setTimeout(()=>{
         window.scrollTo({ top: nextMode.current!.offsetTop, behavior: "smooth" });
@@ -29,6 +33,11 @@ export default function Home() {
     }
   }
   const handleMissed = () => {
+    setIsHintShown(false)
+    if(isHintShown){
+      setMissCount(missCountT)
+      setMissCountT(0)
+    }
     setMissCount(number => {
       if(number + 1 > splash.number_of_tries){
         number = splash.number_of_tries - 1
@@ -37,8 +46,16 @@ export default function Home() {
     })
   }
   const handleHintClick = async() => {
-    if(missCount <= 0)return
+    if(missCount <= 0 && missCountT <= 0)return
     setIsHintShown(!isHintShown)
+    if(!isHintShown){
+      setMissCountT(missCount)
+      setMissCount(0)
+    }else{
+      setMissCountT(0)
+      setMissCount(missCountT)
+    }
+    
   }
   return (
     <div>
@@ -53,11 +70,11 @@ export default function Home() {
             <div className="p-5 w-[50%] mx-auto flex items-center justify-center aspect-square overflow-hidden">
             <ExportedImage 
               src={process.env.NEXT_PUBLIC_HOST + "/splash_image_src"}
-              className={`w-full select-none relative`} //left: -950% - 950% top:-950% - 950%
+              className={`w-full select-none relative ${missCount > 0 ? "transition-all duration-200 ease-linear": ""}`} //left: -950% - 950% top:-950% - 950% minWidth: 2000% - 100%
               style={{
-                minWidth:(splash.width + 100) - (splash.width * (missCount / splash.number_of_tries)) + "%",
-                left:(-950 + (defaultValues.x * 1900 / 512)) * (1 - (missCount / splash.number_of_tries)) + "%",
-                top:(-950 + (defaultValues.y * 1900 / 512)) * (1 - (missCount / splash.number_of_tries)) + "%",
+                minWidth:`${(splash.width + 100) - (splash.width * (Math.min(missCount / splash.number_of_tries,1)))}%`,
+                left:`${((-950 + (defaultValues.x * 1900 / 512)) * (1 - (Math.min(missCount / splash.number_of_tries,1))))*-1}%`,
+                top:`${((-950 + (defaultValues.y * 1900 / 512)) * (1 - (Math.min(missCount / splash.number_of_tries,1))))*-1}%`,
               }}
               alt="unknown splash art"
               width={500}
