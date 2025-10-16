@@ -48,7 +48,7 @@ export default function Home() {
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which character says</label>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <h1 className={`${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
+            <h1 className={`select-none ${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10 my-outline'>

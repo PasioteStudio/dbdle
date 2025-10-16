@@ -17,7 +17,7 @@ const nameVariations = [
   {from:"Troupe",to:'Aestri Yazar & Baermar Uraz'},
   {from:"Baermar",to:'Aestri Yazar & Baermar Uraz'},
   {from:"Aestri",to:"Aestri Yazar & Baermar Uraz"},
-  {from:"Jeff",to:"Jeff Johanson"},
+  {from:"Jeff",to:"Jeff Johansen"},
   {from:"Detective David Tapp",to:"Detective Tapp"},
   {from:"Sable",to:"Sable Ward"},
   {from:"Final Journal Entry",to:"The Unknown"},

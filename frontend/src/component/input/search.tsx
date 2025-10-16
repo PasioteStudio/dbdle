@@ -110,8 +110,8 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='rounded-lg bg-black min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col gap-0.5 mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {options.map((option,id) => (
-                <li key={id} className={`${option.toLowerCase().startsWith(search) ? "flex" : "hidden"} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option)}}>
+            {search != "-" && options.map((option,id) => (
+                <li key={id} className={`${option.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.toLowerCase().includes(search)) ? "flex" : "hidden")} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option)}}>
                     {splashVisible && <ExportedImage src={"/imgs/splashes/" + option.replace('William "Bill" Overbeck',"William Bill Overbeck") + ".png"} className='select-none aspect-square h-full p-2' alt={option} width={64} height={64} />}
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>
@@ -119,7 +119,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         </ul>
         <ul className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] mx-auto flex flex-col gap-2 mt-4 overflow-x-hidden'>
             {usedOptions.toReversed().map(option => (
-                <li className={`h-12 hover:bg-blue-500 cursor-pointer rounded-lg ${option.found ? "bg-green-700" : "bg-red-700"}`} key={option.name} >
+                <li className={`h-12 rounded-lg ${option.found ? "bg-green-700" : "bg-red-700"}`} key={option.name} >
                     <h2 className='h-full content-center'>{option.name}</h2>
                 </li>
             ))}

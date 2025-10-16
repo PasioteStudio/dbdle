@@ -107,8 +107,8 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='min-w-[200px] rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 gap-0.5 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {options.map((option,id) => [
-                <li className={`${option.toLowerCase().startsWith(search) ? "flex" : "hidden"} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
+            {search != "-" && options.map((option,id) => [
+                <li className={`${option.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.toLowerCase().includes(search)) ? "flex" : "hidden")} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
                     <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2 select-none' alt={option} width={64} height={64} />
                     <h2 className='h-full content-center'>{option}</h2>
                 </li>,

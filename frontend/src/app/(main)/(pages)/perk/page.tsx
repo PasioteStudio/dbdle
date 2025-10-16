@@ -43,7 +43,7 @@ export default function Home() {
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which perk has this icon?</label>
           <div className="p-5 w-[50%] mx-auto aspect-square justify-items-center items-center grid bg-no-repeat bg-contain bg-center" style={{backgroundImage:`url('${perkBg}')`}}>
-            <ExportedImage  src={process.env.NEXT_PUBLIC_HOST + "/perk_image"} fetchPriority="high" priority unoptimized className="w-full select-none" alt="unknown perk" width={500} height={500} />
+            <ExportedImage draggable={false} src={process.env.NEXT_PUBLIC_HOST + "/perk_image"} fetchPriority="high" priority unoptimized className="w-full select-none" alt="unknown perk" width={500} height={500} />
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full my-outline'>

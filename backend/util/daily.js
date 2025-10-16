@@ -90,6 +90,7 @@ async function doDaily(){
     x,
     y
   }
+  console.log(splash)
   await prisma.daily.createMany({data:[
     {type:"KILLER",value:killer},
     {type:"PERK",value:dailyPerk},

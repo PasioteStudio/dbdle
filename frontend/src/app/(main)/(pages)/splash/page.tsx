@@ -67,7 +67,7 @@ export default function Home() {
         <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full   -z-10 s:mt-15 sm:mt-10 md:mt-0" />
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which character has the whole splash art?</label>
-            <div className="p-5 w-[50%] mx-auto flex items-center justify-center aspect-square overflow-hidden">
+            <div className="p-5 w-[50%] mx-auto flex items-center justify-center aspect-square overflow-hidden mb-4">
             <ExportedImage 
               src={process.env.NEXT_PUBLIC_HOST + "/splash_image_src"}
               className={`w-full select-none relative ${missCount > 0 ? "transition-all duration-200 ease-linear": ""}`} //left: -950% - 950% top:-950% - 950% minWidth: 2000% - 100%
@@ -78,6 +78,7 @@ export default function Home() {
               }}
               alt="unknown splash art"
               width={500}
+              draggable={false}
               height={500}
               fetchPriority="high" priority
               unoptimized // disables next/image caching
