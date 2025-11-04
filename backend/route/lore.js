@@ -1,17 +1,25 @@
 const express = require('express');
 const myCache = require("../cache")
 const [getPerks,getCharacters,getCharacter] = require("../util/scrapping")
-const [nameVariations,invalidNames,splash] = require("../util/constants")
+
 const router = express.Router();
 module.exports = router
+
 
 router.get("/",async(req, res)=>{
     const characters = await getCharacters();
     res.status(200).json(characters);
 })
 
-router.get("/image",async(req, res)=>{
-    res.status(200).json({x:myCache.get("daily").splash.x,y:myCache.get("daily").splash.y})
+router.get("/text",async(req, res)=>{
+    const character = await getCharacter(myCache.get("daily").lore)
+    res.status(200).json(character.lore);
+})
+
+router.get("/hint",async(req, res)=>{
+    const perks = await getPerks();
+    const selectedOne = perks.filter(perk=>perk.character == myCache.get("daily").lore.name)[0]
+    res.status(200).json(selectedOne.name)
 })
 
 router.get("/:name",async(req, res)=>{
@@ -20,7 +28,7 @@ router.get("/:name",async(req, res)=>{
         res.status(404).json("Character not found")
         return
     }
-    if(req.params.name == myCache.get("daily").splash.character){
+    if(req.params.name == myCache.get("daily").lore.name){
         res.sendStatus(202)
     }
     else{

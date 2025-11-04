@@ -131,6 +131,9 @@ async function getCharacter(character){
     if(myCache.get("character_"+character)){
         return myCache.get("character_"+character)
     }
+    else if(!((await getCharacters()).includes(character))){
+        return "Not Found"
+    }
     let lore = null
     let gender = null
     let origin = null

@@ -11,6 +11,7 @@ const [getPerks,getCharacters,getCharacter] = require("./util/scrapping")
 const perkRouter = require("./route/perk")
 const quoteRouter = require("./route/quote")
 const killerRouter = require("./route/killer")
+const loreRouter = require("./route/lore")
 const splashRouter = require("./route/splash")
 
 dotenv.config({ path: path.join(__dirname, './.env') });
@@ -49,13 +50,14 @@ app.use("/perk",perkRouter)
 app.use("/quote",quoteRouter)
 app.use("/killer",killerRouter)
 app.use("/splash",splashRouter)
+app.use("/lore",loreRouter)
 
-const job = schedule.scheduleJob('0 0 * * *', function(){
+const job = schedule.scheduleJob({hour:0,minute:0,tz:"Etc/GMT-2"}, function(){
   doDaily()
 });
 
-app.use("/splash_image_src", express.static(__dirname + '/splash/splash.png'));
-app.use("/perk_image", express.static(__dirname + '/perk/image.png'));
+app.use("/splash_image_src", express.static(__dirname + '/splash/splash.webp'));
+app.use("/perk_image", express.static(__dirname + '/perk/image.webp'));
 
 app.get(/(.*)/,function (req, res, next) {
   res.status(404).json({ error: "not found" });
@@ -66,12 +68,17 @@ app.listen(process.env.PORT, async () => {
   /*const characters = await Promise.all((await getCharacters()).map(async (character)=>{
     const char = await getCharacter(character)
     return char
-  }));*/
-  //const perks = await getPerks()
+  }));
+  const perks = await getPerks()
   //write to file
-  //fs.writeFileSync("characters.json",JSON.stringify(characters).split("}").join("}\n"))
-  //fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))
-
+  fs.writeFileSync("characters_lore.json",JSON.stringify(characters.map(character=>{return {name:character.name,lore:character.lore}})).split("}").join("}\n"))
+  fs.writeFileSync("characters_wLore.json",JSON.stringify(characters.map(character=>{
+    return {name:character.name,gender:character.gender,origin:character.origin,gender:character.gender,height:character.height,
+      movement_speed:character.movement_speed,gender:character.gender,power_attack_type:character.power_attack_type,release_data:character.release_data,
+      icon:character.icon
+    }
+  })).split("}").join("}\n"))
+  fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))*/
   await doDaily()
   console.log(`Server is running at http://localhost:${process.env.PORT}`);
 })

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(6)
-  const [lore,setLore] = useState<string>()
+  const [quote,setQuote] = useState<string>()
   const router = useRouter()
   const nextMode = useRef<HTMLDivElement | null>(null)
   const [hint,setHint] = useState<string>()
@@ -15,7 +15,7 @@ export default function Home() {
   const [isHintShown,setIsHintShown] = useState<boolean>(false)
   useEffect(()=>{
     axios.get(process.env.NEXT_PUBLIC_HOST+"/lore/text").then(res=>{
-      setLore(res.data)
+      setQuote(res.data)
     })
   },[])
   const handleFound = () => {
@@ -40,29 +40,29 @@ export default function Home() {
   return (
     <div>
       <div className="grid w-full text-center">
-        <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-40   -z-10 " />
+        <ExportedImage  src={"/imgs/effects/ui_cloud_stretched.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full h-40 select-none  -z-10 " />
         <h1 className="text-4xl grid-column-1 content-center my-outline">Guess the random lore!</h1>
       </div>
       <div className="grid text-center -mt-20">
-        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full   max-md:mt-20 -z-10 " />
+        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized fetchPriority="high" priority alt="" width={500} height={500} className="grid-column-1 w-full  select-none max-md:mt-20 -z-10 " />
         <div className="grid-column-1 mt-25">
-          <label htmlFor="input" className="my-outline">Which character has this in their lore?</label>
+          <label htmlFor="input" className="my-outline">Which character has this in their lore:</label>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <h1 className={`${lore ? (lore.length > 50 ? (lore.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{lore ? "❝"+lore + "❞" : "Loading..."}</h1>
+            <h1 className={`select-none ${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10 my-outline'>
-            <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full   -z-10 -mt-20 md:-mt-64" />
+            <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="grid-column-1 w-full select-none  -z-10 -mt-20 md:-mt-64" />
             <div className={`grid-column-1 h-20 md:w-[40%] mx-auto ${missCount > 0 && !isFound ? "" : "cursor-pointer"}`} onClick={handleHintClick}>
               <ExportedImage  src={"/imgs/logos/random_perk.png"} className="w-15 mx-auto select-none" alt="hint icon" width={160} height={160} />
               <p>Perk Clue {missCount > 0 && !isFound ? `after ${missCount} tries` : ""}</p>
             </div>
           </div> : null}
           <div className={`mx-auto mt-4`}>
-            <SearchInput onFound={handleFound} onMissed={handleMissed} from="/lore" >
+            <SearchInput onFound={handleFound} onMissed={handleMissed} from="/quote" >
             {isHintShown ? <div className="grid -mb-8 bg-no-repeat bg-cover bg-center bg-size-100 p-10" style={{backgroundImage:`url('/imgs/effects/ui_cloud.webp')`}}>
               <p className="grid-column-1 text-sm my-outline">
-                Perk that contains it: {hint}
+                Perk that belongs to it: {hint}
               </p>
             </div> : null}
             </SearchInput>

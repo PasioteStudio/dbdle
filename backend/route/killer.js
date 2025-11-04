@@ -49,7 +49,7 @@ router.get("/:name",async(req, res)=>{
             release_date:killer.release_date 
         },difference:{
             gender:dailyKiller.gender == killer.gender ? "true" : (dailyKiller.gender.includes(killer.gender) ? "inc" : "false"),
-            origin:dailyKiller.origin == killer.origin,
+            origin:dailyKiller.origin == killer.origin ? "true" : (dailyKiller.origin.includes(killer.origin) ? "inc" : "false"),
             height:dailyKiller.height == killer.height,
             movement_speed:isMS,
             power_attack_type:dailyKiller.power_attack_type == killer.power_attack_type,

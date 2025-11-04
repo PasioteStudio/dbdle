@@ -16,6 +16,7 @@ enum DailyType {
   KILLER
   QUOTE
   SPLASH
+  LORE
 }
 
 model Daily {

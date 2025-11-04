@@ -2,14 +2,12 @@
 const [getPerks,getCharacters,getCharacter] = require("./scrapping")
 const [nameVariations,invalidNames,splashC] = require("./constants")
 const myCache = require("../cache")
-const path = require('path');
-const fs = require('fs');
-const {Jimp} = require("jimp");
+const sharp = require('sharp');
+const axios = require('axios')
 const { PrismaClient } = require('../prisma/generated/prisma')
 
 const prisma = new PrismaClient()
 module.exports = [doDaily]
-const outputDir = './perk';
 
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
@@ -35,43 +33,49 @@ async function doDaily(){
     }
   }
   //Perk
-  let dailyPerk = perks.random()
-  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"PERK"}},{value:{equals:dailyPerk.name}}]}})) != null){
-    dailyPerk = perks.random()
-  }
-  const response = await fetch(dailyPerk.icon);
-  const buffer = await response.arrayBuffer();
-  const outputFile = path.join(outputDir, "image" + response.headers.get('content-type').replace("image/","."));
-  fs.writeFileSync(outputFile, Buffer.from(buffer));
-  
+  const used_perks = (await prisma.daily.findMany({where:{type:"PERK"}})).map(data=>data.value)
+  let dailyPerk = perks.filter(perk=>used_perks.findIndex(name=>name==perk.name) == -1).random()
+  const perk_image = await sharp((await axios({ url: dailyPerk.icon, responseType: "arraybuffer" })).data)
+  perk_image.webp().toFile("perk/image.webp")
   dailyPerk=dailyPerk.name
   //Quote
-  let dailyQuote = perks.random()
-  while(dailyQuote.quote == null || (await prisma.daily.findFirst({where:{AND:[{type:{equals:"QUOTE"}},{value:{equals:dailyQuote.name}}]}})) != null){
-      dailyQuote = perks.random()
-  }
+  const used_quotes = (await prisma.daily.findMany({where:{type:"QUOTE"}})).map(data=>data.value)
+  const dailyQuote = perks.filter(perk=>used_quotes.findIndex(name=>name==perk.name) == -1 && perk.quote != null).random()
+  //Lore
+  const used_lores = (await prisma.daily.findMany({where:{type:"LORE"}})).map(data=>data.value)
+  const lore = characters.filter(character=>used_lores.findIndex(name=>name==character) == -1).random()
   //Killer
-  let killer = killers.random()
-  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"KILLER"}},{value:{equals:killer}}]}})) != null){
-    killer = killers.random()
-  }
+  const used_killers = (await prisma.daily.findMany({where:{type:"KILLER"}})).map(data=>data.value)
+  const killer = killers.filter(perk=>used_killers.findIndex(name=>name==perk) == -1).random()
   //Splash
-  let character = characters.random()
-  while((await prisma.daily.findFirst({where:{AND:[{type:{equals:"SPLASH"}},{value:{equals:character}}]}})) != null){
-    character = characters.random()
-  }
+  const used_splashes = (await prisma.daily.findMany({where:{type:"SPLASH"}})).map(data=>data.value)
+  const character = characters.filter(character=>used_splashes.findIndex(name=>name==character) == -1).random()
   let x = 0
   let y = 0
   const icon = (await getCharacter(character)).icon
-  const image = await Jimp.read(icon);
-  image.write("splash/splash.png")
+  const image = await sharp((await axios({ url: icon, responseType: "arraybuffer" })).data)
+  image.webp().toFile("splash/splash.webp")
   let notOkay = true
   const min_pixel = splashC.width - (splashC.number_of_tries * splashC.step)
   while(notOkay){
     x=Math.floor(Math.random()*(splashC.width-min_pixel))
     y=Math.floor(Math.random()*(splashC.width-min_pixel))
-    const newImage = await Jimp.read(await image.getBuffer("image/png"))
-    newImage.crop({x:x,y:y,w:min_pixel,h:min_pixel})
+    const newImage = await sharp(await image.toBuffer("image/png"))
+    const { data: _buf, info: _info } = await newImage
+      .extract({ left: x, top: y, width: min_pixel, height: min_pixel })
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    // emulate Jimp's getPixelColor(px,py) on the extracted region
+    newImage.getPixelColor = (px, py) => {
+      const idx = (py * _info.width + px) * _info.channels;
+      const r = _buf[idx];
+      const g = _buf[idx + 1];
+      const b = _buf[idx + 2];
+      const a = _buf[idx + 3];
+      return ((r << 24) | (g << 16) | (b << 8) | a) >>> 0;
+    };
     let nullPixel = 0
     for(let i = 0; i<min_pixel;i++){
       for(let j = 0; j<min_pixel;j++){
@@ -90,12 +94,12 @@ async function doDaily(){
     x,
     y
   }
-  console.log(splash)
   await prisma.daily.createMany({data:[
     {type:"KILLER",value:killer},
     {type:"PERK",value:dailyPerk},
     {type:"SPLASH",value:character},
     {type:"QUOTE",value:dailyQuote.name},
+    {type:"LORE",value:lore},
   ]})
-  myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,splash},60*60*24)
+  myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,splash,lore},60*60*24)
 }

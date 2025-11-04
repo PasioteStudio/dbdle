@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { splash } from "@/util/constants";
-
+const revealStep = splash.width / splash.number_of_tries;
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(0)
   const [missCountT,setMissCountT] = useState<number>(0)
@@ -72,9 +72,9 @@ export default function Home() {
               src={process.env.NEXT_PUBLIC_HOST + "/splash_image_src"}
               className={`w-full select-none relative ${missCount > 0 ? "transition-all duration-200 ease-linear": ""}`} //left: -950% - 950% top:-950% - 950% minWidth: 2000% - 100%
               style={{
-                minWidth:`${(splash.width + 100) - (splash.width * (Math.min(missCount / splash.number_of_tries,1)))}%`,
-                left:`${((-950 + (defaultValues.x * 1900 / 512)) * (1 - (Math.min(missCount / splash.number_of_tries,1))))*-1}%`,
-                top:`${((-950 + (defaultValues.y * 1900 / 512)) * (1 - (Math.min(missCount / splash.number_of_tries,1))))*-1}%`,
+                minWidth: `${(splash.width + 100) - Math.min(missCount * (splash.width / splash.number_of_tries), splash.width)}%`,
+                left: `${((-950 + (defaultValues.x * 1900 / 512)) * (1 - ((Math.min(missCount * (splash.width / splash.number_of_tries), splash.width)) / splash.width))) * -1}%`,
+                top: `${((-950 + (defaultValues.y * 1900 / 512)) * (1 - ((Math.min(missCount * (splash.width / splash.number_of_tries), splash.width)) / splash.width))) * -1}%`,
               }}
               alt="unknown splash art"
               width={500}
