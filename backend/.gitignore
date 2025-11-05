@@ -4,3 +4,4 @@ node_modules/
 /prisma/dev.db-journal
 .env
 /splash
+/perk
