@@ -43,7 +43,39 @@ async function doDaily(){
   const dailyQuote = perks.filter(perk=>used_quotes.findIndex(name=>name==perk.name) == -1 && perk.quote != null).random()
   //Lore
   const used_lores = (await prisma.daily.findMany({where:{type:"LORE"}})).map(data=>data.value)
-  const lore = characters.filter(character=>used_lores.findIndex(name=>name==character) == -1).random()
+  const loreCharacter = characters.filter(character=>used_lores.findIndex(name=>name==character) == -1).random()
+  const jaja = (await getCharacter(loreCharacter)).lore.replaceAll("\n","")
+  const randomIndex = Math.floor(Math.random() * (jaja.length-250))
+  const start = jaja.slice(undefined,randomIndex).lastIndexOf(" ")
+  const end = jaja.slice(randomIndex+250).indexOf(" ") + randomIndex+250
+  let text = jaja.substring(start,end)
+  for(let i =0;i<nameVariations.length;i++){
+    text = text.replaceAll(nameVariations[i],"____")
+    for(let j =0;j<nameVariations[i].from.split(" ").length;j++){
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "the") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "by") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "in") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "of") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "final") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "notebook") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "journal") continue
+      if(nameVariations[i].from.split(" ")[j].toLowerCase() == "entry") continue
+      text = text.replaceAll(nameVariations[i].from.split(" ")[j],"____")
+    }
+  }
+  for(let i =0;i<(await getCharacters()).length;i++){
+    
+    text = text.replaceAll((await getCharacters())[i],"____")
+    for(let j =0;j<(await getCharacters())[i].split(" ").length;j++){
+      if((await getCharacters())[i].split(" ")[j].toLowerCase() == "the") continue
+      text = text.replaceAll((await getCharacters())[i].split(" ")[j],"____")
+    }
+  }
+  const lore = {
+    character:loreCharacter,
+    text:text
+  }
+  console.log(lore.character)
   //Killer
   const used_killers = (await prisma.daily.findMany({where:{type:"KILLER"}})).map(data=>data.value)
   const killer = killers.filter(perk=>used_killers.findIndex(name=>name==perk) == -1).random()
@@ -99,7 +131,7 @@ async function doDaily(){
     {type:"PERK",value:dailyPerk},
     {type:"SPLASH",value:character},
     {type:"QUOTE",value:dailyQuote.name},
-    {type:"LORE",value:lore},
+    {type:"LORE",value:lore.character},
   ]})
   myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,splash,lore},60*60*24)
 }

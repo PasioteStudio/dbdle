@@ -12,8 +12,7 @@ router.get("/",async(req, res)=>{
 })
 
 router.get("/text",async(req, res)=>{
-    const character = await getCharacter(myCache.get("daily").lore)
-    res.status(200).json(character.lore);
+    res.status(200).json(myCache.get("daily").lore.text);
 })
 
 router.get("/hint",async(req, res)=>{
@@ -28,7 +27,7 @@ router.get("/:name",async(req, res)=>{
         res.status(404).json("Character not found")
         return
     }
-    if(req.params.name == myCache.get("daily").lore.name){
+    if(req.params.name == myCache.get("daily").lore.character){
         res.sendStatus(202)
     }
     else{

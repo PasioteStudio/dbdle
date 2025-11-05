@@ -43,6 +43,7 @@ const HowTo = () => {
                 <h1 className='text-4xl'>How to play?</h1>
                 <div className='w-full h-2 bg-white'></div>
                 <p>Guess in four modes by aspects from Behavior&apos;s game &quot;Dead by Daylight&quot;. It changes every 24h.</p>
+                <p className='text-sm'><i>These data are from the Dead by Daylight&quot; Wiki page.</i></p>
                 <p className='text-center'>Next perk in</p>
                 <h1 className='text-6xl text-center break-words' key={time}>{calc()}</h1>
                 <p className='text-center text-gray-400'><i>Time zone: Europe (Midnight at UTC+{process.env.NEXT_PUBLIC_TIMEZONE})</i></p>

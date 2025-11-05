@@ -44,7 +44,7 @@ export default function Home() {
         <h1 className="text-4xl grid-column-1 content-center my-outline">Guess the random quote!</h1>
       </div>
       <div className="grid text-center -mt-20">
-        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized fetchPriority="high" priority alt="" width={500} height={500} className="grid-column-1 w-full  select-none max-md:mt-20 -z-10 " />
+        <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized fetchPriority="high" priority alt="" width={500} height={500} className="grid-column-1 w-full  select-none max-md:mt-10 -z-10 " />
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which character says</label>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
