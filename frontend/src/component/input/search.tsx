@@ -5,7 +5,7 @@ import ExportedImage from "next-image-export-optimizer";
 
 declare global {
   interface Window {
-    fullres?: { events: {key:string,mode:string}[] };
+    fullres?: { events: {key:string,mode:string,streak?:string}[] };
   }
 }
 
@@ -95,6 +95,8 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
             setUsedOptions(JSON.parse(JSON.stringify(usedOptions)))
             if(res.status == 202){
                 //FOUND
+                window.fullres ||= {events: []};
+                window.fullres.events.push({ key: 'found', mode: from.slice(1),streak: streak });
                 input.current?.classList.add("hidden")
                 setFound(selected)
                 onFound()

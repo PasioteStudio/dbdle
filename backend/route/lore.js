@@ -17,7 +17,7 @@ router.get("/text",async(req, res)=>{
 
 router.get("/hint",async(req, res)=>{
     const perks = await getPerks();
-    const selectedOne = perks.filter(perk=>perk.character == myCache.get("daily").lore.name)[0]
+    const selectedOne = perks.filter(perk=>perk.character == myCache.get("daily").lore.character)[0]
     res.status(200).json(selectedOne.name)
 })
 

@@ -22,7 +22,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     const [usedOptions,setUsedOptions] = useState<{
         name:string;
         gender:{value:string;bool:string};
-        origin:{value:string;bool:boolean};
+        origin:{value:string;bool:string};
         power_attack_type:{value:string;bool:boolean};
         release_date:{value:string;bool:string};
         height:{value:string;bool:boolean};
@@ -73,7 +73,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replaceAll("ryō","ryo")).then(res=>{
             usedOptions.push({name:selected,found:res.status == 202,
                 gender:{value:res.data.selected.gender,bool:res.data.difference ? res.data.difference.gender : "true"},
-                origin:{value:res.data.selected.origin,bool:res.data.difference ? res.data.difference.origin : true},
+                origin:{value:res.data.selected.origin,bool:res.data.difference ? res.data.difference.origin : "true"},
                 power_attack_type:{value:res.data.selected.power_attack_type,bool:res.data.difference ? res.data.difference.power_attack_type : true},
                 release_date:{value:res.data.selected.release_date,bool:res.data.difference ? res.data.difference.release_date : "true"},
                 height:{value:res.data.selected.height,bool:res.data.difference ? res.data.difference.height : true},
@@ -93,6 +93,8 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
             localStorage.setItem(from,JSON.stringify({date:new Date(),streak:streak,used:usedOptions,options:options}))
             setUsedOptions(JSON.parse(JSON.stringify(usedOptions)))
             if(res.status == 202){
+                window.fullres ||= {events: []};
+                window.fullres.events.push({ key: 'found', mode: from.slice(1),streak: streak });
                 input.current?.classList.add("hidden")
                 setFound(selected)
                 onFound()
@@ -128,7 +130,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
                     <div className={`h-full rounded content-center ${option.gender.bool != "true" ? (option.gender.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.gender.value}</div>
                     <div className={`h-full rounded content-center ${option.height.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.height.value}</div>
                     <div className={`h-full rounded content-center ${option.movement_speed.bool != "true" ? (option.movement_speed.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.movement_speed.value}</div>
-                    <div className={`h-full rounded content-center ${option.origin.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.origin.value}</div>
+                    <div className={`h-full rounded content-center ${option.origin.bool != "true" ? (option.origin.bool == "false"  ? 'bg-red-500' : 'bg-orange-500') : 'bg-green-500'}`}>{option.origin.value}</div>
                     <div className={`h-full rounded content-center ${option.power_attack_type.bool ? 'bg-green-500' : 'bg-red-500'}`}>{option.power_attack_type.value}</div>
                     <div className={`h-full rounded content-center ${option.release_date.bool == "true" ? 'bg-green-500' : 'bg-red-500'}`}>{option.release_date.value} {option.release_date.bool == "true" ? null : (option.release_date.bool == "DOWN" ? "⬇️" : "⬆️") }</div>
                 </div>

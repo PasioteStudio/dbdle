@@ -75,7 +75,6 @@ async function doDaily(){
     character:loreCharacter,
     text:text
   }
-  console.log(lore.character)
   //Killer
   const used_killers = (await prisma.daily.findMany({where:{type:"KILLER"}})).map(data=>data.value)
   const killer = killers.filter(perk=>used_killers.findIndex(name=>name==perk) == -1).random()

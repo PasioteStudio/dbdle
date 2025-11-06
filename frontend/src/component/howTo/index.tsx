@@ -45,7 +45,7 @@ const HowTo = () => {
                 <p>Guess in four modes by aspects from Behavior&apos;s game &quot;Dead by Daylight&quot;. It changes every 24h.</p>
                 <p className='text-sm'><i>These data are from the Dead by Daylight&quot; Wiki page.</i></p>
                 <p className='text-center'>Next perk in</p>
-                <h1 className='text-6xl text-center break-words' key={time}>{calc()}</h1>
+                <h1 className='text-4xl md:text-6xl text-center break-words' key={time}>{calc()}</h1>
                 <p className='text-center text-gray-400'><i>Time zone: Europe (Midnight at UTC+{process.env.NEXT_PUBLIC_TIMEZONE})</i></p>
                 <h1 className='text-4xl'>{page.toUpperCase()[0] + page.slice(1)} mode</h1>
                 <div className='w-full h-2 bg-white'></div>
@@ -65,42 +65,42 @@ const HowTo = () => {
                     )
                 }
                 {
-                    page === "killer" && <div className='flex flex-col gap-2'>
+                    page === "killer" && <div className='flex flex-col overflow-y-scroll h-80 gap-2'>
                         <p>In killer mode, try to guess which character is it in the least number of tries and it will reveal its properties...</p>
                         <p>The color of the tiles will change to show how close your guess was to the champion to find.</p>
                         <p><span className='text-green-700'>Green</span> indicates the property is an exact match.</p>
                         <p><span className='text-orange-500'>Orange</span> indicates partial match.</p> 
                         <p><span className='text-red-700'>Red</span> indicates there is no overlap between your guess and the property.</p>
                         <p>⬇️ ⬆️ With arrows, it also indicates if the answer property is above or below your guess.</p>
-                        <h2 className='text-3xl'>Properties</h2>
+                        <h2 className='text-xl md:text-3xl'>Properties</h2>
                         <p>Here is the details of each of the properties columns:</p>
                         <div className='grid grid-cols-2 gap-2'>
                             <div>
-                                <h3 className='text-2xl'>Gender:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Gender:</strong></h3>
                                 <p>Possible values: Woman, Man, None, Not applicable</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Origin:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Origin:</strong></h3>
                                 <p>Possible values: any nationality (like Brazilian, American)</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Gender:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Gender:</strong></h3>
                                 <p>Possible values: Woman, Man, None, Not applicable</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Height:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Height:</strong></h3>
                                 <p>Possible values: Tall, Avarage, Short</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Movement Speed:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Movement Speed:</strong></h3>
                                 <p>Possible values: 4.6m/s, 4 m/s, 3.85m/s, 4.4m/s</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Power attack type:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Power attack type:</strong></h3>
                                 <p>Possible values: Special Attack, None or Basic Attack</p>
                             </div>
                             <div>
-                                <h3 className='text-2xl'>Release date:</h3>
+                                <h3 className='text-xl md:text-2xl'><strong>Release date:</strong></h3>
                                 <p>Possible values: Any year between 2016 and today</p>
                             </div>
                         </div>

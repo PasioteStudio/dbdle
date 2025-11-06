@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { splash } from "@/util/constants";
-const revealStep = splash.width / splash.number_of_tries;
+
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(0)
   const [missCountT,setMissCountT] = useState<number>(0)
