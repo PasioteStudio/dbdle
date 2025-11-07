@@ -35,9 +35,9 @@ export default function Home() {
           </div>
       </div>
       {isFound ? 
-      <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/splash")}}>
+      <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/lore")}}>
         <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-20   -z-10" />
-        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Splash</h1>
+        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Lore</h1>
       </div> : null}
     </div>
   );
