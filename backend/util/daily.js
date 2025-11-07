@@ -12,7 +12,7 @@ module.exports = [doDaily]
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
-const types = ["KILLER","SPLASH","QUOTE","PERK"]
+const types = ["KILLER","SPLASH","QUOTE","PERK","LORE"]
 async function doDaily(){
   //flush mem and db if needed
   myCache.flushAll()
@@ -30,6 +30,8 @@ async function doDaily(){
       await prisma.daily.deleteMany({where:{type:{equals:"QUOTE"}}})
     }else if(types[i] == "SPLASH" && count == characters.length){
       await prisma.daily.deleteMany({where:{type:{equals:"SPLASH"}}})
+    }else if(types[i] == "LORE" && count == characters.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"LORE"}}})
     }
   }
   //Perk
