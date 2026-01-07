@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const myCache = require("../cache")
-const [getPerks] = require("../util/scrapping")
+const {getPerks} = require("../util/scrapping")
 
 const router = express.Router();
 module.exports = router

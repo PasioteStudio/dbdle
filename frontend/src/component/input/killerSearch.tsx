@@ -105,25 +105,25 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     }
     return (
     <div className='relative'>
-        <h1 className={`w-full mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h1>
+        <h2 className={`w-full mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h2>
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='min-w-[200px] rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 gap-0.5 overflow-x-hidden overflow-y-scroll max-h-64'>
             {search != "-" && options.map((option,id) => [
                 <li className={`${option.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.toLowerCase().includes(search)) ? "flex" : "hidden")} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
                     <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2 select-none' alt={option} width={64} height={64} />
-                    <h2 className='h-full content-center'>{option}</h2>
+                    <h3 className='h-full content-center'>{option}</h3>
                 </li>,
             ])}
         </ul>
         <div className='grid grid-min-100 w-full overflow-x-auto items-end gap-4 p-4 '>
-            <h1>Character <hr className='mt-4' /></h1>
-            <h1>Gender<hr className='mt-4' /></h1>
-            <h1>Height<hr className='mt-4' /></h1>
-            <h1>Movement Speed<hr className='mt-4' /></h1>
-            <h1>Origin<hr className='mt-4' /></h1>
-            <h1>Power Attack Type<hr className='mt-4' /></h1>
-            <h1>Release Date<hr className='mt-4' /></h1>
+            <h2>Character <hr className='mt-4' /></h2>
+            <h2>Gender<hr className='mt-4' /></h2>
+            <h2>Height<hr className='mt-4' /></h2>
+            <h2>Movement Speed<hr className='mt-4' /></h2>
+            <h2>Origin<hr className='mt-4' /></h2>
+            <h2>Power Attack Type<hr className='mt-4' /></h2>
+            <h2>Release Date<hr className='mt-4' /></h2>
             {usedOptions.toReversed().map(option => (
                 <div className={`grid col-span-7 grid-min-100 break-words w-full gap-4 items-center`} key={option.name} >
                     <div className={`h-full rounded content-center ${option.found ? 'bg-green-500' : 'bg-red-500'}`}>{option.name}</div>

@@ -1,13 +1,12 @@
 const express = require('express');
 const myCache = require("../cache")
-const [getPerks,getCharacters,getCharacter] = require("../util/scrapping")
-const [nameVariations,invalidNames,splash] = require("../util/constants")
+const {getPerks,getCharacters,getCharacter} = require("../util/scrapping")
+const {nameVariations,invalidNames,splash} = require("../util/constants")
 const router = express.Router();
 module.exports = router
 
 router.get("/",async(req, res)=>{
-    const characters = await getCharacters();
-    res.status(200).json(characters);
+    res.status(200).json(await getCharacters());
 })
 
 router.get("/image",async(req, res)=>{

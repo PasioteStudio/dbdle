@@ -1,7 +1,7 @@
-const [nameVariations,invalidNames] = require("./constants")
+const {nameVariations,invalidNames} = require("./constants")
 const myCache = require("../cache")
 
-module.exports = [getPerks,getCharacters,getCharacter]
+module.exports = {getPerks,getCharacters,getCharacter,getKillers}
 
 async function getPerks(){
     if(myCache.get("perks")){
@@ -139,6 +139,7 @@ async function getCharacter(character){
     let origin = null
     let height = null
     let movement_speed = null
+    let terror_radius = null
     let alt_movement_speed = null
     let power_attack_type = null
     let release_date = null
@@ -167,9 +168,11 @@ async function getCharacter(character){
             if(character.includes("The")){
                 height = killerTable.split('<td class="titleColumn">Height')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0]
                 movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('</b> ')[1].split('\n</td>')[0].split(" (")[0].replace(" ","")
-                
                 if(killerTable.includes('Alternate Movement speed')){
                     alt_movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('<td class="titleColumn">Alternate Movement speed</td>')[1].split(" m/s")[0].split("</b>")[1].replaceAll(" ","") + "m/s (power)"
+                }
+                if(killerTable.includes('colspan="2">Terror Radius Music')){
+                    terror_radius = killerTable.split('colspan="2">Terror Radius Music')[1].split('<audio src="')[1].split('"')[0]
                 }
                 if(killerTable.includes('<td class="titleColumn">Power <a href="/wiki/Attack"')){
                     power_attack_type = killerTable.split('<td class="titleColumn">Power <a href="/wiki/Attack"')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0].split("\n<p>")[0]
@@ -178,9 +181,13 @@ async function getCharacter(character){
                 }
             }
             // You can use a library like cheerio to parse HTML if needed
-            let temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[1]
+            let temp = html.split('<table class="infoboxtable charInfoboxTable')[1].substring(html.split('<table class="infoboxtable charInfoboxTable')[1].indexOf("</table>"))
             if(temp.includes("<p>")){
-                temp = temp.split("<p>")[2].split("</p>")[0].split(".")
+                if(temp.split("<p>")[2].includes("released")){
+                    temp = temp.split("<p>")[2].split("</p>")[0].split(".")
+                }else if(temp.split("<p>").length > 2 && temp.split("<p>")[3].includes("released")){
+                    temp = temp.split("<p>")[3].split("</p>")[0].split(".")
+                }
             }else{
                 temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[2].split("<p>")[2].split("</p>")[0].split(".")
             }
@@ -199,6 +206,7 @@ async function getCharacter(character){
         gender,
         origin,
         height,
+        terror_radius,
         movement_speed: alt_movement_speed != null ? movement_speed + " "+ alt_movement_speed : movement_speed,
         power_attack_type,
         release_date:Number.parseInt(release_date),
@@ -206,4 +214,13 @@ async function getCharacter(character){
     }
     myCache.set("character_"+character,killer,60*60*24)
     return killer
+}
+async function getKillers() {
+    if(myCache.get("killers")){
+        return myCache.get("killers")
+    }
+    const characters = await getCharacters();
+    const killers = characters.filter(character=>character.includes("The"))
+    myCache.set("killers",killers,60*60*24)
+    return killers
 }

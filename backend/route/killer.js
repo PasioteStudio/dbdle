@@ -1,23 +1,20 @@
 const express = require('express');
 const myCache = require("../cache")
-const [getPerks,getCharacters,getCharacter] = require("../util/scrapping")
+const {getPerks,getCharacters,getCharacter,getKillers} = require("../util/scrapping")
 
 const router = express.Router();
 module.exports = router
 
 router.get("/",async(req, res)=>{
-    const characters = await getCharacters();
-    const killers = characters.filter(character=>character.includes("The"))
-    res.status(200).json(killers);
+    res.status(200).json(await getKillers());
 })
 
 router.get("/:name",async(req, res)=>{
     req.params.name = req.params.name.replaceAll("_"," ").replaceAll("ryo","ryō")
-    if(!(await getCharacters()).filter(character=>character.includes("The")).includes(req.params.name)){
+    if(!(await getKillers()).includes(req.params.name)){
         res.status(404).json("Killer not found")
         return
     }
-    const onr = (await getCharacters()).filter(character=>character.includes("Onr"));
     const killer = await getCharacter(req.params.name)
     const dailyKiller = await getCharacter(myCache.get("daily").killer)
     if(req.params.name == myCache.get("daily").killer){
@@ -33,10 +30,15 @@ router.get("/:name",async(req, res)=>{
     else{
         let isMS = dailyKiller.movement_speed == killer.movement_speed ? "true" : "false"
         if(isMS == "false"){
-            for(let i = 0; i<killer.movement_speed.replace(" (alt)","").split(" ").length;i++){
-                if(dailyKiller.movement_speed.includes(killer.movement_speed.replace(" (alt)","").split(" ")[i])){
-                    isMS = "inc"
+            try {
+                const ms = killer.movement_speed.replace(" (alt)","").replace(" (power)","").split(" ")
+                for(let i = 0; i<ms.length;i++){
+                    if(dailyKiller.movement_speed.includes(ms[i])){
+                        isMS = "inc"
+                    }
                 }
+            } catch (error) {
+                
             }
         }
         res.status(200).json({

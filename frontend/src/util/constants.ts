@@ -3,6 +3,7 @@ export const categories = [
   {title:"Quote","description":"Guess the character by a quote of their",icon:"/imgs/logos/IconHelp_archivesCollection.png",link:"/quote"},
   {title:"Killer","description":"Guess the killer by clues on every try",icon:"/imgs/logos/IconHelpLoading_killer.png",link:"/killer"},
   {title:"Lore","description":"Guess the character's lore by a part of their lore",icon:"/imgs/logos/ArchivesGeneral.png",link:"/lore"},
+  {title:"Terror radius","description":"Guess the killer by their terror radius",icon:"/imgs/logos/Distressing.png",link:"/terror_radius"},
   {title:"Splash","description":"Guess the character by a splash of their",icon:"/imgs/logos/OutfitIcon.png",link:"/splash"},
 ]
 export const splash = {

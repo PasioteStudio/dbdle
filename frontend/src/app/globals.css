@@ -42,6 +42,61 @@ body {
 .grid-min-100{
   grid-template-columns: repeat(7, minmax(75px, 1fr));
 }
+
+.switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 80px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .2s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .2s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: var(--color-red-700);
+}
+
+input:checked + .slider:before {
+  transform: translateX(46px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.blur-s {
+    --tw-blur: blur(6px);
+    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+}
+
 .my-outline {
   -webkit-text-stroke: var(--outline2) black; /* Chrome, Safari, Edge */
   text-stroke: var(--outline2) black; /* future standard */

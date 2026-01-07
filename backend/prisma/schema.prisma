@@ -17,6 +17,7 @@ enum DailyType {
   QUOTE
   SPLASH
   LORE
+  TERROR_RADIUS
 }
 
 model Daily {

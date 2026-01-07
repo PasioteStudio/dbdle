@@ -39,16 +39,16 @@ const HowTo = () => {
         {howTo ? 
         [<div key={1} className='fixed left-0 z-20 top-0 w-full flex h-full items-center justify-center'>
             <div className='bg-gray-700 relative flex flex-col gap-2 text-white w-[80%] md:w-[50%] border border-black rounded p-4'>
-                <h1 className='select-none text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</h1>
-                <h1 className='text-4xl'>How to play?</h1>
-                <div className='w-full h-2 bg-white'></div>
+                <h2 className='select-none text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</h2>
+                <h2 className='text-4xl'>How to play?</h2>
+                <div className='w-full h-1 bg-white'></div>
                 <p>Guess in four modes by aspects from Behavior&apos;s game &quot;Dead by Daylight&quot;. It changes every 24h.</p>
                 <p className='text-sm'><i>These data are from the Dead by Daylight&quot; Wiki page.</i></p>
                 <p className='text-center'>Next perk in</p>
-                <h1 className='text-4xl md:text-6xl text-center break-words' key={time}>{calc()}</h1>
+                <h2 className='text-4xl md:text-6xl text-center break-words' key={time}>{calc()}</h2>
                 <p className='text-center text-gray-400'><i>Time zone: Europe (Midnight at UTC+{process.env.NEXT_PUBLIC_TIMEZONE})</i></p>
-                <h1 className='text-4xl'>{page.toUpperCase()[0] + page.slice(1)} mode</h1>
-                <div className='w-full h-2 bg-white'></div>
+                <h2 className='text-4xl'>{page.toUpperCase()[0] + page.slice(1)} mode</h2>
+                <div className='w-full h-1 bg-white'></div>
                 {
                     page === "perk" && (
                         <p>In perk mode, try to guess which perk has the image in the least number of tries. <br /> You can see its description once you found it!</p>

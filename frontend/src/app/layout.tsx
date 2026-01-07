@@ -5,10 +5,7 @@ export const metadata:Metadata = {
     icon: '/favicon.ico',
     shortcut: '/favicon.png',
   },
-  title: {
-    template: '%s | DBDle',
-    default: 'Welcome',
-  },
+  title:"DBDle",
   description: 'Guess in multiple categories of the Dead by Daylight game',
   openGraph: {
     title: 'DBDle',

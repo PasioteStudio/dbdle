@@ -1,6 +1,6 @@
 const express = require('express');
 const myCache = require("../cache")
-const [getPerks,getCharacters,getCharacter] = require("../util/scrapping")
+const {getPerks,getCharacters,getCharacter} = require("../util/scrapping")
 
 const router = express.Router();
 module.exports = router

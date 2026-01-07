@@ -7,12 +7,13 @@ const fs = require('fs');
 const path = require('path');
 const schedule = require('node-schedule');
 const [doDaily] = require("./util/daily")
-const [getPerks,getCharacters,getCharacter] = require("./util/scrapping")
+const {getPerks,getCharacters,getCharacter} = require("./util/scrapping")
 const perkRouter = require("./route/perk")
 const quoteRouter = require("./route/quote")
 const killerRouter = require("./route/killer")
 const loreRouter = require("./route/lore")
 const splashRouter = require("./route/splash")
+const terrorRadiusRouter = require("./route/terror_radius")
 
 dotenv.config({ path: path.join(__dirname, './.env') });
 const app = express();
@@ -20,9 +21,9 @@ const app = express();
 app.set('trust proxy', 1);
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  message: "Too many requests from this IP, please try again after 15 minutes",
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 5 minutes)
+  message: "Too many requests from this IP, please try again after 5 minutes",
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -51,6 +52,7 @@ app.use("/quote",quoteRouter)
 app.use("/killer",killerRouter)
 app.use("/splash",splashRouter)
 app.use("/lore",loreRouter)
+app.use("/terror_radius",terrorRadiusRouter)
 
 const job = schedule.scheduleJob({hour:0,minute:0,tz:"Etc/GMT-2"}, function(){
   doDaily()
@@ -65,20 +67,18 @@ app.get(/(.*)/,function (req, res, next) {
 
 
 app.listen(process.env.PORT, async () => {  
-  /*const characters = await Promise.all((await getCharacters()).map(async (character)=>{
+  const characters = await Promise.all((await getCharacters()).map(async (character)=>{
     const char = await getCharacter(character)
     return char
   }));
   const perks = await getPerks()
   //write to file
-  fs.writeFileSync("characters_lore.json",JSON.stringify(characters.map(character=>{return {name:character.name,lore:character.lore}})).split("}").join("}\n"))
+  //fs.writeFileSync("characters_lore.json",JSON.stringify(characters.map(character=>{return {name:character.name,lore:character.lore}})).split("}").join("}\n"))
   fs.writeFileSync("characters_wLore.json",JSON.stringify(characters.map(character=>{
-    return {name:character.name,gender:character.gender,origin:character.origin,gender:character.gender,height:character.height,
-      movement_speed:character.movement_speed,gender:character.gender,power_attack_type:character.power_attack_type,release_data:character.release_data,
-      icon:character.icon
+    return {name:character.name,terror_radius:character.terror_radius
     }
   })).split("}").join("}\n"))
-  fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))*/
+  fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))
   await doDaily()
   console.log(`Server is running at http://localhost:${process.env.PORT}`);
 })

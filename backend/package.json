@@ -20,7 +20,8 @@
     "node-cache": "^5.1.2",
     "node-schedule": "^2.1.1",
     "nodejs": "^0.0.0",
-    "sharp": "^0.32.6"
+    "sharp": "^0.32.6",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "prisma": "^6.16.2"

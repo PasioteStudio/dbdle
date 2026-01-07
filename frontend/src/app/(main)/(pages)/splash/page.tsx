@@ -85,7 +85,7 @@ export default function Home() {
             />
             </div>
           <div>
-            <div className="bg-yellow-500 rounded-full aspect-square w-[10%] mx-auto cursor-pointer" onClick={handleHintClick}>
+            <div className="bg-[rgba(240,177,0,0.7)] rounded-full aspect-square w-[10%] mx-auto cursor-pointer" onClick={handleHintClick}>
               <ExportedImage  src={"/imgs/logos/zoom.webp"} width={128} height={128} alt="hint" className="select-none" />
             </div>
             <p className="my-outline">Each try zooms out a bit.</p>
@@ -99,7 +99,7 @@ export default function Home() {
       {isFound ? 
       <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/perk")}}>
         <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-20   -z-10" />
-        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Perk</h1>
+        <h2 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Perk</h2>
       </div> : null}
     </div>
   );

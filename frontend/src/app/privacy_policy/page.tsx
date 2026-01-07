@@ -26,7 +26,7 @@ export default function Home() {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="selection:bg-red-700 p-4 bg-white text-black font-sans items-center justify-items-center min-h-screen pb-20 gap-16">
+        <div className="selection:bg-red-400 p-4 bg-white text-black font-sans items-center justify-items-center min-h-screen pb-20 gap-16">
           <div className="s:w-[75%] sm:w-[60%] md:w-[50%] flex flex-col gap-4">
             <h1 className="text-4xl">DBDle -- Privacy Policy</h1>
             <h2 className="text-3xl">Content Used From</h2>
@@ -74,21 +74,21 @@ export default function Home() {
             <table>
               <thead>
                 <tr>
-                  <th>Cookie</th>
-                  <th>Purpose</th>
-                  <th>Duration</th>
+                  <th className="border-1 border-collapse border-black p-2">Cookie</th>
+                  <th className="border-1 border-collapse border-black p-2">Purpose</th>
+                  <th className="border-1 border-collapse border-black p-2">Duration</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>cc_cookie</td>
-                  <td>Used to store the user&apos;s cookie consent preferences.</td>
-                  <td>182 days</td>
+                  <td className="border-1 border-collapse border-black p-2">cc_cookie</td>
+                  <td className="border-1 border-collapse border-black p-2">Used to store the user&apos;s cookie consent preferences.</td>
+                  <td className="border-1 border-collapse border-black p-2">182 days</td>
                 </tr>
                 <tr>
-                  <td>guesses (/perk /quote /killer /splash and splashFirst)</td>
-                  <td>Used to store the user&apos;s guesses across the modes.</td>
-                  <td>182 days</td>
+                  <td className="border-1 border-collapse border-black p-2">guesses (/perk, /quote, /killer, /splash, /lore, /terror_radius, splashFirst and iridescentMode)</td>
+                  <td className="border-1 border-collapse border-black p-2">Used to store the user&apos;s guesses across the modes.</td>
+                  <td className="border-1 border-collapse border-black p-2">182 days</td>
                 </tr>
               </tbody>
             </table>
@@ -96,16 +96,16 @@ export default function Home() {
             <table>
               <thead>
                 <tr>
-                  <th>Cookie</th>
-                  <th>Purpose</th>
-                  <th>Duration</th>
+                  <th className="border-1 border-collapse border-black p-2">Cookie</th>
+                  <th className="border-1 border-collapse border-black p-2">Purpose</th>
+                  <th className="border-1 border-collapse border-black p-2">Duration</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>fullres_analytics</td>
-                  <td>This cookie helps to give us a feedback about the website usage.</td>
-                  <td>182 days</td>
+                  <td className="border-1 border-collapse border-black p-2">fullres_analytics</td>
+                  <td className="border-1 border-collapse border-black p-2">This cookie helps to give us a feedback about the website usage.</td>
+                  <td className="border-1 border-collapse border-black p-2">182 days</td>
                 </tr>
               </tbody>
             </table>

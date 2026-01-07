@@ -1,6 +1,6 @@
 
-const [getPerks,getCharacters,getCharacter] = require("./scrapping")
-const [nameVariations,invalidNames,splashC] = require("./constants")
+const {getPerks,getCharacters,getCharacter, getKillers} = require("./scrapping")
+const {nameVariations,invalidNames,splash} = require("./constants")
 const myCache = require("../cache")
 const sharp = require('sharp');
 const axios = require('axios')
@@ -12,26 +12,31 @@ module.exports = [doDaily]
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
-const types = ["KILLER","SPLASH","QUOTE","PERK","LORE"]
+const types = ["KILLER","SPLASH","QUOTE","PERK","LORE","TERROR_RADIUS"]
 async function doDaily(){
   //flush mem and db if needed
   myCache.flushAll()
   const characters = await getCharacters()
-  const killers = characters.filter(character=>character.includes("The"))
+  const killers = await getKillers()
   const perks = await getPerks()
-
+  const sound_killers = await Promise.all((await getKillers()).filter(async (killer)=>{
+    const char = await getCharacter(killer)
+    return char.terror_radius
+  }));
   for(let i =0; i<types.length;i++){
     const count = await prisma.daily.count({where:{type:{equals:types[i]}}})
-    if(types[i] == "PERK" && count == perks.length){
+    if(types[i] == "PERK" && count >= perks.length){
       await prisma.daily.deleteMany({where:{type:{equals:"PERK"}}})
-    }else if(types[i] == "KILLER" && count == killers.length){
+    }else if(types[i] == "KILLER" && count >= killers.length){
       await prisma.daily.deleteMany({where:{type:{equals:"KILLER"}}})
-    }else if(types[i] == "QUOTE" && count == perks.length){
+    }else if(types[i] == "QUOTE" && count >= perks.filter(perk=>perk.quote != null).length){
       await prisma.daily.deleteMany({where:{type:{equals:"QUOTE"}}})
-    }else if(types[i] == "SPLASH" && count == characters.length){
+    }else if(types[i] == "SPLASH" && count >= characters.length){
       await prisma.daily.deleteMany({where:{type:{equals:"SPLASH"}}})
-    }else if(types[i] == "LORE" && count == characters.length){
+    }else if(types[i] == "LORE" && count >= characters.length){
       await prisma.daily.deleteMany({where:{type:{equals:"LORE"}}})
+    }else if(types[i] == "TERROR_RADIUS" && count >= sound_killers.length){
+      await prisma.daily.deleteMany({where:{type:{equals:"TERROR_RADIUS"}}})
     }
   }
   //Perk
@@ -80,6 +85,9 @@ async function doDaily(){
   //Killer
   const used_killers = (await prisma.daily.findMany({where:{type:"KILLER"}})).map(data=>data.value)
   const killer = killers.filter(perk=>used_killers.findIndex(name=>name==perk) == -1).random()
+  //Terror radius
+  const used_sounds = (await prisma.daily.findMany({where:{type:"TERROR_RADIUS"}})).map(data=>data.value)
+  const sound = sound_killers.filter(perk=>used_sounds.findIndex(name=>name==perk) == -1).random()
   //Splash
   const used_splashes = (await prisma.daily.findMany({where:{type:"SPLASH"}})).map(data=>data.value)
   const character = characters.filter(character=>used_splashes.findIndex(name=>name==character) == -1).random()
@@ -89,10 +97,10 @@ async function doDaily(){
   const image = await sharp((await axios({ url: icon, responseType: "arraybuffer" })).data)
   image.webp().toFile("splash/splash.webp")
   let notOkay = true
-  const min_pixel = splashC.width - (splashC.number_of_tries * splashC.step)
+  const min_pixel = splash.width - (splash.number_of_tries * splash.step)
   while(notOkay){
-    x=Math.floor(Math.random()*(splashC.width-min_pixel))
-    y=Math.floor(Math.random()*(splashC.width-min_pixel))
+    x=Math.floor(Math.random()*(splash.width-min_pixel))
+    y=Math.floor(Math.random()*(splash.width-min_pixel))
     const newImage = await sharp(await image.toBuffer("image/png"))
     const { data: _buf, info: _info } = await newImage
       .extract({ left: x, top: y, width: min_pixel, height: min_pixel })
@@ -122,7 +130,7 @@ async function doDaily(){
     }
   }
 
-  const splash = {
+  const real_splash = {
     character,
     x,
     y
@@ -133,6 +141,7 @@ async function doDaily(){
     {type:"SPLASH",value:character},
     {type:"QUOTE",value:dailyQuote.name},
     {type:"LORE",value:lore.character},
+    {type:"TERROR_RADIUS",value:sound},
   ]})
-  myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,splash,lore},60*60*24)
+  myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,terror_radius:sound,splash:real_splash,lore},60*60*24)
 }

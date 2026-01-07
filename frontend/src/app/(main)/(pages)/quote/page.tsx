@@ -48,7 +48,7 @@ export default function Home() {
         <div className="grid-column-1 mt-25">
           <label htmlFor="input" className="my-outline">Which character says</label>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <h1 className={`select-none ${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h1>
+            <h2 className={`select-none ${quote ? (quote.length > 50 ? (quote.length > 100 ? "text-xl" : "text-2xl") : "text-3xl") : ""}`}>{quote ? "❝"+quote + "❞" : "Loading..."}</h2>
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10 my-outline'>
@@ -72,7 +72,7 @@ export default function Home() {
       {isFound ? 
       <div className="text-center grid mt-10 cursor-pointer" ref={nextMode} onClick={()=>{router.push("/killer")}}>
         <ExportedImage  src={"/imgs/effects/ui_cloud.webp"} unoptimized alt="" width={500} height={500} className="select-none grid-column-1 w-full h-20   -z-10" />
-        <h1 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Killer</h1>
+        <h2 className="text-3xl grid-column-1 py-4 content-center">Next Mode: Killer</h2>
       </div> : null}
     </div>
   );

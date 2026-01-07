@@ -1,14 +1,13 @@
 const express = require('express');
 const myCache = require("../cache")
-const [getPerks,getCharacters] = require("../util/scrapping")
+const {getPerks,getCharacters} = require("../util/scrapping")
 
 const router = express.Router();
 module.exports = router
 
 
 router.get("/",async(req, res)=>{
-    const characters = await getCharacters();
-    res.status(200).json(characters);
+    res.status(200).json(await getCharacters());
 })
 
 router.get("/text",async(req, res)=>{
