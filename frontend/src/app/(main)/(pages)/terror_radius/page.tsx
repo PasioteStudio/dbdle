@@ -7,18 +7,14 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(6)
-  const [quote,setQuote] = useState<string>()
   const router = useRouter()
   const nextMode = useRef<HTMLDivElement | null>(null)
   const [hint,setHint] = useState<string>()
   const [isFound,setFound] = useState<boolean>(false)
   const [isHintShown,setIsHintShown] = useState<boolean>(false)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  useEffect(()=>{
-    axios.get(process.env.NEXT_PUBLIC_HOST+"/terror_radius/text").then(res=>{
-      setQuote(res.data)
-    })
-  },[])
+  const [audioChange,setAudioChange] = useState<number>(0)
+  const [audio, setAudio] = useState<HTMLAudioElement>()
+
   const handleFound = () => {
     setFound(true)
     if(!nextMode.current){
@@ -32,19 +28,41 @@ export default function Home() {
   const handleMissed = () => {
     setMissCount(number => number - 1)
   }
+  useEffect(()=>{
+    if(!audio){
+      setAudio(new Audio(process.env.NEXT_PUBLIC_HOST+'/terror_radius/sound'))
+      return
+    }
+    audio.volume = 0.7
+    audio.pause()
+    setAudioChange(new Date().getTime())
+  },[audio])
   const handleHintClick = async() => {
     if(missCount > 0 && !isFound)return
     const data = await axios.get(process.env.NEXT_PUBLIC_HOST + "/terror_radius/hint").then(res => res.data)
     setHint(data)
     setIsHintShown(!isHintShown)
   }
-
-  const handlePlay = () => {
-    if(audioRef.current?.paused){
-      audioRef.current?.play()
-    }else{
-      audioRef.current?.pause()
+  const handlePlay = async() => {
+    //type application/ogg
+    if(audio && audio.paused){
+      await audio.play()
+      setAudioChange(new Date().getTime())
+      setTimeout(()=>{audio.volume = 0.0},50)
+      setTimeout(()=>{audio.volume = 0.2},100)
+      setTimeout(()=>{audio.volume = 0.4},150)
+      setTimeout(()=>{audio.volume = 0.6},200)
+      }else if(audio){
+      audio.volume = 0.6
+      setTimeout(()=>{audio.volume = 0.4},50)
+      setTimeout(()=>{audio.volume = 0.2},100)
+      setTimeout(()=>{audio.volume = 0.0},150)
+      setTimeout(()=>{
+        audio.pause()
+        setAudioChange(new Date().getTime())
+      },200)
     }
+    
   }
   return (
     <div>
@@ -58,8 +76,8 @@ export default function Home() {
           <label htmlFor="input" className="my-outline">Which killer has this terror radius</label>
           <p className="text-sm">(Click at the heart!)</p>
           <div className="p-5 w-[80%] h-52 mx-auto aspect-square justify-items-center grid bg-no-repeat bg-contain bg-center">
-            <ExportedImage alt="Terror radius" src={"/imgs/logos/Distressing.png"} width={1080} height={1080} className="cursor-pointer w-max h-full" onClick={handlePlay} />
-            <audio loop ref={audioRef} src={`${process.env.NEXT_PUBLIC_HOST}/terror_radius/sound`}></audio>
+            <div title="Terror radius"
+            className={`cursor-pointer bg-red-700 w-full h-full heart ${audio && audioChange && audio.paused ? "" : "animate-pulse"}`} onClick={handlePlay} />
           </div>
           {missCount < 6 || isFound ? 
           <div className='grid h-28 w-full mt-10 my-outline'>
@@ -70,7 +88,7 @@ export default function Home() {
             </div>
           </div> : null}
           <div className={`mx-auto mt-4`}>
-            <SearchInput onFound={handleFound} onMissed={handleMissed} from="/quote" >
+            <SearchInput onFound={handleFound} onMissed={handleMissed} from="/terror_radius" >
             {isHintShown ? <div className="grid -mb-8 bg-no-repeat bg-cover bg-center bg-size-100 p-10" style={{backgroundImage:`url('/imgs/effects/ui_cloud.webp')`}}>
               <p className="grid-column-1 text-sm my-outline">
                 Perk that contains it: {hint}

@@ -41,7 +41,7 @@ export const metadata:Metadata = {
     description: 'Guess in multiple categories of the Dead by Daylight game',
     images: ['https://dbdle.pasiotestudio.hu/imgs/logos/og_image.png'],
   },
-  keywords: ['dead, daylight',' daily','guessing','Dead by Daylight', 'dbd', 'daily', 'dbdle', 'guessing', 'dbdle net','welcome','perk','killer','quote','splash'],
+  keywords: ['dead, daylight',' daily','guessing','Dead by Daylight', 'dbd', 'daily', 'dbdle', 'guessing', 'dbdle net','welcome','perk','killer','quote','lore','terror radius','splash'],
   category: 'games',
   authors: [{ name: 'Attila Pápa', url: 'https://www.pasiotestudio.hu' }],
   creator: 'Attila Pápa',

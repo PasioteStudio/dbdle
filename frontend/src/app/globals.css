@@ -92,9 +92,31 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+.animate-pulse{
+  animation-duration: 750ms;
+}
+
 .blur-s {
     --tw-blur: blur(6px);
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+}
+
+.select-none{
+  pointer-events: none
+}
+
+.heart{
+  -webkit-mask-image: url("/imgs/logos/Distressing.png");
+  mask-image: url("/imgs/logos/Distressing.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+.cloud{
+  -webkit-mask-image: url("/imgs/effects/ui_cloud.webp");
+  mask-image: url("/imgs/effects/ui_cloud.webp");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 100%;
 }
 
 .my-outline {

@@ -19,10 +19,10 @@ async function doDaily(){
   const characters = await getCharacters()
   const killers = await getKillers()
   const perks = await getPerks()
-  const sound_killers = await Promise.all((await getKillers()).filter(async (killer)=>{
+  const sound_killers = (await Promise.all((await getKillers()).map(async (killer)=>{
     const char = await getCharacter(killer)
-    return char.terror_radius
-  }));
+    return {name:char.name,terror_radius:char.terror_radius}
+  }))).filter(k => k.terror_radius != null && k.terror_radius != undefined).map(k=>k.name);
   for(let i =0; i<types.length;i++){
     const count = await prisma.daily.count({where:{type:{equals:types[i]}}})
     if(types[i] == "PERK" && count >= perks.length){

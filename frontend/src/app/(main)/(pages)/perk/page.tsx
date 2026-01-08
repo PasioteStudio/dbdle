@@ -49,7 +49,7 @@ export default function Home() {
       setIridescentMode(newIri)
     }
     
-  },[])
+  },[iridescentMode])
   
   const handleFound = () => {
     setFound(true)

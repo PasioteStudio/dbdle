@@ -85,7 +85,7 @@ export default function Home() {
             />
             </div>
           <div>
-            <div className="bg-[rgba(240,177,0,0.7)] rounded-full aspect-square w-[10%] mx-auto cursor-pointer" onClick={handleHintClick}>
+            <div className="bg-[rgba(240,177,0,0.7)] cloud aspect-square w-[10%] mx-auto cursor-pointer" onClick={handleHintClick}>
               <ExportedImage  src={"/imgs/logos/zoom.webp"} width={128} height={128} alt="hint" className="select-none" />
             </div>
             <p className="my-outline">Each try zooms out a bit.</p>

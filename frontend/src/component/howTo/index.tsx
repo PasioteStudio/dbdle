@@ -65,6 +65,16 @@ const HowTo = () => {
                     )
                 }
                 {
+                    page === "lore" && (
+                        <p>In lore mode, try to guess which character has that lore in the least number of tries.</p>
+                    )
+                }
+                {
+                    page === "terror_radius" && (
+                        <p>In teror radius mode, try to guess which character has that terror radius music sound in the least number of tries.</p>
+                    )
+                }
+                {
                     page === "killer" && <div className='flex flex-col overflow-y-scroll h-80 gap-2'>
                         <p>In killer mode, try to guess which character is it in the least number of tries and it will reveal its properties...</p>
                         <p>The color of the tiles will change to show how close your guess was to the champion to find.</p>

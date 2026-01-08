@@ -27,6 +27,16 @@
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://dbdle.pasiotestudio.hu/lore</loc>
+  <lastmod>2026-01-08T11:19:57+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dbdle.pasiotestudio.hu/terror_radius</loc>
+  <lastmod>2026-01-08T11:19:57+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://dbdle.pasiotestudio.hu/splash</loc>
   <lastmod>2024-10-30T11:19:57+00:00</lastmod>
   <priority>0.80</priority>

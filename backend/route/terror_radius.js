@@ -10,28 +10,48 @@ router.get("/",async(req, res)=>{
     res.status(200).json(await getKillers());
 })
 
-router.get("/sound",async(req, res)=>{
-    const killer = await getCharacter(myCache.get("daily").terror_radius)
-    try {
-        const response = await fetch(killer.terror_radius, {
-        headers: {
-            ...req.headers,
-            host: undefined
-        }
-        });
+router.get("/sound", async (req, res) => {
+  const controller = new AbortController();
 
-        res.status(response.status);
-        response.headers.forEach((value, key) => {
-        res.setHeader(key, value);
-        });
+  try {
+    const killer = await getCharacter(myCache.get("daily").terror_radius);
 
-        // 🔥 Convert Web stream to Node stream
-        Readable.fromWeb(response.body).pipe(res);
-    }catch(err){
-        
+    req.on("close", () => controller.abort());
+
+    const response = await fetch(killer.terror_radius, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "audio/ogg"
+      }
+    });
+
+    if (!response.ok) {
+      console.error("Upstream status:", response.status);
+      return res.sendStatus(502);
     }
-})
 
+    res.status(200);
+    res.setHeader("Content-Type", "audio/ogg");
+    res.setHeader("Accept-Ranges", "none");
+
+    const stream = Readable.fromWeb(response.body);
+
+    stream.on("error", err => {
+      if (err.name !== "AbortError") {
+        console.error("Stream error:", err);
+      }
+    });
+
+    stream.pipe(res);
+
+  } catch (err) {
+    if (err.name !== "AbortError") {
+      console.error("Fetch error:", err);
+    }
+    res.end();
+  }
+});
 router.get("/hint",async(req, res)=>{
     const perks = await getPerks();
     const selectedOne = perks.filter(perk=>perk.character == myCache.get("daily").terror_radius)[0]

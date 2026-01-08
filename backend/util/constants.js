@@ -1,6 +1,6 @@
 const splash = {
-  step:10,
-  number_of_tries:49,
+  step:13,
+  number_of_tries:30,
   width:512
 }
 
