@@ -44,13 +44,14 @@ export default function Home() {
         }
       }
     }else{
-      const newIri = {...iridescentMode,rotationDeg:generateRotation()}
+      const newIri = {blur:true,rotation:true,rotationDeg:generateRotation()}
+      iridescentRotation.current!.checked = newIri.rotation
+      iridescentBlur.current!.checked = newIri.blur
       localStorage.setItem("iridescentMode",JSON.stringify(newIri))
       setIridescentMode(newIri)
     }
-    
-  },[iridescentMode])
-  
+  },[])
+
   const handleFound = () => {
     setFound(true)
     if(!nextMode.current){
@@ -96,7 +97,7 @@ export default function Home() {
           </div>
           <div className={`fixed left-0 z-20 top-0 w-full ${isIridescentModeOpen ? "flex" : "hidden"} h-full items-center justify-center`}>
             <div className='bg-gray-700 relative flex flex-col gap-2 text-white w-[80%] md:w-[50%] border border-black rounded p-4'>
-              <button onClick={()=>setIridescentModeOpen(!isIridescentModeOpen)} className='cursor-pointer select-none text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</button>
+              <button onClick={()=>setIridescentModeOpen(!isIridescentModeOpen)} className='cursor-pointer text-red-500 font-bold absolute text-4xl border-t border-r border-black -right-3 md:-right-8 -top-5 md:-top-10 rounded-full p-2 md:p-5 bg-gray-700'>X</button>
               <h2 className='text-4xl text-start'>🔴 Iridescent zone</h2>
               <div className='w-full h-1 bg-white'></div>
               <p className="text-start mb-2">Show your real skills with harder options. Disable it any time.</p>
