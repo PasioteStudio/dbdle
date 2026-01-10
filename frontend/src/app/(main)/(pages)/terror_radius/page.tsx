@@ -1,9 +1,10 @@
 "use client"
 import ExportedImage from "next-image-export-optimizer";
 import SearchInput from "@/component/input/search";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSound } from "@/context/useSound";
 
 export default function Home() {
   const [missCount,setMissCount] = useState<number>(6)
@@ -12,8 +13,7 @@ export default function Home() {
   const [hint,setHint] = useState<string>()
   const [isFound,setFound] = useState<boolean>(false)
   const [isHintShown,setIsHintShown] = useState<boolean>(false)
-  const [audioChange,setAudioChange] = useState<number>(0)
-  const [audio, setAudio] = useState<HTMLAudioElement>()
+  const {audio, Play, audioChange} = useSound()
 
   const handleFound = () => {
     setFound(true)
@@ -28,15 +28,7 @@ export default function Home() {
   const handleMissed = () => {
     setMissCount(number => number - 1)
   }
-  useEffect(()=>{
-    if(!audio){
-      setAudio(new Audio(process.env.NEXT_PUBLIC_HOST+'/terror_radius/sound'))
-      return
-    }
-    audio.volume = 0.7
-    audio.pause()
-    setAudioChange(new Date().getTime())
-  },[audio])
+
   const handleHintClick = async() => {
     if(missCount > 0 && !isFound)return
     const data = await axios.get(process.env.NEXT_PUBLIC_HOST + "/terror_radius/hint").then(res => res.data)
@@ -44,25 +36,7 @@ export default function Home() {
     setIsHintShown(!isHintShown)
   }
   const handlePlay = async() => {
-    //type application/ogg
-    if(audio && audio.paused){
-      await audio.play()
-      setAudioChange(new Date().getTime())
-      setTimeout(()=>{audio.volume = 0.0},50)
-      setTimeout(()=>{audio.volume = 0.2},100)
-      setTimeout(()=>{audio.volume = 0.4},150)
-      setTimeout(()=>{audio.volume = 0.6},200)
-      }else if(audio){
-      audio.volume = 0.6
-      setTimeout(()=>{audio.volume = 0.4},50)
-      setTimeout(()=>{audio.volume = 0.2},100)
-      setTimeout(()=>{audio.volume = 0.0},150)
-      setTimeout(()=>{
-        audio.pause()
-        setAudioChange(new Date().getTime())
-      },200)
-    }
-    
+    Play()
   }
   return (
     <div>

@@ -1,4 +1,19 @@
+import { SoundProvider } from "@/context/useSound"
 import { Metadata } from "next"
+import { Geist, Geist_Mono } from "next/font/google";
+import "@/app/globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  display: "swap",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  display: "swap",
+  subsets: ["latin"],
+});
 
 export const metadata:Metadata = {
   icons: {
@@ -56,6 +71,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
-  return children
+  return (
+  <html lang="en">
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans selection:bg-red-400`}>
+      <SoundProvider>
+        {children}
+      </SoundProvider>
+    </body>
+  </html>)
 }
