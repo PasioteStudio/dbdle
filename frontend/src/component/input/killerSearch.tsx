@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ExportedImage from "next-image-export-optimizer";
+import { renames } from '@/util/constants';
 
 interface KillerSearchInput {
     from:string,
@@ -17,7 +18,7 @@ function sameDay(d1:Date, d2:Date) {
 const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,children}) => {
     const input = useRef<HTMLInputElement>(null)
     const [found,setFound] = useState<string>()
-    const [options,setOptions] = useState<string[]>([])
+    const [options,setOptions] = useState<{key:string,value:string}[]>([])
     const [search,setSearch] = useState<string>("-")
     const [usedOptions,setUsedOptions] = useState<{
         name:string;
@@ -31,7 +32,12 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
     useEffect(()=>{
         if(!localStorage.getItem(from) || !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
             axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
-                setOptions(res.data)
+                setOptions(res.data.map((option:string)=>option.includes("The ") ? {key:option.split("The ")[1],value:option} : {key:option,value:option}))
+                renames.forEach(rename=>{
+                    if(res.data.includes(rename.from)){
+                        setOptions((prev)=>[...prev,{key:rename.to,value:rename.from}])
+                    }
+                })
             })
             return
         }
@@ -67,7 +73,7 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         setSearch("-")
         input.current!.value = ""
         input.current!.focus()
-        setOptions(options.filter(option => option != selected))
+        setOptions(options.filter(option => option.value != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replaceAll("ryō","ryo")).then(res=>{
@@ -109,10 +115,10 @@ const KillerSearchInput: React.FC<KillerSearchInput> = ({from,onFound,onMissed,c
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='min-w-[200px] rounded-lg bg-gray-600 w-[40%] absolute justify-self-anchor flex flex-col mt-4 gap-0.5 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {search != "-" && options.map((option,id) => [
-                <li className={`${option.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.toLowerCase().includes(search)) ? "flex" : "hidden")} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option)}}>
-                    <ExportedImage  src={"/imgs/splashes/" + option + ".png"} className='aspect-square h-full p-2 select-none' alt={option} width={64} height={64} />
-                    <h3 className='h-full content-center'>{option}</h3>
+            {options.map((option,id) => [
+                <li className={`${option.key.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.key.toLowerCase().includes(search)) ? "flex" : "hidden")} min-h-12 max-h-12 overflow-hidden items-center content-center hover:bg-blue-500 cursor-pointer`} key={`${id}a`} onClick={()=>{handleClick(option.value)}}>
+                    <ExportedImage  src={"/imgs/splashes/" + option.value + ".png"} className='aspect-square h-full p-2 select-none' alt={option.key} width={64} height={64} />
+                    <h3 className='h-full content-center'>{option.key}</h3>
                 </li>,
             ])}
         </ul>

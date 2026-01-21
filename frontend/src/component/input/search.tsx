@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ExportedImage from "next-image-export-optimizer";
+import { renames } from '@/util/constants';
 
 declare global {
   interface Window {
@@ -24,7 +25,7 @@ function sameDay(d1:Date, d2:Date) {
 const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,splashVisible=true}) => {
     const input = useRef<HTMLInputElement>(null)
     const [found,setFound] = useState<string>()
-    const [options,setOptions] = useState<string[]>([])
+    const [options,setOptions] = useState<{key:string,value:string}[]>([])
     const [search,setSearch] = useState<string>("-")
     const [usedOptions,setUsedOptions] = useState<{name:string;found:boolean}[]>([])
     useEffect(()=>{
@@ -38,7 +39,12 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         },50)
         if(!localStorage.getItem(from) || !sameDay(new Date(JSON.parse(localStorage.getItem(from)!).date),new Date())){
             axios.get(process.env.NEXT_PUBLIC_HOST + from).then(res=>{
-                setOptions(res.data)
+                setOptions(res.data.map((option:string)=>option.includes("The ") ? {key:option.split("The ")[1],value:option} : {key:option,value:option}))
+                renames.forEach(rename=>{
+                    if(res.data.includes(rename.from)){
+                        setOptions((prev)=>[...prev,{key:rename.to,value:rename.from}])
+                    }
+                })
             })
             return
         }
@@ -74,7 +80,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         setSearch("-")
         input.current!.value = ""
         input.current!.focus()
-        setOptions(options.filter(option => option != selected))
+        setOptions(options.filter(option => option.value != selected))
         window.fullres ||= {events: []};
         window.fullres.events.push({ key: 'guess', mode: from.slice(1) });
         axios.get(process.env.NEXT_PUBLIC_HOST + from + "/" + selected.replaceAll(" ","_").replace("Élodie","Elodie").replaceAll("ryō","ryo").replaceAll("Déjà vu","Deja Vu").replaceAll("Coup de Grâce","Coup de Grace")).then(res=>{
@@ -112,10 +118,10 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
         <ul className='rounded-lg bg-black min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col gap-0.5 mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
-            {search != "-" && options.map((option,id) => (
-                <li key={id} className={`${option.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.toLowerCase().includes(search)) ? "flex" : "hidden")} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option)}}>
-                    {splashVisible && <ExportedImage src={"/imgs/splashes/" + option.replace('William "Bill" Overbeck',"William Bill Overbeck") + ".png"} className='select-none aspect-square h-full p-2' alt={option} width={64} height={64} />}
-                    <h3 className='h-full content-center'>{option}</h3>
+            {options.map((option,id) => (
+                <li key={id} className={`${option.key.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.key.toLowerCase().includes(search)) ? "flex" : "hidden")} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option.value)}}>
+                    {splashVisible && <ExportedImage src={"/imgs/splashes/" + option.value.replace('William "Bill" Overbeck',"William Bill Overbeck") + ".png"} className='select-none aspect-square h-full p-2' alt={option.key} width={64} height={64} />}
+                    <h3 className='h-full content-center'>{option.key}</h3>
                 </li>
             ))}
         </ul>
