@@ -63,10 +63,11 @@ app.use("/perk_image", express.static(__dirname + '/perk/image.webp'));
 
 app.get(/(.*)/,function (req, res, next) {
   res.status(404).json({ error: "not found" });
-})
+});
 
-
-app.listen(process.env.PORT, async () => {  
+(async()=>{
+  await doDaily()
+  app.listen(process.env.PORT, async () => {  
   /*const characters = await Promise.all((await getCharacters()).map(async (character)=>{
     const char = await getCharacter(character)
     return char
@@ -79,6 +80,8 @@ app.listen(process.env.PORT, async () => {
     }
   })).split("}").join("}\n"))
   fs.writeFileSync("perks.json",JSON.stringify(perks).split("}").join("}\n"))*/
-  await doDaily()
+  
   console.log(`Server is running at http://localhost:${process.env.PORT}`);
 })
+})()
+
