@@ -7,8 +7,11 @@ export const categories = [
   {title:"Splash","description":"Guess the character by a splash of their",icon:"/imgs/logos/OutfitIcon.png",link:"/splash"},
 ]
 export const splash = {
-  number_of_tries:30,
-  width:1900
+  number_of_tries: 30,
+  width: 1900,
+  baseSize: 512,
+  step: 13,
+  minPixel: 512 - (30 * 13),
 }
 
 export const renames = [

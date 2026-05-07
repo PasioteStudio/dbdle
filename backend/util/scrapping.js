@@ -162,12 +162,6 @@ async function getPerks(){
     try {
         const html = await getHTML("https://deadbydaylight.fandom.com/wiki/Perks");
         // Example: log the HTML length
-        console.log(html.length)
-        if(html.split("<tbody>")[1] == undefined){
-            console.log(html)
-            myCache.set("perks",perks,60*60*24)
-            return perks
-        } 
         const survTable = html.split("<tbody>")[1].split('</tbody>')[0].split("<tr>");
         for(let i = 1; i<survTable.length;i++){
             let name = survTable[i].split(' title="')[1].split('">')[0].replaceAll("&amp;","&").replaceAll("&#39;","'")

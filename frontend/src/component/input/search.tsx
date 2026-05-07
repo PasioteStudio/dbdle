@@ -117,7 +117,7 @@ const SearchInput: React.FC<SearchInput> = ({from,onFound,onMissed,children,spla
         <h2 className={`w-[70%] mx-auto text-4xl ${found ? "" : "hidden"}`}>{found}</h2>
         <input id='input' autoComplete='off' type="text" ref={input} onInput={handleInput} className='min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] bg-gray-700 h-8 rounded-lg px-2' />
         {children}
-        <ul className='rounded-lg bg-black min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col gap-0.5 mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
+        <ul className='rounded-lg left-1/2 right-1/2 bg-black min-w-[200px] s:w-[60%] sm:w-[50%] md:w-[40%] absolute justify-self-anchor flex flex-col gap-0.5 mt-4 overflow-x-hidden overflow-y-scroll max-h-64'>
             {options.map((option,id) => (
                 <li key={id} className={`${option.key.toLowerCase().startsWith(search) ? "flex" : ((search.length > 3 && option.key.toLowerCase().includes(search)) ? "flex" : "hidden")} bg-gray-600 min-h-12 max-h-12 ${splashVisible ? "" : "justify-center"} items-center content-center hover:bg-blue-500 cursor-pointer`} onClick={()=>{handleClick(option.value)}}>
                     {splashVisible && <ExportedImage src={"/imgs/splashes/" + option.value.replace('William "Bill" Overbeck',"William Bill Overbeck") + ".png"} className='select-none aspect-square h-full p-2' alt={option.key} width={64} height={64} />}
