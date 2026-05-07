@@ -1,23 +1,24 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteBase /
+  DirectorySlash Off
 
   # Serve files if they exist
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # If request matches a directory, serve index.html inside it
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
   # Handle "pretty" routes like /perk → perk.html
+  RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^ %{REQUEST_URI}.html [L]
+  RewriteRule ^(.*)$ $1.html [L]
 
   # Also allow text files (e.g., /perk → perk.txt)
+  RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.txt -f
-  RewriteRule ^ %{REQUEST_URI}.txt [L]
+  RewriteRule ^(.*)$ $1.txt [L]
+  
   ErrorDocument 404 /404.html
-    ErrorDocument 403 /404.html
+  ErrorDocument 403 /404.html
 </IfModule>
 
 # Compression (gzip & deflate)
