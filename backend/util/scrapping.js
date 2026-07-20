@@ -1,5 +1,6 @@
 const {nameVariations,invalidNames} = require("./constants")
 const myCache = require("../cache")
+const axios = require("axios")
 const puppeteer = require("puppeteer-extra")
 const StealthPlugin = require("puppeteer-extra-plugin-stealth")
 
@@ -7,19 +8,30 @@ puppeteer.use(StealthPlugin())
 
 let browser;
 let browserReady = false;
+let scrapingInProgress = false;
+
+const USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+];
+
+const randomUserAgent = () => USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function initBrowser() {
     if (!browserReady) {
         browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.NODE_ENV != "production" ? puppeteer.executablePath() : '/usr/bin/chromium-browser',
+            ignoreDefaultArgs: ['--enable-automation'],
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
                 '--disable-dev-shm-usage',
                 '--disable-blink-features=AutomationControlled',
-                '--disable-web-resources',
-                '--disable-sync',
+                '--disable-web-security',
+                '--disable-features=site-per-process,TranslateUI',
                 '--disable-background-networking',
                 '--disable-client-side-phishing-detection',
                 '--disable-component-extensions-with-background-pages',
@@ -35,8 +47,11 @@ async function initBrowser() {
                 '--no-default-browser-check',
                 '--no-first-run',
                 '--safebrowsing-disable-auto-update',
+                '--window-position=0,0',
+                '--window-size=1920,1080',
                 '--enable-automation=false'
-            ]
+            ],
+            defaultViewport: null
         });
         browser.on('disconnected', () => {
             console.error("Browser disconnected. Attempting to reinitialize...");
@@ -51,41 +66,88 @@ async function initBrowser() {
 
 
 async function getHTML(link) {
+    while (scrapingInProgress) {
+        await wait(2500);
+    }
+
+    scrapingInProgress = true;
     await initBrowser();
     let page;
     try {
         page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(90000);
         const setupPage = async (p) => {
-            await p.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+            const userAgent = randomUserAgent();
+            await p.setUserAgent(userAgent);
             await p.setViewport({ width: 1920, height: 1080 });
             await p.setExtraHTTPHeaders({
                 'Accept-Language': 'en-US,en;q=0.9',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Referer': 'https://www.google.com/',
-                'Accept-Encoding': 'gzip, deflate, br',
                 'Connection': 'keep-alive',
                 'Upgrade-Insecure-Requests': '1',
                 'Sec-Fetch-Dest': 'document',
                 'Sec-Fetch-Mode': 'navigate',
                 'Sec-Fetch-Site': 'none',
-                'Cache-Control': 'max-age=0'
+                'Sec-Fetch-User': '?1',
+                'Cache-Control': 'max-age=0',
+                'Sec-CH-UA': '"Chromium";v="120", "Not A(Brand";v="24", "Google Chrome";v="120"',
+                'Sec-CH-UA-Mobile': '?0',
+                'Sec-CH-UA-Platform': '"Windows"',
+                'Sec-CH-UA-Arch': '"x86"',
+                'Sec-CH-UA-Bitness': '"64"',
+                'Sec-CH-UA-Model': '""'
             });
-            // Override navigator.webdriver
             await p.evaluateOnNewDocument(() => {
                 Object.defineProperty(navigator, 'webdriver', {
                     get: () => false
                 });
+                window.chrome = {
+                    runtime: {},
+                    loadTimes: () => ({}),
+                    csi: () => ({})
+                };
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en']
+                });
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5]
+                });
+                Object.defineProperty(navigator, 'platform', {
+                    get: () => 'Win32'
+                });
+                Object.defineProperty(navigator, 'vendor', {
+                    get: () => 'Google Inc.'
+                });
+                Object.defineProperty(navigator, 'product', {
+                    get: () => 'Gecko'
+                });
+                Object.defineProperty(navigator, 'hardwareConcurrency', {
+                    get: () => 8
+                });
+                Object.defineProperty(navigator, 'deviceMemory', {
+                    get: () => 8
+                });
+                Object.defineProperty(navigator, 'maxTouchPoints', {
+                    get: () => 0
+                });
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.__proto__.query = (parameters) =>
+                    parameters.name === 'notifications'
+                        ? Promise.resolve({ state: Notification.permission })
+                        : originalQuery(parameters);
             });
+            await p.setJavaScriptEnabled(true);
         };
         await setupPage(page);
 
-        const maxNavRetries = 3;
+        const maxNavRetries = 4;
         let navigated = false;
         for (let attempt = 1; attempt <= maxNavRetries && !navigated; attempt++) {
             try {
-                await page.goto(link, { waitUntil: "networkidle2", timeout: 120000 });
-                // Additional wait to ensure page is fully rendered
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                await page.goto(link, { waitUntil: "domcontentloaded", timeout: 90000 });
+                await page.waitForSelector('body', { timeout: 15000 }).catch(() => {});
+                await wait(2200 + Math.floor(Math.random() * 1800));
                 navigated = true;
             } catch (err) {
                 const msg = (err && err.message) || '';
@@ -124,38 +186,40 @@ async function getHTML(link) {
                     }
                 }
                 if (attempt === maxNavRetries) throw err;
-                await new Promise(r => setTimeout(r, 1000 * attempt));
+                await wait(1000 * attempt);
             }
         }
 
         let html = await page.content();
+        const blockedSignals = ["Just a moment", "Checking your browser", "blocked by Chromium", "verify you are human", "captcha"];
         let retries = 0;
-        while ((html.includes("Just a moment") || html.includes("Checking your browser") || html.includes("blocked by Chromium")) && retries < 60) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        while (blockedSignals.some(signal => html.includes(signal)) && retries < 5) {
+            await wait(3000 + retries * 2000 + Math.floor(Math.random() * 2000));
             html = await page.content();
             retries++;
         }
-        
-        if (html.includes("blocked by Chromium")) {
-            console.error("Page blocked by Chromium - attempting alternate approach");
-            await page.reload({ waitUntil: 'networkidle2' });
-            html = await page.content();
+
+        if (blockedSignals.some(signal => html.includes(signal))) {
+            console.log(html)
+            throw new Error("Bot-protection page detected");
         }
-        
+
         return html;
     } catch (err) {
         console.error("Error fetching page:", err);
         throw err;
     } finally {
         if (page) await page.close().catch(() => {});
+        scrapingInProgress = false;
     }
 }
 
 module.exports = {getPerks,getCharacters,getCharacter,getKillers}
 
 async function getPerks(){
-    if(myCache.get("perks")){
-        return myCache.get("perks")
+    const cached = myCache.get("perks");
+    if(cached){
+        return cached
     }
     const perks = []
     
@@ -260,11 +324,16 @@ async function getPerks(){
         }
     } catch(err) {
         console.error("Error fetching perks page:", err);
+        throw err;
     }
     myCache.set("perks",perks,60*60*24)
     return perks
 }
 async function getCharacters(){
+    const cachedCharacters = myCache.get("characters");
+    if(cachedCharacters){
+        return cachedCharacters
+    }
     let perks = await getPerks()
     perks = perks.filter(perk=>perk.character != null)
     const characters = []
@@ -273,13 +342,16 @@ async function getCharacters(){
             characters.push(perks[i].character)
         }
     }
+    myCache.set("characters", characters, 60*60*24)
     return characters
 }
 async function getCharacter(character){
-    if(myCache.get("character_"+character)){
-        return myCache.get("character_"+character)
+    const cachedCharacter = myCache.get("character_"+character);
+    if(cachedCharacter){
+        return cachedCharacter
     }
-    else if(!((await getCharacters()).includes(character))){
+    const characters = await getCharacters();
+    if(!characters.includes(character)){
         return "Not Found"
     }
     let lore = null
@@ -361,6 +433,7 @@ async function getCharacter(character){
         }
     } catch(err) {
         console.error("Error fetching character page:", err);
+        throw err;
     }
     const killer = {
         name:character,
@@ -378,8 +451,9 @@ async function getCharacter(character){
     return killer
 }
 async function getKillers() {
-    if(myCache.get("killers")){
-        return myCache.get("killers")
+    const cachedKillers = myCache.get("killers");
+    if(cachedKillers){
+        return cachedKillers
     }
     const characters = await getCharacters();
     const killers = characters.filter(character=>character.includes("The"))

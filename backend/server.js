@@ -66,7 +66,11 @@ app.get(/(.*)/,function (req, res, next) {
 });
 
 (async()=>{
-  await doDaily()
+  try {
+    await doDaily()
+  } catch (error) {
+    console.error("Initial daily generation failed:", error);
+  }
   app.listen(process.env.PORT, async () => {  
   /*const characters = await Promise.all((await getCharacters()).map(async (character)=>{
     const char = await getCharacter(character)
