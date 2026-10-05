@@ -3,6 +3,7 @@ import { categories } from "@/util/constants";
 import IconButton from "@/component/button/icon";
 import HowTo from "@/component/howTo";
 import StreakIcon from "@/component/icon/streak";
+import { metadataTemplate } from "@/app/layout";
 
 export const metadata: Metadata = metadataTemplate
 export default function RootLayout({
