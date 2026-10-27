@@ -1,11 +1,9 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const myCache = require("../cache")
-const {getPerks} = require("../util/scrapping")
+import express from "express";
+import myCache from "../util/cache.js";
+import { getPerks } from "../util/scrapping.js";
 
 const router = express.Router();
-module.exports = router
+export default router;
 router.get("/",async(req, res)=>{
     const perks = await getPerks();
     res.status(200).json(perks.map(perk => perk.name));

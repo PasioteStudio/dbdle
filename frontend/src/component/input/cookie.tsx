@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 import * as CookieConsentT from "vanilla-cookieconsent";
 

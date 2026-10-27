@@ -1,9 +1,9 @@
-const express = require('express');
-const myCache = require("../cache")
-const {getPerks,getCharacters,getCharacter} = require("../util/scrapping")
+import express from "express";
+import myCache from "../util/cache.js";
+import { getPerks, getCharacters } from "../util/scrapping.js";
 
 const router = express.Router();
-module.exports = router
+export default router;
 
 
 router.get("/",async(req, res)=>{

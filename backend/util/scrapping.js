@@ -1,11 +1,15 @@
-const {nameVariations,invalidNames} = require("./constants")
-const myCache = require("../cache")
-const axios = require("axios")
-const puppeteer = require("puppeteer-extra")
-const StealthPlugin = require("puppeteer-extra-plugin-stealth")
+import axios from "axios";
+import path from "node:path";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import { fileURLToPath } from "node:url";
+import { nameVariations, invalidNames } from "./constants.js";
+import myCache from "./cache.js";
+import { writeAutomatedNews } from "./newsStatus.js";
 
-puppeteer.use(StealthPlugin())
+puppeteer.use(StealthPlugin());
 
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 let browser;
 let browserReady = false;
 let scrapingInProgress = false;
@@ -57,11 +61,205 @@ async function initBrowser() {
             console.error("Browser disconnected. Attempting to reinitialize...");
             browserReady = false;
             initBrowser().catch(err => {
-                console.error("Failed to reinitialize browser:", err);
+                console.error("Failed to reinitialize browser");
             })
         });
         browserReady = true;
     }
+}
+
+async function reportScrapingFailure(context, error) {
+    await writeAutomatedNews(context, error);
+}
+
+function decodeHtmlEntities(value) {
+    return value
+        .replace(/&#(?:x([0-9a-f]+)|(\d+));/gi, (_match, hex, decimal) =>
+            String.fromCodePoint(Number.parseInt(hex ?? decimal, hex ? 16 : 10))
+        )
+        .replace(/&amp;/gi, "&")
+        .replace(/&quot;/gi, '"')
+        .replace(/&apos;/gi, "'")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">");
+}
+
+function stripHtml(value) {
+    return decodeHtmlEntities(
+        value
+            .replace(/<br\b[^>]*>/gi, " ")
+            .replace(/<\/(?:p|li|div)>/gi, " ")
+            .replace(/<[^>]*>/g, " ")
+    ).replace(/\s+/g, " ").trim();
+}
+
+function getAttribute(tag, name) {
+    const match = tag.match(new RegExp(`\\b${name}=(["'])(.*?)\\1`, "i"));
+    return match ? decodeHtmlEntities(match[2]) : null;
+}
+
+function getPerkTables(html) {
+    const tables = [...html.matchAll(/<tbody\b[^>]*>([\s\S]*?)<\/tbody>/gi)];
+    const perkTables = tables.filter(({ 1: table }) => {
+        const header = table.match(/<tr\b[^>]*>([\s\S]*?)<\/tr>/i)?.[1];
+        if (!header) {
+            return false;
+        }
+        const columns = [...header.matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)]
+            .map(([, cell]) => stripHtml(cell).toLowerCase());
+        return columns.join("|") === "icon|name|description|character";
+    });
+
+    if (perkTables.length < 2) {
+        throw new Error("Could not find both perk tables in the wiki page");
+    }
+    return perkTables.slice(0, 2).map(({ 1: table }) => table);
+}
+
+function parsePerkTable(table, isKillerTable) {
+    const perks = [];
+    const rows = [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+
+    for (const [, row] of rows.slice(1)) {
+        const cells = [...row.matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)]
+            .map(([, cell]) => cell);
+        if (cells.length < 4) {
+            continue;
+        }
+
+        const name = stripHtml(cells[1]);
+        const rawDescription = stripHtml(cells[2]);
+        if (!name || !rawDescription) {
+            continue;
+        }
+
+        let quote = null;
+        let description = rawDescription.replaceAll(" ", " ");
+        if (description.includes('"') && description.includes('" —')) {
+            let quoteFrom = description.split('" —')[1].split(' "')[0].trim().split(",")[0];
+            const variation = nameVariations.find(({ from }) => from === quoteFrom);
+            if (variation) {
+                quoteFrom = variation.to;
+            }
+            if (!invalidNames.includes(quoteFrom)) {
+                quote = {
+                    text: description.split('"')[1].split('"')[0],
+                    from: quoteFrom,
+                };
+            }
+            description = description.split('"')[0];
+        }
+
+        description = description.replaceAll("\n\n", "\n").replaceAll("\n", " ");
+        if (description.includes(name)) {
+            description = description.replaceAll(name, "____");
+        }
+        if (description.includes("This description is based on")) {
+            description = description.substring(description.indexOf(".") + 4);
+        }
+
+        const portraitLink = cells[3].match(
+            /<div\b[^>]*class=["'][^"']*\bcharPortraitImage\b[^"']*["'][\s\S]*?<a\b[^>]*>/i
+        )?.[0];
+        const characterLink = portraitLink ?? cells[3].match(/<a\b[^>]*>/i)?.[0];
+        let character = characterLink ? getAttribute(characterLink, "title") : null;
+        if (isKillerTable && character && !character.startsWith("The ")) {
+            character = `The ${character}`;
+        }
+        const variation = nameVariations.find(({ from }) => from === character);
+        if (variation) {
+            character = variation.to;
+        }
+
+        const imageTag = cells[0].match(/<img\b[^>]*>/i)?.[0];
+        const imagePath = imageTag
+            && (getAttribute(imageTag, "data-src") ?? getAttribute(imageTag, "src"));
+        if (!imagePath) {
+            continue;
+        }
+
+        perks.push({
+            name,
+            character: character || null,
+            icon: new URL(imagePath, "https://deadbydaylight.wiki.gg").href,
+            description,
+            quote,
+        });
+    }
+    return perks;
+}
+
+function getCharacterInfobox(html) {
+    const table = html.match(
+        /<table\b(?=[^>]*class=["'][^"']*\bcharInfoboxTable\b)[^>]*>([\s\S]*?)<\/table>/i
+    )?.[1];
+    if (!table) {
+        throw new Error("Could not find the character infobox");
+    }
+
+    const tableRows = [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+    const rows = new Map();
+    for (const [index, [, row]] of tableRows.entries()) {
+        const cells = [...row.matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)];
+        if (cells.length < 2) {
+            const label = stripHtml(cells[0]?.[1] ?? "").toLowerCase();
+            if (label === "terror radius music") {
+                const nextRow = tableRows[index + 1]?.[1];
+                const nextCell = nextRow?.match(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/i)?.[1];
+                rows.set(label, nextCell ?? cells[0]?.[1] ?? "");
+            }
+            continue;
+        }
+        rows.set(stripHtml(cells[0][1]).toLowerCase(), cells[1][1]);
+    }
+
+    const getValue = (label) => rows.get(label.toLowerCase()) ?? "";
+    const getPlainValue = (label) => stripHtml(getValue(label));
+    const imageTag = table.match(/<img\b[^>]*>/i)?.[0];
+    const imagePath = imageTag
+        && (getAttribute(imageTag, "data-src") ?? getAttribute(imageTag, "src"));
+    const loreHeading = html.match(
+        /<span\b(?=[^>]*id=["']Lore["'])[^>]*>\s*Lore\s*<\/span>/i
+    );
+    let lore = null;
+    if (loreHeading) {
+        const headingEnd = html.indexOf("</h2>", loreHeading.index);
+        const loreStart = headingEnd === -1 ? loreHeading.index + loreHeading[0].length : headingEnd + 5;
+        const nextHeading = html.slice(loreStart).search(/<h[23]\b/i);
+        const loreHtml = nextHeading === -1
+            ? html.slice(loreStart)
+            : html.slice(loreStart, loreStart + nextHeading);
+        lore = stripHtml(loreHtml);
+    }
+
+    const descriptionTag = html.match(/<meta\b[^>]*name=["']description["'][^>]*>/i)?.[0];
+    const description = descriptionTag ? getAttribute(descriptionTag, "content") ?? "" : "";
+    const releaseDate = description.match(
+        /\breleased\s+(?:on\s+)?\d{1,2}\s+[a-z]+\s*,?\s*(\d{4})/i
+    ) ?? description.match(/\breleased\s+(?:in\s+)?(\d{4})/i)
+        ?? stripHtml(html.slice(0, html.indexOf(table))).match(
+            /\breleased\s+(?:on\s+)?\d{1,2}\s+[a-z]+\s*,?\s*(\d{4})/i
+        );
+    const movementSpeed = getPlainValue("Movement Speed").match(/([\d.]+)\s*m\/s/i)?.[1];
+    const alternateSpeed = getPlainValue("Alternate Movement speed").match(/([\d.]+)\s*m\/s/i)?.[1];
+    const terrorRadiusRow = getValue("Terror Radius Music");
+    const audioSource = terrorRadiusRow.match(/<source\b[^>]*>/i)?.[0];
+    const audioPath = audioSource ? getAttribute(audioSource, "src") : null;
+    const powerAttackType = getPlainValue("Power Attack Type").split(" (")[0];
+
+    return {
+        lore,
+        gender: getPlainValue("Gender").split(" (")[0] || null,
+        origin: getPlainValue("Origin").split(" (")[0].split(" of")[0] || null,
+        height: getPlainValue("Height").split(" (")[0] || null,
+        movementSpeed: movementSpeed ? `${movementSpeed}m/s` : null,
+        alternateMovementSpeed: alternateSpeed ? `${alternateSpeed}m/s (power)` : null,
+        terrorRadius: audioPath ? new URL(audioPath, "https://deadbydaylight.wiki.gg").href : null,
+        powerAttackType: powerAttackType || null,
+        releaseDate: Number.parseInt(releaseDate?.[1], 10),
+        icon: imagePath ? new URL(imagePath, "https://deadbydaylight.wiki.gg").href : null,
+    };
 }
 
 
@@ -71,9 +269,9 @@ async function getHTML(link) {
     }
 
     scrapingInProgress = true;
-    await initBrowser();
     let page;
     try {
+        await initBrowser();
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(90000);
         const setupPage = async (p) => {
@@ -145,7 +343,10 @@ async function getHTML(link) {
         let navigated = false;
         for (let attempt = 1; attempt <= maxNavRetries && !navigated; attempt++) {
             try {
-                await page.goto(link, { waitUntil: "domcontentloaded", timeout: 90000 });
+                const response = await page.goto(link, { waitUntil: "domcontentloaded", timeout: 90000 });
+                if (response && response.status() >= 400) {
+                    throw new Error(`Wiki request returned HTTP ${response.status()} for ${link}`);
+                }
                 await page.waitForSelector('body', { timeout: 15000 }).catch(() => {});
                 await wait(2200 + Math.floor(Math.random() * 1800));
                 navigated = true;
@@ -159,7 +360,6 @@ async function getHTML(link) {
                     continue;
                 }
                 if (/ERR_TOO_MANY_REDIRECTS/.test(msg) || /Too many redirects/.test(msg)) {
-                    const axios = require('axios');
                     try {
                         // Allow axios to follow redirects (default). Don't force maxRedirects:0.
                         const resp = await axios.get(link, { 
@@ -180,7 +380,7 @@ async function getHTML(link) {
                         break;
                     } catch (fetchErr) {
                         navigated = true;
-                        console.warn(`Fallback fetch attempt ${attempt} failed:`, fetchErr.message);
+                        console.warn(`Fallback fetch attempt ${attempt} failed`);
                         await page.setContent("", { waitUntil: 'load' });
                         break;
                     }
@@ -200,134 +400,39 @@ async function getHTML(link) {
         }
 
         if (blockedSignals.some(signal => html.includes(signal))) {
-            console.log(html)
             throw new Error("Bot-protection page detected");
         }
 
         return html;
-    } catch (err) {
-        console.error("Error fetching page:", err);
-        throw err;
     } finally {
         if (page) await page.close().catch(() => {});
         scrapingInProgress = false;
     }
 }
 
-module.exports = {getPerks,getCharacters,getCharacter,getKillers}
-
 async function getPerks(){
     const cached = myCache.get("perks");
     if(cached){
         return cached
     }
-    const perks = []
-    
+
     try {
-        const html = await getHTML("https://deadbydaylight.fandom.com/wiki/Perks");
-        // Example: log the HTML length
-        const survTable = html.split("<tbody>")[1].split('</tbody>')[0].split("<tr>");
-        for(let i = 1; i<survTable.length;i++){
-            let name = survTable[i].split(' title="')[1].split('">')[0].replaceAll("&amp;","&").replaceAll("&#39;","'")
-            let desc = survTable[i].split("<td>")[1].split("</td>")[0]
-            desc = desc.replaceAll("&#160;"," ")
-            desc = desc.replaceAll("&#37;","%")
-            while(desc.includes("<")){
-                desc = desc.replace("<"+desc.split("<")[1].split(">")[0]+">","")
-            }
-            let quote = null
-            if(desc.includes('"') && desc.includes('" —')){
-                let quoteFrom = desc.split('" —')[1].split(' "')[0].trim().split(",")[0]
-                if(nameVariations.map(name=>name.from).includes(quoteFrom)){
-                    quoteFrom = nameVariations.filter(name=>name.from == quoteFrom)[0].to
-                }
-                if(!invalidNames.includes(quoteFrom)){
-                    quote = {
-                        text:desc.split('"')[1].split('"')[0],
-                        from:quoteFrom
-                    }
-                }
-                desc = desc.split('"')[0]
-            }
-            desc = desc.trim().replaceAll("\n\n","\n")
-            desc = desc.replaceAll("\n"," ")
-            if(desc.includes(name)){
-                desc = desc.replaceAll(name,"____")
-            }
-            if(desc.includes("This description is based on")){
-                desc = desc.substring(desc.indexOf(".")+4)
-            }
-            let character = null
-            if(survTable[i].split("<td>")[1].split("</td>")[1].split('title="').length > 1){
-                character = survTable[i].split("<td>")[1].split("</td>")[1].split('title="')[1].split('">')[0]
-            }
-            if(nameVariations.map(name=>name.from).includes(character)){
-                character = nameVariations.filter(name=>name.from == character)[0].to
-            }
-            if(desc.includes("Jouki"))continue
-            let perk = {
-                name:name,
-                character:character,
-                icon:survTable[i].split('<span typeof="mw:File"><a href="')[1].split('" class')[0],
-                description:desc,
-                quote:quote
-            }
-            perks.push(perk)
+        const html = await getHTML("https://deadbydaylight.wiki.gg/wiki/Perks");
+        const [survivorTable, killerTable] = getPerkTables(html);
+        const perks = [
+            ...parsePerkTable(survivorTable, false),
+            ...parsePerkTable(killerTable, true),
+        ].filter((perk) => !perk.description.includes("Jouki"));
+        if (perks.length === 0) {
+            throw new Error("The wiki page contained no parseable perks");
         }
-        const killerTable = html.split("<tbody>")[2].split('</tbody>')[0].split("<tr>");
-        for(let i = 1; i<killerTable.length;i++){
-            let name = killerTable[i].split(' title="')[1].split('">')[0].replaceAll("&amp;","&").replaceAll("&#39;","'")
-            let desc = killerTable[i].split("<td>")[1].split("</td>")[0]
-            desc = desc.replaceAll("&#160;"," ")
-            desc = desc.replaceAll("&#37;","%")
-            while(desc.includes("<")){
-                desc = desc.replace("<"+desc.split("<")[1].split(">")[0]+">","")
-            }
-            let quote = null
-            if(desc.includes('"') && desc.includes('" —')){
-                let quoteFrom = desc.split('" —')[1].split(' "')[0].trim().split(",")[0]
-                if(nameVariations.map(name=>name.from).includes(quoteFrom)){
-                    quoteFrom = nameVariations.filter(name=>name.from == quoteFrom)[0].to
-                }
-                if(!invalidNames.includes(quoteFrom)){
-                    quote = {
-                        text:desc.split('"')[1].split('"')[0],
-                        from:quoteFrom
-                    }
-                }
-                desc = desc.split('"')[0]
-            }
-            desc = desc.trim().replaceAll("\n\n","\n")
-            desc = desc.replaceAll("\n"," ")
-            if(desc.includes(name)){
-                desc = desc.replaceAll(name,"____")
-            }
-            if(desc.includes("This description is based on")){
-                desc = desc.substring(desc.indexOf(".")+4)
-            }
-            let character = null
-            if(killerTable[i].split("<td>")[1].split("</td>")[1].split('title="').length > 1){
-                character = "The " + killerTable[i].split("<td>")[1].split("</td>")[1].split('title="')[1].split('">')[0]
-            }
-            if(nameVariations.map(name=>name.from).includes(character)){
-                character = nameVariations.filter(name=>name.from == character)[0].to
-            }
-            if(desc.includes("Jouki"))continue
-            let perk = {
-                name:name,
-                character:character,
-                icon:killerTable[i].split('<span typeof="mw:File"><a href="')[1].split('" class')[0],
-                description:desc,
-                quote:quote
-            }
-            perks.push(perk)
-        }
-    } catch(err) {
-        console.error("Error fetching perks page:", err);
+
+        myCache.set("perks", perks, 60 * 60 * 24);
+        return perks;
+    } catch (err) {
+        await reportScrapingFailure("Failed to fetch or parse the perks page", err);
         throw err;
     }
-    myCache.set("perks",perks,60*60*24)
-    return perks
 }
 async function getCharacters(){
     const cachedCharacters = myCache.get("characters");
@@ -352,103 +457,38 @@ async function getCharacter(character){
     }
     const characters = await getCharacters();
     if(!characters.includes(character)){
-        return "Not Found"
+        throw new Error(`Unknown character "${character}" in scraped character list`);
     }
-    let lore = null
-    let gender = null
-    let origin = null
-    let height = null
-    let movement_speed = null
-    let terror_radius = null
-    let alt_movement_speed = null
-    let power_attack_type = null
-    let release_date = null
-    let icon = null
     try {
-        const html = await getHTML("https://deadbydaylight.fandom.com/wiki/"+character);     
-        if(html.split('<span class="mw-headline" id="Lore">Lore</span>')[1] == undefined){
-            const killer = {
-                name:character,
-                lore,
-                gender,
-                origin,
-                height,
-                terror_radius,
-                movement_speed: alt_movement_speed != null ? movement_speed + " "+ alt_movement_speed : movement_speed,
-                power_attack_type,
-                release_date:Number.parseInt(release_date),
-                icon
-            }
-            myCache.set("character_"+character,killer,60*60*24)
-            return killer
-        } 
-        // Example: log the HTML length
-        lore = html.split('<span class="mw-headline" id="Lore">Lore</span>')[1].split("</h2>")[1].split('<div style="clear:both"></div>')[0].split("<h3>")[0]
-        if(lore.includes("<dl>"))lore = lore.split("</dl>")[1]
-        while(lore.includes("<")){
-            lore = lore.replace("<"+lore.split("<")[1].split(">")[0]+">","")
+        const html = await getHTML("https://deadbydaylight.wiki.gg/wiki/"+character);
+        const details = getCharacterInfobox(html);
+        if (character === "The Legion" || character === "The Twins") {
+            details.gender = "Woman, Man";
         }
-        lore = lore.trim()
-        const killerTable = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</tbody>")[0]
-        if(killerTable.split("<img")[1].split('" />')[0].includes("data-src")){
-            icon = killerTable.split("<img")[1].split('data-src="')[1].split('"')[0]
-        }else{
-            icon = killerTable.split("<img")[1].split('src="')[1].split('"')[0]
+        if (character.includes("The") && !details.powerAttackType) {
+            details.powerAttackType = "Basic Attack";
         }
-        gender = killerTable.split('<td class="titleColumn">Gender</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].trim()
-        if(character == "The Legion" || character == "The Twins"){
-            gender = "Woman, Man"
-        }
-        origin = killerTable.split('<td class="titleColumn">Origin</td>\n<td class="valueColumn">')[1].split('</td>')[0].split(" (")[0].split(" of")[0].trim()
-        if(character.includes("The")){
-            height = killerTable.split('<td class="titleColumn">Height')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0]
-            movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('</b> ')[1].split('\n</td>')[0].split(" (")[0].replace(" ","")
-            if(killerTable.includes('Alternate Movement speed')){
-                alt_movement_speed = killerTable.split('<td class="titleColumn"><a href="/wiki/Movement_Speed"')[1].split('<td class="titleColumn">Alternate Movement speed</td>')[1].split(" m/s")[0].split("</b>")[1].replaceAll(" ","") + "m/s (power)"
-            }
-            if(killerTable.includes('colspan="2">Terror Radius Music')){
-                terror_radius = killerTable.split('colspan="2">Terror Radius Music')[1].split('<audio src="')[1].split('"')[0]
-            }
-            if(killerTable.includes('<td class="titleColumn">Power <a href="/wiki/Attack"')){
-                power_attack_type = killerTable.split('<td class="titleColumn">Power <a href="/wiki/Attack"')[1].split('<td class="valueColumn">')[1].split('\n</td>')[0].split(" (")[0].split("\n<p>")[0]
-            }else{
-                power_attack_type = "Basic Attack"
-            }
-        }
-        // You can use a library like cheerio to parse HTML if needed
-        let temp = html.split('<table class="infoboxtable charInfoboxTable')[1].substring(html.split('<table class="infoboxtable charInfoboxTable')[1].indexOf("</table>"))
-        if(temp.includes("<p>")){
-            if(temp.split("<p>")[2].includes("released")){
-                temp = temp.split("<p>")[2].split("</p>")[0].split(".")
-            }else if(temp.split("<p>").length > 2 && temp.split("<p>")[3].includes("released")){
-                temp = temp.split("<p>")[3].split("</p>")[0].split(".")
-            }
-        }else{
-            temp = html.split('<table class="infoboxtable charInfoboxTable')[1].split("</table>")[2].split("<p>")[2].split("</p>")[0].split(".")
-        }
-        if(temp[temp.length - 2].includes("retired")){
-            release_date = temp[temp.length - 2].split(" and retired")[0].slice(-4)
-        }else{
-            release_date = temp[temp.length - 2].slice(-4)
-        }
+
+        const killer = {
+            name: character,
+            lore: details.lore,
+            gender: details.gender,
+            origin: details.origin,
+            height: details.height,
+            terror_radius: details.terrorRadius,
+            movement_speed: details.alternateMovementSpeed
+                ? `${details.movementSpeed} ${details.alternateMovementSpeed}`
+                : details.movementSpeed,
+            power_attack_type: details.powerAttackType,
+            release_date: details.releaseDate,
+            icon: details.icon,
+        };
+        myCache.set("character_" + character, killer, 60 * 60 * 24);
+        return killer;
     } catch(err) {
-        console.error("Error fetching character page:", err);
+        await reportScrapingFailure(`Failed to fetch or parse the ${character} page`, err);
         throw err;
     }
-    const killer = {
-        name:character,
-        lore,
-        gender,
-        origin,
-        height,
-        terror_radius,
-        movement_speed: alt_movement_speed != null ? movement_speed + " "+ alt_movement_speed : movement_speed,
-        power_attack_type,
-        release_date:Number.parseInt(release_date),
-        icon
-    }
-    myCache.set("character_"+character,killer,60*60*24)
-    return killer
 }
 async function getKillers() {
     const cachedKillers = myCache.get("killers");
@@ -460,3 +500,5 @@ async function getKillers() {
     myCache.set("killers",killers,60*60*24)
     return killers
 }
+
+export { getPerks, getCharacters, getCharacter, getKillers };

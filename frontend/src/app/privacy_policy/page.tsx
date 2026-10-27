@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <div className="p-4 bg-white text-black items-center justify-items-center min-h-screen pb-20 gap-16">
-    <div className="s:w-[75%] sm:w-[60%] md:w-[50%] flex flex-col gap-4">
+    <div className="s:w-[75%] sm:w-[60%] md:w-[50%] flex flex-col gap-3">
       <h1 className="text-4xl">DBDle -- Privacy Policy</h1>
       <h2 className="text-3xl">Content Used From</h2>
       <p>
@@ -94,7 +94,7 @@ export default function Home() {
       </table>
       <p>Users can opt out of cookies by clicking here -{`>`} <button onClick={handleClick} className="cursor-pointer px-2 py-1 bg-yellow-400 rounded">reset</button></p>
       <p>
-        Thanks for playing DBDle! Go back to playing right{" "}
+        Thanks for playing DBDle! Made by <Link className="text-blue-700 underline" href={"https://pasiotestudio.hu"}>Attila Pápa</Link>. Go back to playing right{" "}
         <Link className="text-blue-700 underline" href={"/"}>
           here
         </Link>

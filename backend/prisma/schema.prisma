@@ -8,7 +8,6 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 enum DailyType {
@@ -25,4 +24,11 @@ model Daily {
   type      DailyType
   value     String
   createdAt DateTime  @default(now())
+}
+
+model DailyChallenge {
+  id        Int      @id @default(1)
+  date      String
+  data      String
+  updatedAt DateTime @updatedAt
 }

@@ -75,4 +75,4 @@ const invalidNames = [
     "Vigo",
     "Ash"
 ]
-module.exports = {nameVariations,invalidNames,splash}
+export { nameVariations, invalidNames, splash };

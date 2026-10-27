@@ -1,21 +1,61 @@
 
-const {getPerks,getCharacters,getCharacter, getKillers} = require("./scrapping")
-const {nameVariations,invalidNames,splash} = require("./constants")
-const myCache = require("../cache")
-const sharp = require('sharp');
-const axios = require('axios')
-const { PrismaClient } = require('../prisma/generated/prisma')
+import axios from "axios";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "../prisma/generated/prisma/index.js";
+import path from "node:path";
+import sharp from "sharp";
+import { fileURLToPath } from "node:url";
+import { getPerks, getCharacters, getCharacter, getKillers } from "./scrapping.js";
+import { nameVariations, invalidNames, splash } from "./constants.js";
+import myCache from "./cache.js";
+import { clearAutomatedNews } from "./newsStatus.js";
 
-const prisma = new PrismaClient()
-module.exports = [doDaily]
+const adapter = new PrismaBetterSqlite3(
+  { url: process.env.DATABASE_URL },
+  { timestampFormat: "unixepoch-ms" }
+)
+const prisma = new PrismaClient({ adapter })
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+export { doDaily };
+
+let dailyUpdate
 
 Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
 const types = ["KILLER","SPLASH","QUOTE","PERK","LORE","TERROR_RADIUS"]
-async function doDaily(){
-  //flush mem and db if needed
-  myCache.flushAll()
+
+function doDaily() {
+  if (!dailyUpdate) {
+    dailyUpdate = refreshDaily().finally(() => {
+      dailyUpdate = undefined
+    })
+  }
+  return dailyUpdate
+}
+
+function getDailyDate() {
+  const dateParts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Etc/GMT-2",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date())
+  const date = Object.fromEntries(dateParts.map(({ type, value }) => [type, value]))
+  return `${date.year}-${date.month}-${date.day}`
+}
+
+async function refreshDaily() {
+  const today = getDailyDate()
+  const savedChallenge = await prisma.dailyChallenge.findUnique({ where: { id: 1 } })
+  if (savedChallenge?.date === today) {
+    const daily = JSON.parse(savedChallenge.data)
+    myCache.set("daily", daily)
+    await clearAutomatedNews()
+    return
+  }
+
   const characters = await getCharacters()
   const killers = await getKillers()
   const perks = await getPerks()
@@ -43,7 +83,7 @@ async function doDaily(){
   const used_perks = (await prisma.daily.findMany({where:{type:"PERK"}})).map(data=>data.value)
   let dailyPerk = perks.filter(perk=>used_perks.findIndex(name=>name==perk.name) == -1).random()
   const perk_image = await sharp((await axios({ url: dailyPerk.icon, responseType: "arraybuffer" })).data)
-  perk_image.webp().toFile("perk/image.webp")
+  await perk_image.webp().toFile(path.join(currentDirectory, "../perk/image.webp"))
   dailyPerk=dailyPerk.name
   //Quote
   const used_quotes = (await prisma.daily.findMany({where:{type:"QUOTE"}})).map(data=>data.value)
@@ -95,7 +135,7 @@ async function doDaily(){
   let y = 0
   const icon = (await getCharacter(character)).icon
   const image = await sharp((await axios({ url: icon, responseType: "arraybuffer" })).data)
-  image.webp().toFile("splash/splash.webp")
+  await image.webp().toFile(path.join(currentDirectory, "../splash/splash.webp"))
   let notOkay = true
   const min_pixel = splash.width - (splash.number_of_tries * splash.step)
   while(notOkay){
@@ -135,13 +175,29 @@ async function doDaily(){
     x,
     y
   }
-  await prisma.daily.createMany({data:[
+  const daily = {
+    quote:dailyQuote.name,
+    perk:dailyPerk,
+    killer,
+    terror_radius:sound,
+    splash:real_splash,
+    lore,
+  }
+  await prisma.$transaction([
+    prisma.daily.createMany({data:[
     {type:"KILLER",value:killer},
     {type:"PERK",value:dailyPerk},
     {type:"SPLASH",value:character},
     {type:"QUOTE",value:dailyQuote.name},
     {type:"LORE",value:lore.character},
     {type:"TERROR_RADIUS",value:sound},
-  ]})
-  myCache.set("daily",{quote:dailyQuote.name,perk:dailyPerk,killer,terror_radius:sound,splash:real_splash,lore},60*60*24)
+    ]}),
+    prisma.dailyChallenge.upsert({
+      where: { id: 1 },
+      create: { id: 1, date: today, data: JSON.stringify(daily) },
+      update: { date: today, data: JSON.stringify(daily) },
+    }),
+  ])
+  myCache.set("daily", daily)
+  await clearAutomatedNews()
 }

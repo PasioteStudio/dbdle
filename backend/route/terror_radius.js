@@ -1,10 +1,11 @@
-const express = require('express');
-const myCache = require("../cache")
-const { Readable } = require("stream");
-const  {getPerks,getCharacters,getCharacter,getKillers}= require("../util/scrapping")
+import express from "express";
+import { Readable } from "node:stream";
+import myCache from "../util/cache.js";
+import { getCharacter, getKillers, getPerks } from "../util/scrapping.js";
+import axios from "axios";
 
 const router = express.Router();
-module.exports = router
+export default router;
 
 router.get("/",async(req, res)=>{
     res.status(200).json(await getKillers());
@@ -18,7 +19,7 @@ router.get("/sound", async (req, res) => {
 
     req.on("close", () => controller.abort());
 
-    const response = await fetch(killer.terror_radius, {
+    const response = await axios.get(killer.terror_radius, {
       signal: controller.signal,
       headers: {
         "User-Agent": "Mozilla/5.0",
@@ -39,7 +40,7 @@ router.get("/sound", async (req, res) => {
 
     stream.on("error", err => {
       if (err.name !== "AbortError") {
-        console.error("Stream error:", err);
+        console.error("Stream error");
       }
     });
 
@@ -47,7 +48,7 @@ router.get("/sound", async (req, res) => {
 
   } catch (err) {
     if (err.name !== "AbortError") {
-      console.error("Fetch error:", err);
+      console.error("Fetch error");
     }
     res.end();
   }

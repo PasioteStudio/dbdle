@@ -1,4 +1,5 @@
 import { SoundProvider } from "@/context/useSound"
+import NewsHeadline from "@/component/layout/newsHeadline"
 import { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
@@ -75,6 +76,7 @@ export default function RootLayout({
   <html lang="en">
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans selection:bg-red-400`}>
       <SoundProvider>
+        <NewsHeadline />
         {children}
       </SoundProvider>
     </body>
