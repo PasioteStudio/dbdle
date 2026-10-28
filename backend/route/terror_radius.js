@@ -3,6 +3,7 @@ import { Readable } from "node:stream";
 import myCache from "../util/cache.js";
 import { getCharacter, getKillers, getPerks } from "../util/scrapping.js";
 import axios from "axios";
+import fs from "fs";
 
 const router = express.Router();
 export default router;
@@ -49,6 +50,12 @@ router.get("/sound", async (req, res) => {
   } catch (err) {
     if (err.name !== "AbortError") {
       console.error("Fetch error");
+      //write to news.txt
+      fs.writeFile("news.txt", `Fetching error`, (err) => {
+        if (err) {
+          console.error("Error writing to news.txt:", err);
+        }
+      });
     }
     res.end();
   }

@@ -1,13 +1,10 @@
 import axios from "axios";
 import path from "node:path";
 import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { fileURLToPath } from "node:url";
 import { nameVariations, invalidNames } from "./constants.js";
 import myCache from "./cache.js";
 import { writeAutomatedNews } from "./newsStatus.js";
-
-puppeteer.use(StealthPlugin());
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 let browser;
