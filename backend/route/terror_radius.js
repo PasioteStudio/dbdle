@@ -1,9 +1,8 @@
 import express from "express";
-import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import myCache from "../util/cache.js";
 import { getCharacter, getKillers, getPerks } from "../util/scrapping.js";
 import axios from "axios";
-import fs from "fs";
 
 const router = express.Router();
 export default router;
@@ -14,50 +13,38 @@ router.get("/",async(req, res)=>{
 
 router.get("/sound", async (req, res) => {
   const controller = new AbortController();
+  res.on("close", () => {
+    if (!res.writableEnded) controller.abort();
+  });
 
   try {
     const killer = await getCharacter(myCache.get("daily").terror_radius);
 
-    req.on("close", () => controller.abort());
-
     const response = await axios.get(killer.terror_radius, {
       signal: controller.signal,
+      responseType: "stream",
       headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "audio/ogg"
+        "User-Agent": "DbDle/2.0",
+        "Accept": "audio/*",
+        "Referer": "https://deadbydaylight.wiki.gg/"
       }
     });
-
-    if (!response.ok) {
-      console.error("Upstream status:", response.status);
-      return res.sendStatus(502);
-    }
 
     res.status(200);
-    res.setHeader("Content-Type", "audio/ogg");
+    res.setHeader("Content-Type", response.headers["content-type"] ?? "audio/ogg");
     res.setHeader("Accept-Ranges", "none");
 
-    const stream = Readable.fromWeb(response.body);
-
-    stream.on("error", err => {
-      if (err.name !== "AbortError") {
-        console.error("Stream error");
-      }
-    });
-
-    stream.pipe(res);
+    await pipeline(response.data, res, { signal: controller.signal });
 
   } catch (err) {
-    if (err.name !== "AbortError") {
-      console.error("Fetch error");
-      //write to news.txt
-      fs.writeFile("news.txt", `Fetching error`, (err) => {
-        if (err) {
-          console.error("Error writing to news.txt:", err);
-        }
-      });
+    if (!controller.signal.aborted) {
+      console.error("Terror-radius audio fetch failed:", err);
+      if (!res.headersSent) {
+        res.sendStatus(502);
+      } else {
+        res.destroy(err);
+      }
     }
-    res.end();
   }
 });
 router.get("/hint",async(req, res)=>{
